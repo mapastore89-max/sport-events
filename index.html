@@ -16,6 +16,11 @@
       --accent-gray: #e5e7eb;
       --tag-bg: #2a2a2d;
       --icon-gray: #9ca3af;
+
+      /* Disziplinen Akzentfarben */
+      --swim-color: #3b82f6;
+      --bike-color: #22c55e;
+      --run-color: #ef4444;
     }
 
     * { box-sizing: border-box; }
@@ -85,7 +90,7 @@
     .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
     .btn-outline:hover { background: var(--tag-bg); }
 
-    /* DETAIL ANSICHT (TRI-NORTHWEST DESIGN SCHEME) */
+    /* DETAIL ANSICHT */
     #detailView { display: none; }
     .back-nav { margin-bottom: 1.5rem; }
 
@@ -122,19 +127,84 @@
     }
     .content-box p { line-height: 1.7; color: var(--text-muted); margin: 0 0 1rem 0; }
 
-    /* Distanzen Liste / Table Style */
-    .distance-list { display: flex; flex-direction: column; gap: 0.75rem; }
-    .distance-item {
+    /* NEUE WETTKAMPF / DISTANZEN DARSTELLUNG */
+    .race-category-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .race-category-card:last-child {
+      margin-bottom: 0;
+    }
+    .race-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 1rem 0;
+    }
+    .discipline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.8rem;
+    }
+    .discipline-subcard {
       background: var(--bg);
       border: 1px solid var(--border);
-      padding: 1rem;
       border-radius: 8px;
+      padding: 0.8rem 1rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 0.75rem;
     }
-    .distance-item .name { font-weight: bold; color: var(--text); }
-    .distance-item .details { color: var(--text-muted); font-size: 0.9rem; }
+    .discipline-icon-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      flex-shrink: 0;
+    }
+    .discipline-icon-box svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .discipline-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .discipline-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .discipline-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 0.1rem;
+    }
+
+    /* Disziplinen Farben & Icon Stroke Colors */
+    .discipline-subcard.swim { border-left: 3px solid var(--swim-color); }
+    .discipline-subcard.swim .discipline-label { color: var(--swim-color); }
+    .discipline-subcard.swim .discipline-icon-box svg { stroke: var(--swim-color); }
+    
+    .discipline-subcard.bike { border-left: 3px solid var(--bike-color); }
+    .discipline-subcard.bike .discipline-label { color: var(--bike-color); }
+    .discipline-subcard.bike .discipline-icon-box svg { stroke: var(--bike-color); }
+    
+    .discipline-subcard.run { border-left: 3px solid var(--run-color); }
+    .discipline-subcard.run .discipline-label { color: var(--run-color); }
+    .discipline-subcard.run .discipline-icon-box svg { stroke: var(--run-color); }
 
     /* Sidebar Table / Info Pairs */
     .info-group { display: flex; flex-direction: column; gap: 1rem; }
@@ -201,8 +271,18 @@
         country: 'CH',
         organizer: 'Triathlon Club Spiez',
         distances: [
-          { name: 'Olympic Distance', spec: '1.5 km Schwimmen | 40 km Rad | 10 km Lauf' },
-          { name: 'Sprint Distance', spec: '500 m Schwimmen | 20 km Rad | 5 km Lauf' }
+          { 
+            name: 'Olympic Distance', 
+            swimMeters: 1500, 
+            bikeKm: 40, 
+            runKm: 10 
+          },
+          { 
+            name: 'Sprint Distance', 
+            swimMeters: 500, 
+            bikeKm: 20, 
+            runKm: 5 
+          }
         ],
         desc: 'Der Spiezathlon gehört zu den malerischsten Wettkämpfen im Schweizer Rennkalender. Schwimmen im klaren Thunersee, eine anspruchsvolle Radstrecke mit Blick auf die Alpen und ein Zieleinlauf vor dem Schloss Spiez machen dieses Event einzigartig.',
         schedule: '07:00 - Startnummernausgabe | 08:30 - Start Olympic | 11:00 - Start Sprint | 14:00 - Siegerehrung',
@@ -219,8 +299,18 @@
         country: 'CH',
         organizer: 'IRONMAN Switzerland AG',
         distances: [
-          { name: '5150 Standard', spec: '1.5 km Schwimmen | 40 km Rad | 10 km Lauf' },
-          { name: '4184 Sprint', spec: '400 m Schwimmen | 18 km Rad | 4.2 km Lauf' }
+          { 
+            name: '5150 Standard', 
+            swimMeters: 1500, 
+            bikeKm: 40, 
+            runKm: 10 
+          },
+          { 
+            name: '4184 Sprint', 
+            swimMeters: 400, 
+            bikeKm: 18, 
+            runKm: 4.2 
+          }
         ],
         desc: 'Der Zürich Triathlon bietet urbanes Feeling gepaart mit malerischer Naturkulisse. Die flache, schnelle Laufstrecke entlang der Uferpromenade ist ideal für persönliche Bestzeiten.',
         schedule: '06:30 - Wechselzone öffnet | 07:30 - Start Wellen | 15:00 - Ende des Wettkampfs',
@@ -229,7 +319,18 @@
     ];
 
     let activeCategory = 'all';
+
+    /* SVG OUTLINE ICONS */
     const calendarIconSVG = `<svg class="calendar-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>`;
+    
+    // Schwimmen: Wellen
+    const swimIconSVG = `<svg viewBox="0 0 24 24"><path d="M2 12c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1M2 17c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1"/></svg>`;
+    
+    // Radfahren: Rennrad
+    const bikeIconSVG = `<svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2m-5 0h3l-3 6.5H6.5L10 6h2m3 11.5L12 9l-2.5 3.5"/></svg>`;
+    
+    // Laufen: Laufschuh
+    const runIconSVG = `<svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.6-1.7-1.5-1.9L15 10l-3-4H8L5 9v3h3l2.5 3H19zM2 17h15v2H2z"/></svg>`;
 
     function getCountdownText(eventDateStr) {
       const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -322,7 +423,6 @@
       });
     }
 
-    /* AUFBAU EXAKT WIE BEI TRI-NORTHWEST */
     function openDetailPage(id) {
       const ev = events.find(e => e.id === id);
       if (!ev) return;
@@ -350,16 +450,42 @@
               <p>${ev.desc}</p>
             </div>
 
-            <div class="content-box">
-              <h3>Distanzen & Wettkämpfe</h3>
-              <div class="distance-list">
-                ${ev.distances.map(d => `
-                  <div class="distance-item">
-                    <span class="name">${d.name}</span>
-                    <span class="details">${d.spec}</span>
+            <div>
+              ${ev.distances.map(d => `
+                <div class="race-category-card">
+                  <div class="race-title">${d.name}</div>
+                  <div class="discipline-grid">
+                    
+                    ${d.swimMeters ? `
+                    <div class="discipline-subcard swim">
+                      <div class="discipline-icon-box">${swimIconSVG}</div>
+                      <div class="discipline-info">
+                        <span class="discipline-label">Schwimmen</span>
+                        <span class="discipline-value">${d.swimMeters}m</span>
+                      </div>
+                    </div>` : ''}
+
+                    ${d.bikeKm ? `
+                    <div class="discipline-subcard bike">
+                      <div class="discipline-icon-box">${bikeIconSVG}</div>
+                      <div class="discipline-info">
+                        <span class="discipline-label">Radfahren</span>
+                        <span class="discipline-value">${d.bikeKm} km</span>
+                      </div>
+                    </div>` : ''}
+
+                    ${d.runKm ? `
+                    <div class="discipline-subcard run">
+                      <div class="discipline-icon-box">${runIconSVG}</div>
+                      <div class="discipline-info">
+                        <span class="discipline-label">Laufen</span>
+                        <span class="discipline-value">${d.runKm} km</span>
+                      </div>
+                    </div>` : ''}
+
                   </div>
-                `).join('')}
-              </div>
+                </div>
+              `).join('')}
             </div>
 
             <div class="content-box">
