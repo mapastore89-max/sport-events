@@ -37,7 +37,12 @@
     h1 { font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
     p.sub { color: var(--text-muted); font-size: 1.1rem; }
 
-    /* KATEGORIE-TABS / HEADER NAV */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* KATEGORIE-TABS */
     .tabs {
       display: flex;
       justify-content: center;
@@ -64,16 +69,11 @@
       border-color: var(--accent);
     }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
     /* FILTER-BAR */
     .filter-bar {
       display: flex;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
       flex-wrap: wrap;
     }
 
@@ -88,31 +88,86 @@
       min-width: 180px;
     }
 
-    /* EVENT LIST VIEW */
-    .event-list {
+    /* MONATS-GRUPPEN (ACCORDION) */
+    .month-group {
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--card-bg);
+    }
+
+    .month-header {
+      padding: 1rem 1.5rem;
+      background: #18181a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .month-header:hover {
+      background: #222226;
+    }
+
+    .month-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .month-count {
+      font-size: 0.85rem;
+      background: var(--tag-bg);
+      color: var(--text-muted);
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+    }
+
+    .toggle-icon {
+      font-size: 1.2rem;
+      color: var(--accent);
+      transition: transform 0.3s ease;
+    }
+
+    .month-group.collapsed .toggle-icon {
+      transform: rotate(-90deg);
+    }
+
+    .month-events {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      padding: 1.25rem;
+      border-top: 1px solid var(--border);
     }
 
+    .month-group.collapsed .month-events {
+      display: none;
+    }
+
+    /* EVENT CARD */
     .event-card {
-      background: var(--card-bg);
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 1.25rem 1.5rem;
       display: grid;
       grid-template-columns: 120px 1fr auto;
       align-items: center;
       gap: 1.5rem;
-      transition: background 0.2s, border-color 0.2s;
+      transition: border-color 0.2s;
     }
 
     .event-card:hover {
-      background: var(--card-hover);
       border-color: #3f3f46;
     }
 
-    /* DATUMS-BOX MIT COUNTDOWN */
     .date-box {
       background: var(--tag-bg);
       border-radius: 8px;
@@ -127,7 +182,6 @@
     .date-box .day { font-size: 1.4rem; font-weight: bold; color: var(--accent); display: block; }
     .date-box .month { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
     
-    /* Countdown Badge */
     .date-box .countdown {
       margin-top: 0.4rem;
       padding-top: 0.4rem;
@@ -137,17 +191,13 @@
       color: var(--accent);
     }
 
-    .date-box .countdown.past {
-      color: var(--text-muted);
-    }
+    .date-box .countdown.past { color: var(--text-muted); }
 
-    /* DETAILS */
     .event-info h3 { margin: 0 0 0.3rem 0; font-size: 1.25rem; }
     .event-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
     .tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
     .tag { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
 
-    /* ACTION BUTTONS */
     .actions { display: flex; gap: 0.5rem; }
 
     .btn {
@@ -193,7 +243,6 @@
   </header>
 
   <div class="container">
-    <!-- TABS -->
     <div class="tabs">
       <button class="tab-btn active" onclick="filterCategory('all', this)">Alle Events</button>
       <button class="tab-btn" onclick="filterCategory('Triathlon', this)">Triathlon</button>
@@ -201,7 +250,6 @@
       <button class="tab-btn" onclick="filterCategory('Rennrad', this)">Rennrad</button>
     </div>
 
-    <!-- FILTER BAR -->
     <div class="filter-bar">
       <input type="text" id="searchInput" placeholder="Nach Event oder Ort suchen..." oninput="applyFilters()">
       <select id="countryFilter" onchange="applyFilters()">
@@ -212,11 +260,9 @@
       </select>
     </div>
 
-    <!-- EVENT LIST -->
-    <div class="event-list" id="eventList"></div>
+    <div id="eventContainer"></div>
   </div>
 
-  <!-- DETAILS MODAL -->
   <div id="detailModal" class="modal-overlay" onclick="if(event.target === this) closeModal()">
     <div class="modal">
       <button class="close-btn" onclick="closeModal()">&times;</button>
@@ -236,7 +282,6 @@
 
     let activeCategory = 'all';
 
-    // Hilfsfunktion: Berechnet verbleibende Wochen und Tage
     function getCountdownText(eventDateStr) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -247,11 +292,8 @@
       const diffTime = eventDate - today;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      if (diffDays < 0) {
-        return { text: 'Vorüber', isPast: true };
-      } else if (diffDays === 0) {
-        return { text: 'Heute!', isPast: false };
-      }
+      if (diffDays < 0) return { text: 'Vorüber', isPast: true };
+      if (diffDays === 0) return { text: 'Heute!', isPast: false };
 
       const weeks = Math.floor(diffDays / 7);
       const days = diffDays % 7;
@@ -263,47 +305,81 @@
       return { text: `In ${parts.join(' ')}`, isPast: false };
     }
 
-    function renderList(data) {
-      const list = document.getElementById('eventList');
-      list.innerHTML = '';
+    function renderGroupedList(data) {
+      const container = document.getElementById('eventContainer');
+      container.innerHTML = '';
 
       if (data.length === 0) {
-        list.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding: 2rem;">Keine passenden Events gefunden.</p>';
+        container.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding: 2rem;">Keine passenden Events gefunden.</p>';
         return;
       }
 
+      // Sortieren nach Datum
       data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
+      // Events nach Monat gruppieren
+      const grouped = {};
       data.forEach(event => {
         const d = new Date(event.date);
-        const day = d.getDate().toString().padStart(2, '0');
-        const month = d.toLocaleString('de-DE', { month: 'short' }).toUpperCase();
-        
-        // Countdown ermitteln
-        const countdown = getCountdownText(event.date);
+        const monthKey = d.toLocaleString('de-DE', { month: 'long', year: 'numeric' });
+        if (!grouped[monthKey]) grouped[monthKey] = [];
+        grouped[monthKey].push(event);
+      });
 
-        const card = document.createElement('div');
-        card.className = 'event-card';
-        card.innerHTML = `
-          <div class="date-box">
-            <span class="day">${day}</span>
-            <span class="month">${month} ${d.getFullYear()}</span>
-            <span class="countdown ${countdown.isPast ? 'past' : ''}">${countdown.text}</span>
+      // HTML für jeden Monat aufbauen
+      Object.keys(grouped).forEach(monthName => {
+        const monthEvents = grouped[monthName];
+
+        const monthGroup = document.createElement('div');
+        monthGroup.className = 'month-group';
+
+        const monthHeader = document.createElement('div');
+        monthHeader.className = 'month-header';
+        monthHeader.onclick = () => monthGroup.classList.toggle('collapsed');
+        monthHeader.innerHTML = `
+          <div class="month-title">
+            📅 ${monthName}
+            <span class="month-count">${monthEvents.length} Event${monthEvents.length > 1 ? 's' : ''}</span>
           </div>
-          <div class="event-info">
-            <h3>${event.title}</h3>
-            <div class="event-meta">📍 ${event.location}</div>
-            <div class="tags">
-              <span class="tag">${event.category}</span>
-              ${event.distances.map(dist => `<span class="tag" style="background:var(--tag-bg); color:var(--text-muted);">${dist}</span>`).join('')}
-            </div>
-          </div>
-          <div class="actions">
-            <button class="btn btn-outline" onclick="openDetails(${event.id})">Details</button>
-            ${event.link && event.link !== '#' ? `<a href="${event.link}" target="_blank" class="btn btn-primary">Website</a>` : ''}
-          </div>
+          <span class="toggle-icon">▼</span>
         `;
-        list.appendChild(card);
+
+        const eventsContainer = document.createElement('div');
+        eventsContainer.className = 'month-events';
+
+        monthEvents.forEach(event => {
+          const d = new Date(event.date);
+          const day = d.getDate().toString().padStart(2, '0');
+          const monthShort = d.toLocaleString('de-DE', { month: 'short' }).toUpperCase();
+          const countdown = getCountdownText(event.date);
+
+          const card = document.createElement('div');
+          card.className = 'event-card';
+          card.innerHTML = `
+            <div class="date-box">
+              <span class="day">${day}</span>
+              <span class="month">${monthShort}</span>
+              <span class="countdown ${countdown.isPast ? 'past' : ''}">${countdown.text}</span>
+            </div>
+            <div class="event-info">
+              <h3>${event.title}</h3>
+              <div class="event-meta">📍 ${event.location}</div>
+              <div class="tags">
+                <span class="tag">${event.category}</span>
+                ${event.distances.map(dist => `<span class="tag" style="background:var(--tag-bg); color:var(--text-muted);">${dist}</span>`).join('')}
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-outline" onclick="openDetails(${event.id})">Details</button>
+              ${event.link && event.link !== '#' ? `<a href="${event.link}" target="_blank" class="btn btn-primary">Website</a>` : ''}
+            </div>
+          `;
+          eventsContainer.appendChild(card);
+        });
+
+        monthGroup.appendChild(monthHeader);
+        monthGroup.appendChild(eventsContainer);
+        container.appendChild(monthGroup);
       });
     }
 
@@ -325,7 +401,7 @@
         return matchCat && matchSearch && matchCountry;
       });
 
-      renderList(filtered);
+      renderGroupedList(filtered);
     }
 
     function openDetails(id) {
@@ -350,7 +426,6 @@
       document.getElementById('detailModal').style.display = 'none';
     }
 
-    // Initial render
     applyFilters();
   </script>
 </body>
