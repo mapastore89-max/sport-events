@@ -8,15 +8,14 @@
   <style>
     :root {
       --bg: #121212;
-      --card-bg: #1c1c1e;
+      --card-bg: #1e1e1e;
       --card-hover: #26262a;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
+      --border: #2d2d2d;
       --text: #f3f4f6;
-      --text-muted: #a1a1aa;
-      --border: #27272a;
-      --tag-bg: #27272a;
-      --icon-gray: #a1a1aa;
+      --text-muted: #9ca3af;
+      --accent-gray: #e5e7eb;
+      --tag-bg: #2a2a2d;
+      --icon-gray: #9ca3af;
     }
 
     * { box-sizing: border-box; }
@@ -35,13 +34,13 @@
     h1 { font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
     p.sub { color: var(--text-muted); font-size: 1.1rem; }
 
-    /* CATEGORY TABS & FILTERS */
+    /* LIST VIEW: TABS & FILTER */
     .tabs { display: flex; justify-content: center; gap: 0.8rem; margin-bottom: 2rem; flex-wrap: wrap; }
     .tab-btn {
       background: var(--card-bg); color: var(--text); border: 1px solid var(--border);
       padding: 0.75rem 1.5rem; border-radius: 99px; font-size: 1rem; font-weight: 600; cursor: pointer;
     }
-    .tab-btn:hover, .tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .tab-btn:hover, .tab-btn.active { background: var(--accent-gray); color: #121212; border-color: var(--accent-gray); }
 
     .filter-bar { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
     input, select {
@@ -61,53 +60,92 @@
     .month-events { display: flex; flex-direction: column; gap: 1rem; padding: 1.25rem; border-top: 1px solid var(--border); }
     .month-group.collapsed .month-events { display: none; }
 
-    /* EVENT CARD */
+    /* EVENT CARD (ÜBERSICHT) */
     .event-card {
       background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem;
       display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 1.5rem; cursor: pointer;
     }
-    .event-card:hover { border-color: #3f3f46; background: #161618; }
+    .event-card:hover { border-color: #404040; background: #161618; }
 
     .date-box {
       background: var(--tag-bg); border-radius: 8px; padding: 0.5rem; text-align: center; border: 1px solid var(--border);
     }
-    .date-box .day { font-size: 1.4rem; font-weight: bold; color: var(--accent); display: block; }
+    .date-box .day { font-size: 1.4rem; font-weight: bold; color: var(--text); display: block; }
     .date-box .month { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); }
-    .date-box .countdown { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid var(--border); font-size: 0.75rem; font-weight: bold; color: var(--accent); }
+    .date-box .countdown { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid var(--border); font-size: 0.75rem; font-weight: bold; color: var(--accent-gray); }
 
     .event-info h3 { margin: 0 0 0.3rem 0; font-size: 1.25rem; }
     .event-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
     .tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .tag { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .tag { background: var(--tag-bg); color: var(--accent-gray); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--border); }
 
-    .btn { padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: bold; cursor: pointer; border: none; text-decoration: none; }
-    .btn-primary { background: var(--accent); color: #000; }
+    .btn { padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: bold; cursor: pointer; border: none; text-decoration: none; display: inline-block; text-align: center; }
+    .btn-primary { background: var(--accent-gray); color: #121212; }
+    .btn-primary:hover { background: #ffffff; }
     .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { background: var(--tag-bg); }
 
-    /* TRI-NORTHWEST STYLE EVENT DETAIL PAGE */
+    /* DETAIL ANSICHT (TRI-NORTHWEST DESIGN SCHEME) */
     #detailView { display: none; }
-    .back-nav { margin-bottom: 2rem; }
-    
-    .event-header-block {
-      background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 2rem;
+    .back-nav { margin-bottom: 1.5rem; }
+
+    /* Hero Header */
+    .event-hero {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
     }
-    .event-header-block h2 { font-size: 2rem; margin: 0.5rem 0 1rem 0; }
-    
+    .event-hero .breadcrumbs { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+    .event-hero h1 { text-align: left; font-size: 2.2rem; margin: 0 0 1rem 0; color: #ffffff; }
+    .hero-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; color: var(--text-muted); font-size: 1rem; align-items: center; }
+    .hero-meta-item { display: flex; align-items: center; gap: 0.5rem; }
+
+    /* Layout 2-Spaltig */
     .detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
     .detail-main, .detail-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
 
-    .detail-card {
-      background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;
+    /* Content Cards */
+    .content-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
     }
-    .detail-card h3 { margin-top: 0; font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
+    .content-box h3 {
+      margin: 0 0 1.2rem 0;
+      font-size: 1.25rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .content-box p { line-height: 1.7; color: var(--text-muted); margin: 0 0 1rem 0; }
 
-    .info-list { list-style: none; padding: 0; margin: 0; }
-    .info-list li { margin-bottom: 0.8rem; font-size: 0.95rem; color: var(--text-muted); }
-    .info-list li strong { color: var(--text); }
+    /* Distanzen Liste / Table Style */
+    .distance-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .distance-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .distance-item .name { font-weight: bold; color: var(--text); }
+    .distance-item .details { color: var(--text-muted); font-size: 0.9rem; }
+
+    /* Sidebar Table / Info Pairs */
+    .info-group { display: flex; flex-direction: column; gap: 1rem; }
+    .info-pair { display: flex; flex-direction: column; gap: 0.2rem; }
+    .info-pair label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+    .info-pair span { font-size: 1rem; color: var(--text); font-weight: 500; }
 
     @media (max-width: 768px) {
       .event-card { grid-template-columns: 1fr; }
       .detail-grid { grid-template-columns: 1fr; }
+      .event-hero { padding: 1.5rem; }
     }
   </style>
 </head>
@@ -143,7 +181,7 @@
 
     <div id="detailView">
       <div class="back-nav">
-        <button class="btn btn-outline" onclick="showListView()">← Zurück zur Übersicht</button>
+        <button class="btn btn-outline" onclick="showListView()">← Zurück zum Kalender</button>
       </div>
       <div id="detailContent"></div>
     </div>
@@ -158,12 +196,16 @@
         category: 'Triathlon',
         date: '2026-06-20',
         time: '08:00 Uhr',
-        location: 'Bucht Spiez, Schweiz',
+        location: 'Spiez, Schweiz',
+        venue: 'Bucht Spiez',
         country: 'CH',
         organizer: 'Triathlon Club Spiez',
-        distances: ['Olympic (1.5k / 40k / 10k)', 'Sprint (500m / 20k / 5k)'],
-        desc: 'Der Spiezathlon bietet eine atemberaubende Kulisse direkt am Thunersee mit Blick auf das Schloss Spiez. Ein Muss für alle Triathleten in der Schweiz!',
-        schedule: '07:00 Startnummernausgabe | 08:30 Start Olympic | 11:00 Start Sprint | 14:00 Rangverlesung',
+        distances: [
+          { name: 'Olympic Distance', spec: '1.5 km Schwimmen | 40 km Rad | 10 km Lauf' },
+          { name: 'Sprint Distance', spec: '500 m Schwimmen | 20 km Rad | 5 km Lauf' }
+        ],
+        desc: 'Der Spiezathlon gehört zu den malerischsten Wettkämpfen im Schweizer Rennkalender. Schwimmen im klaren Thunersee, eine anspruchsvolle Radstrecke mit Blick auf die Alpen und ein Zieleinlauf vor dem Schloss Spiez machen dieses Event einzigartig.',
+        schedule: '07:00 - Startnummernausgabe | 08:30 - Start Olympic | 11:00 - Start Sprint | 14:00 - Siegerehrung',
         link: 'https://spiezathlon.ch'
       },
       {
@@ -172,18 +214,21 @@
         category: 'Triathlon',
         date: '2026-06-27',
         time: '07:30 Uhr',
-        location: 'Landiwiese, Zürich, Schweiz',
+        location: 'Zürich, Schweiz',
+        venue: 'Landiwiese Zürich',
         country: 'CH',
         organizer: 'IRONMAN Switzerland AG',
-        distances: ['Standard Distance', 'Sprint Distance'],
-        desc: 'Schwimmen im Zürichsee, eine schnelle Radstrecke entlang der Goldküste und ein stimmungsvoller Lauf im Herzen von Zürich.',
-        schedule: '06:30 Wechselzone öffnet | 07:30 Start Wellen | 15:00 Event-Ende',
+        distances: [
+          { name: '5150 Standard', spec: '1.5 km Schwimmen | 40 km Rad | 10 km Lauf' },
+          { name: '4184 Sprint', spec: '400 m Schwimmen | 18 km Rad | 4.2 km Lauf' }
+        ],
+        desc: 'Der Zürich Triathlon bietet urbanes Feeling gepaart mit malerischer Naturkulisse. Die flache, schnelle Laufstrecke entlang der Uferpromenade ist ideal für persönliche Bestzeiten.',
+        schedule: '06:30 - Wechselzone öffnet | 07:30 - Start Wellen | 15:00 - Ende des Wettkampfs',
         link: 'https://www.ironman.com'
       }
     ];
 
     let activeCategory = 'all';
-
     const calendarIconSVG = `<svg class="calendar-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>`;
 
     function getCountdownText(eventDateStr) {
@@ -235,7 +280,7 @@
             ${calendarIconSVG} ${monthName}
             <span class="month-count">${monthEvents.length} Event${monthEvents.length > 1 ? 's' : ''}</span>
           </div>
-          <span style="color:var(--accent);">▼</span>
+          <span style="color:var(--text-muted);">▼</span>
         `;
 
         const eventsContainer = document.createElement('div');
@@ -261,7 +306,7 @@
               <div class="event-meta">📍 ${event.location}</div>
               <div class="tags">
                 <span class="tag">${event.category}</span>
-                ${event.distances.map(dist => `<span class="tag" style="background:var(--tag-bg); color:var(--text-muted);">${dist}</span>`).join('')}
+                ${event.distances.map(dist => `<span class="tag" style="background:var(--tag-bg); color:var(--text-muted);">${dist.name}</span>`).join('')}
               </div>
             </div>
             <div>
@@ -277,7 +322,7 @@
       });
     }
 
-    /* WECHSEL ZUR DETAILSEITE */
+    /* AUFBAU EXAKT WIE BEI TRI-NORTHWEST */
     function openDetailPage(id) {
       const ev = events.find(e => e.id === id);
       if (!ev) return;
@@ -286,43 +331,75 @@
       const countdown = getCountdownText(ev.date);
 
       document.getElementById('detailContent').innerHTML = `
-        <div class="event-header-block">
-          <span class="tag">${ev.category}</span>
-          <h2>${ev.title}</h2>
-          <p style="color:var(--text-muted); margin: 0;">📅 ${formattedDate} (${countdown.text}) | 📍 ${ev.location}</p>
+        <div class="event-hero">
+          <div class="breadcrumbs">Events / ${ev.category}</div>
+          <h1>${ev.title}</h1>
+          <div class="hero-meta">
+            <div class="hero-meta-item">📅 <span>${formattedDate}</span></div>
+            <div class="hero-meta-item">⏱️ <span>${countdown.text}</span></div>
+            <div class="hero-meta-item">📍 <span>${ev.location}</span></div>
+          </div>
         </div>
 
         <div class="detail-grid">
+          
           <div class="detail-main">
-            <div class="detail-card">
-              <h3>Beschreibung</h3>
-              <p style="line-height:1.6; color:var(--text-muted);">${ev.desc}</p>
+            
+            <div class="content-box">
+              <h3>Über das Event</h3>
+              <p>${ev.desc}</p>
             </div>
-            <div class="detail-card">
-              <h3>Distanzen & Kategorien</h3>
-              <ul class="info-list">
-                ${ev.distances.map(d => `<li><strong>• ${d}</strong></li>`).join('')}
-              </ul>
+
+            <div class="content-box">
+              <h3>Distanzen & Wettkämpfe</h3>
+              <div class="distance-list">
+                ${ev.distances.map(d => `
+                  <div class="distance-item">
+                    <span class="name">${d.name}</span>
+                    <span class="details">${d.spec}</span>
+                  </div>
+                `).join('')}
+              </div>
             </div>
-            <div class="detail-card">
+
+            <div class="content-box">
               <h3>Ablauf & Zeitplan</h3>
-              <p style="color:var(--text-muted);">${ev.schedule || 'Zeitplan wird in Kürze bekanntgegeben.'}</p>
+              <p>${ev.schedule || 'Detaillierter Zeitplan folgt in Kürze.'}</p>
             </div>
+
           </div>
 
           <div class="detail-sidebar">
-            <div class="detail-card">
-              <h3>Event-Infos</h3>
-              <ul class="info-list">
-                <li><strong>Datum:</strong><br>${formattedDate}</li>
-                <li><strong>Startzeit:</strong><br>${ev.time || 'TBA'}</li>
-                <li><strong>Ort:</strong><br>${ev.location}</li>
-                <li><strong>Veranstalter:</strong><br>${ev.organizer || 'k. A.'}</li>
-              </ul>
-              ${ev.link && ev.link !== '#' ? `<a href="${ev.link}" target="_blank" class="btn btn-primary" style="display:block; text-align:center; margin-top:1.5rem;">Anmeldung & Website</a>` : ''}
-              <a href="https://maps.google.com/?q=${encodeURIComponent(ev.location)}" target="_blank" class="btn btn-outline" style="display:block; text-align:center; margin-top:0.5rem;">Auf Google Maps anzeigen</a>
+            
+            <div class="content-box">
+              <h3>Event Details</h3>
+              <div class="info-group">
+                <div class="info-pair">
+                  <label>Datum</label>
+                  <span>${formattedDate}</span>
+                </div>
+                <div class="info-pair">
+                  <label>Startzeit</label>
+                  <span>${ev.time || 'TBA'}</span>
+                </div>
+                <div class="info-pair">
+                  <label>Austragungsort</label>
+                  <span>${ev.venue || ev.location}</span>
+                </div>
+                <div class="info-pair">
+                  <label>Veranstalter</label>
+                  <span>${ev.organizer || 'k. A.'}</span>
+                </div>
+              </div>
+
+              <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 0.8rem;">
+                ${ev.link && ev.link !== '#' ? `<a href="${ev.link}" target="_blank" class="btn btn-primary" style="width:100%;">Offizielle Anmeldeseite</a>` : ''}
+                <a href="https://maps.google.com/?q=${encodeURIComponent(ev.location)}" target="_blank" class="btn btn-outline" style="width:100%;">Google Maps Route</a>
+              </div>
             </div>
+
           </div>
+
         </div>
       `;
 
