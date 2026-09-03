@@ -88,7 +88,7 @@
       min-width: 180px;
     }
 
-    /* EVENT LIST VIEW (TRI-NORTHWEST STYLE) */
+    /* EVENT LIST VIEW */
     .event-list {
       display: flex;
       flex-direction: column;
@@ -101,7 +101,7 @@
       border-radius: 12px;
       padding: 1.25rem 1.5rem;
       display: grid;
-      grid-template-columns: 100px 1fr auto;
+      grid-template-columns: 120px 1fr auto;
       align-items: center;
       gap: 1.5rem;
       transition: background 0.2s, border-color 0.2s;
@@ -112,17 +112,34 @@
       border-color: #3f3f46;
     }
 
-    /* DATUMS-BOX */
+    /* DATUMS-BOX MIT COUNTDOWN */
     .date-box {
       background: var(--tag-bg);
       border-radius: 8px;
       padding: 0.5rem;
       text-align: center;
       border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .date-box .day { font-size: 1.4rem; font-weight: bold; color: var(--accent); display: block; }
     .date-box .month { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+    
+    /* Countdown Badge */
+    .date-box .countdown {
+      margin-top: 0.4rem;
+      padding-top: 0.4rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .date-box .countdown.past {
+      color: var(--text-muted);
+    }
 
     /* DETAILS */
     .event-info h3 { margin: 0 0 0.3rem 0; font-size: 1.25rem; }
@@ -176,6 +193,7 @@
   </header>
 
   <div class="container">
+    <!-- TABS -->
     <div class="tabs">
       <button class="tab-btn active" onclick="filterCategory('all', this)">Alle Events</button>
       <button class="tab-btn" onclick="filterCategory('Triathlon', this)">Triathlon</button>
@@ -183,6 +201,7 @@
       <button class="tab-btn" onclick="filterCategory('Rennrad', this)">Rennrad</button>
     </div>
 
+    <!-- FILTER BAR -->
     <div class="filter-bar">
       <input type="text" id="searchInput" placeholder="Nach Event oder Ort suchen..." oninput="applyFilters()">
       <select id="countryFilter" onchange="applyFilters()">
@@ -193,9 +212,11 @@
       </select>
     </div>
 
+    <!-- EVENT LIST -->
     <div class="event-list" id="eventList"></div>
   </div>
 
+  <!-- DETAILS MODAL -->
   <div id="detailModal" class="modal-overlay" onclick="if(event.target === this) closeModal()">
     <div class="modal">
       <button class="close-btn" onclick="closeModal()">&times;</button>
@@ -215,6 +236,33 @@
 
     let activeCategory = 'all';
 
+    // Hilfsfunktion: Berechnet verbleibende Wochen und Tage
+    function getCountdownText(eventDateStr) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const eventDate = new Date(eventDateStr);
+      eventDate.setHours(0, 0, 0, 0);
+
+      const diffTime = eventDate - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        return { text: 'Vorüber', isPast: true };
+      } else if (diffDays === 0) {
+        return { text: 'Heute!', isPast: false };
+      }
+
+      const weeks = Math.floor(diffDays / 7);
+      const days = diffDays % 7;
+
+      let parts = [];
+      if (weeks > 0) parts.push(`${weeks} Wo.`);
+      if (days > 0 || weeks === 0) parts.push(`${days} Tg.`);
+
+      return { text: `In ${parts.join(' ')}`, isPast: false };
+    }
+
     function renderList(data) {
       const list = document.getElementById('eventList');
       list.innerHTML = '';
@@ -230,6 +278,9 @@
         const d = new Date(event.date);
         const day = d.getDate().toString().padStart(2, '0');
         const month = d.toLocaleString('de-DE', { month: 'short' }).toUpperCase();
+        
+        // Countdown ermitteln
+        const countdown = getCountdownText(event.date);
 
         const card = document.createElement('div');
         card.className = 'event-card';
@@ -237,6 +288,7 @@
           <div class="date-box">
             <span class="day">${day}</span>
             <span class="month">${month} ${d.getFullYear()}</span>
+            <span class="countdown ${countdown.isPast ? 'past' : ''}">${countdown.text}</span>
           </div>
           <div class="event-info">
             <h3>${event.title}</h3>
@@ -280,10 +332,12 @@
       const ev = events.find(e => e.id === id);
       if(!ev) return;
 
+      const countdown = getCountdownText(ev.date);
+
       document.getElementById('modalContent').innerHTML = `
         <span class="tag">${ev.category}</span>
         <h2 style="margin: 0.5rem 0;">${ev.title}</h2>
-        <p style="color:var(--text-muted)">📍 ${ev.location} | 📅 ${ev.date}</p>
+        <p style="color:var(--text-muted)">📍 ${ev.location} | 📅 ${ev.date} (${countdown.text})</p>
         <p>${ev.desc}</p>
         <h4>Distanzen:</h4>
         <p>${ev.distances.join(', ')}</p>
