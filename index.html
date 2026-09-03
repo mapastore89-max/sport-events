@@ -146,4 +146,158 @@
 
     .btn-primary { background: var(--accent); color: #000; }
     .btn-primary:hover { background: var(--accent-hover); color: #fff; }
-    .btn-outline
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { background: var(--tag-bg); }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;
+    }
+
+    .modal {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+      max-width: 600px; width: 100%; padding: 2rem; position: relative;
+    }
+
+    .close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+
+    @media (max-width: 768px) {
+      .event-card { grid-template-columns: 1fr; gap: 1rem; }
+      .actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Rennkalender 2026</h1>
+    <p class="sub">Finde deine nächsten Events & Wettkämpfe</p>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="filterCategory('all', this)">Alle Events</button>
+      <button class="tab-btn" onclick="filterCategory('Triathlon', this)">Triathlon</button>
+      <button class="tab-btn" onclick="filterCategory('Laufen', this)">Laufen</button>
+      <button class="tab-btn" onclick="filterCategory('Rennrad', this)">Rennrad</button>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Nach Event oder Ort suchen..." oninput="applyFilters()">
+      <select id="countryFilter" onchange="applyFilters()">
+        <option value="all">Alle Länder</option>
+        <option value="CH">Schweiz 🇨🇭</option>
+        <option value="DE">Deutschland 🇩🇪</option>
+        <option value="AT">Österreich 🇦🇹</option>
+      </select>
+    </div>
+
+    <div class="event-list" id="eventList"></div>
+  </div>
+
+  <div id="detailModal" class="modal-overlay" onclick="if(event.target === this) closeModal()">
+    <div class="modal">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const events = [
+      { id: 1, title: 'Spiezathlon', category: 'Triathlon', date: '2026-06-20', location: 'Spiez, Schweiz', country: 'CH', distances: ['Olympic', 'Sprint'], desc: 'Der legendäre Triathlon am Thunersee.', link: 'https://spiezathlon.ch' },
+      { id: 2, title: 'Zürich Triathlon', category: 'Triathlon', date: '2026-06-27', location: 'Zürich, Schweiz', country: 'CH', distances: ['5150', 'Sprint'], desc: 'Wettkampf mit Kulisse rund um den Zürichsee.', link: '#' },
+      { id: 3, title: 'Challenge Roth', category: 'Triathlon', date: '2026-07-05', location: 'Roth, Deutschland', country: 'DE', distances: ['Langdistanz'], desc: 'Das größte Langdistanz-Rennen der Welt.', link: 'https://www.challenge-roth.com' },
+      { id: 4, title: 'City Night Run', category: 'Laufen', date: '2026-05-15', location: 'Frankfurt, Deutschland', country: 'DE', distances: ['5 km', '10 km'], desc: 'Abendlauf durch die Innenstadt.', link: '#' },
+      { id: 5, title: 'Berlin Marathon', category: 'Laufen', date: '2026-09-20', location: 'Berlin, Deutschland', country: 'DE', distances: ['42.2 km'], desc: 'Einer der schnellsten Marathons weltweit.', link: '#' },
+      { id: 6, title: 'Velothon Challenge', category: 'Rennrad', date: '2026-06-22', location: 'Hamburg, Deutschland', country: 'DE', distances: ['60 km', '100 km'], desc: 'Jedermann-Rennen auf gesperrten Straßen.', link: '#' }
+    ];
+
+    let activeCategory = 'all';
+
+    function renderList(data) {
+      const list = document.getElementById('eventList');
+      list.innerHTML = '';
+
+      if (data.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding: 2rem;">Keine passenden Events gefunden.</p>';
+        return;
+      }
+
+      data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      data.forEach(event => {
+        const d = new Date(event.date);
+        const day = d.getDate().toString().padStart(2, '0');
+        const month = d.toLocaleString('de-DE', { month: 'short' }).toUpperCase();
+
+        const card = document.createElement('div');
+        card.className = 'event-card';
+        card.innerHTML = `
+          <div class="date-box">
+            <span class="day">${day}</span>
+            <span class="month">${month} ${d.getFullYear()}</span>
+          </div>
+          <div class="event-info">
+            <h3>${event.title}</h3>
+            <div class="event-meta">📍 ${event.location}</div>
+            <div class="tags">
+              <span class="tag">${event.category}</span>
+              ${event.distances.map(dist => `<span class="tag" style="background:var(--tag-bg); color:var(--text-muted);">${dist}</span>`).join('')}
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-outline" onclick="openDetails(${event.id})">Details</button>
+            ${event.link && event.link !== '#' ? `<a href="${event.link}" target="_blank" class="btn btn-primary">Website</a>` : ''}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function filterCategory(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const country = document.getElementById('countryFilter').value;
+
+      const filtered = events.filter(e => {
+        const matchCat = activeCategory === 'all' || e.category === activeCategory;
+        const matchSearch = e.title.toLowerCase().includes(search) || e.location.toLowerCase().includes(search);
+        const matchCountry = country === 'all' || e.country === country;
+        return matchCat && matchSearch && matchCountry;
+      });
+
+      renderList(filtered);
+    }
+
+    function openDetails(id) {
+      const ev = events.find(e => e.id === id);
+      if(!ev) return;
+
+      document.getElementById('modalContent').innerHTML = `
+        <span class="tag">${ev.category}</span>
+        <h2 style="margin: 0.5rem 0;">${ev.title}</h2>
+        <p style="color:var(--text-muted)">📍 ${ev.location} | 📅 ${ev.date}</p>
+        <p>${ev.desc}</p>
+        <h4>Distanzen:</h4>
+        <p>${ev.distances.join(', ')}</p>
+        ${ev.link && ev.link !== '#' ? `<a href="${ev.link}" target="_blank" class="btn btn-primary" style="display:inline-block; margin-top:1rem;">Zur Anmeldung / Website</a>` : ''}
+      `;
+      document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('detailModal').style.display = 'none';
+    }
+
+    // Initial render
+    applyFilters();
+  </script>
+</body>
+</html>
