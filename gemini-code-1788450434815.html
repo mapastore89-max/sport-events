@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sport-Events Übersicht</title>
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Karten-Container */
+    #map {
+      height: 350px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto 2rem auto;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      z-index: 1;
+    }
+
+    /* Filter & Suche */
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+    }
+
+    input, select {
+      background: var(--card-bg);
+      border: 1px solid #334155;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    /* Event-Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .badge {
+      align-self: flex-start;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .card h3 { margin: 0.5rem 0; }
+    .card .meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+
+    .btn {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Sportveranstaltungen 2026</h1>
+    <p style="color: var(--text-muted)">Entdecke Events in deiner Nähe</p>
+  </header>
+
+  <div id="map"></div>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Event suchen..." onkeyup="filterEvents()">
+    <select id="categoryFilter" onchange="filterEvents()">
+      <option value="all">Alle Sportarten</option>
+      <option value="Laufen">Laufen</option>
+      <option value="Radsport">Radsport</option>
+      <option value="Fußball">Fußball</option>
+    </select>
+  </div>
+
+  <div class="grid" id="eventGrid"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // 1. Beispiel-Daten mit Koordinaten (Breitengrad, Längengrad)
+    const events = [
+      { id: 1, title: 'Stadt-Marathon', category: 'Laufen', date: '15. Mai 2026', location: 'Berlin', lat: 52.5200, lng: 13.4050 },
+      { id: 2, title: 'Velothon Challenge', category: 'Radsport', date: '22. Juni 2026', location: 'Hamburg', lat: 53.5511, lng: 9.9937 },
+      { id: 3, title: 'Sommer-Cup Final', category: 'Fußball', date: '10. Juli 2026', location: 'München', lat: 48.1351, lng: 11.5820 }
+    ];
+
+    let map;
+    let markers = [];
+
+    // 2. Karte initialisieren
+    function initMap() {
+      // Zentriert auf Deutschland
+      map = L.map('map').setView([51.1657, 10.4515], 6);
+
+      // OpenStreetMap Tiles (Kartenbilder) laden
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap-Mitwirkende'
+      }).addTo(map);
+
+      renderEvents(events);
+    }
+
+    // 3. Events im Grid und auf der Karte anzeigen
+    function renderEvents(eventList) {
+      const grid = document.getElementById('eventGrid');
+      grid.innerHTML = '';
+
+      // Alte Marker von der Karte entfernen
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      eventList.forEach(event => {
+        // Card HTML erstellen
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div>
+            <span class="badge">${event.category}</span>
+            <h3>${event.title}</h3>
+            <p class="meta">📅 ${event.date} | 📍 ${event.location}</p>
+          </div>
+          <a href="#" class="btn" onclick="zoomToEvent(${event.lat}, ${event.lng})">Auf Karte zeigen</a>
+        `;
+        grid.appendChild(card);
+
+        // Marker zur Karte hinzufügen
+        const marker = L.marker([event.lat, event.lng])
+          .addTo(map)
+          .bindPopup(`<b>${event.title}</b><br>${event.category}<br>${event.date}`);
+        
+        markers.push(marker);
+      });
+    }
+
+    // 4. Klick auf "Auf Karte zeigen" zentriert die Karte
+    function zoomToEvent(lat, lng) {
+      map.setView([lat, lng], 12);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 5. Filter-Funktion
+    function filterEvents() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const category = document.getElementById('categoryFilter').value;
+
+      const filtered = events.filter(e => {
+        const matchesSearch = e.title.toLowerCase().includes(search) || e.location.toLowerCase().includes(search);
+        const matchesCategory = category === 'all' || e.category === category;
+        return matchesSearch && matchesCategory;
+      });
+
+      renderEvents(filtered);
+    }
+
+    // Initialisierung starten
+    window.onload = initMap;
+  </script>
+
+</body>
+</html>
