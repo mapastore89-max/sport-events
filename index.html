@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swiss Triathlon Rennkalender 2026</title>
+  <title>Swiss Triathlon & Datasport Rennkalender 2026</title>
   
   <style>
     :root {
@@ -21,6 +21,10 @@
       --swim-color: #3b82f6;
       --bike-color: #22c55e;
       --run-color: #ef4444;
+
+      /* Quellen Farben */
+      --swisstri-color: #dc2626;
+      --datasport-color: #0284c7;
     }
 
     * { box-sizing: border-box; }
@@ -71,7 +75,7 @@
     .filter-bar { display: flex; gap: 0.6rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
     input, select {
       background: var(--card-bg); border: 1px solid var(--border); color: var(--text);
-      padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px;
+      padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 140px;
     }
 
     /* MONATS-GRUPPEN */
@@ -104,6 +108,10 @@
     .event-meta { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.35rem; }
     .tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
     .tag { background: var(--tag-bg); color: var(--accent-gray); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; border: 1px solid var(--border); }
+    
+    .source-badge { font-size: 0.68rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; }
+    .source-swisstriathlon { background: rgba(220, 38, 38, 0.15); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.3); }
+    .source-datasport { background: rgba(2, 132, 199, 0.15); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.3); }
 
     .btn { padding: 0.45rem 0.85rem; border-radius: 5px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-block; text-align: center; }
     .btn-primary { background: var(--accent-gray); color: #09090b; }
@@ -115,7 +123,6 @@
     #detailView { display: none; }
     .back-nav { margin-bottom: 1rem; }
 
-    /* Hero Header */
     .event-hero {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -128,11 +135,9 @@
     .hero-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; color: var(--text-muted); font-size: 0.85rem; align-items: center; }
     .hero-meta-item { display: flex; align-items: center; gap: 0.4rem; }
 
-    /* Layout 2-Spaltig */
     .detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; }
     .detail-main, .detail-sidebar { display: flex; flex-direction: column; gap: 1rem; }
 
-    /* Content Cards */
     .content-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -149,7 +154,6 @@
     }
     .content-box p { line-height: 1.5; color: var(--text-muted); margin: 0 0 0.75rem 0; font-size: 0.85rem; }
 
-    /* DISTANZEN DARSTELLUNG */
     .race-category-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -194,7 +198,7 @@
     .discipline-subcard.run .discipline-label { color: var(--run-color); }
     .discipline-subcard.run .discipline-icon-box svg { stroke: var(--run-color); }
 
-    /* RECHNER CSS STYLES */
+    /* RECHNER STYLES */
     .calculator-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -230,7 +234,6 @@
     .calc-total-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
     .calc-total-time { font-size: 1.3rem; font-weight: 800; color: var(--accent-gray); letter-spacing: 0.5px; }
 
-    /* Sidebar Table / Info Pairs */
     .info-group { display: flex; flex-direction: column; gap: 0.75rem; }
     .info-pair { display: flex; flex-direction: column; gap: 0.1rem; }
     .info-pair label { font-size: 0.68rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
@@ -253,13 +256,13 @@
     <!-- ÜBERSICHTS-SEITE -->
     <div id="listView">
       <header>
-        <h1>Swiss Triathlon Calendar 2026</h1>
-        <p class="sub">Live-Events aus der Schweiz & Umgebung</p>
+        <h1>Swiss Triathlon & Datasport Kalender 2026</h1>
+        <p class="sub">Kombinierte Live-Events aus zwei Schweizer Quellen</p>
       </header>
 
       <div class="status-bar">
         <span class="status-dot loading" id="statusDot"></span>
-        <span id="statusText">Lade Live-Daten von Swiss Triathlon...</span>
+        <span id="statusText">Lade Live-Daten aus zwei Quellen...</span>
       </div>
 
       <div class="tabs">
@@ -271,6 +274,11 @@
 
       <div class="filter-bar">
         <input type="text" id="searchInput" placeholder="Nach Event oder Ort suchen..." oninput="applyFilters()">
+        <select id="sourceFilter" onchange="applyFilters()">
+          <option value="all">Alle Quellen</option>
+          <option value="swisstriathlon">Swiss Triathlon</option>
+          <option value="datasport">Datasport</option>
+        </select>
         <select id="countryFilter" onchange="applyFilters()">
           <option value="all">Alle Länder</option>
           <option value="CH">Schweiz 🇨🇭</option>
@@ -293,15 +301,16 @@
   </div>
 
   <script>
-    // Globale Datenstruktur
     let events = [];
     let activeCategory = 'all';
     let currentEventDistances = [];
 
-    // Fallback Daten (falls die externe API nicht antwortet oder blockiert wird)
+    // Fallback Daten für beide Quellen
     const fallbackEvents = [
       {
-        id: 101,
+        id: 'st-101',
+        source: 'swisstriathlon',
+        sourceName: 'Swiss Triathlon',
         title: 'Spiezathlon 2026',
         category: 'Triathlon',
         date: '2026-06-20',
@@ -319,7 +328,29 @@
         link: 'https://swisstriathlon.ch'
       },
       {
-        id: 102,
+        id: 'ds-201',
+        source: 'datasport',
+        sourceName: 'Datasport',
+        title: 'Greifensee Triathlon 2026',
+        category: 'Triathlon',
+        date: '2026-05-30',
+        time: '08:30 Uhr',
+        location: 'Uster, Schweiz',
+        venue: 'Strandbad Uster',
+        country: 'CH',
+        organizer: 'Datasport Event Services',
+        distances: [
+          { name: 'Olympische Distanz', swimMeters: 1500, bikeKm: 40, runKm: 10 },
+          { name: 'Sprint Distanz', swimMeters: 750, bikeKm: 20, runKm: 5 }
+        ],
+        desc: 'Traditionsreicher Wettkampf am Greifensee mit schneller Streckenführung und professioneller Zeitmessung durch Datasport.',
+        schedule: '07:30 Startnummernausgabe | 08:30 Welle 1',
+        link: 'https://www.datasport.ch'
+      },
+      {
+        id: 'st-102',
+        source: 'swisstriathlon',
+        sourceName: 'Swiss Triathlon',
         title: 'IRONMAN 70.3 Switzerland',
         category: 'Triathlon',
         date: '2026-06-07',
@@ -336,77 +367,111 @@
         link: 'https://swisstriathlon.ch'
       },
       {
-        id: 103,
-        title: 'Zürich Triathlon',
+        id: 'ds-202',
+        source: 'datasport',
+        sourceName: 'Datasport',
+        title: 'Sempachersee Triathlon',
         category: 'Triathlon',
-        date: '2026-06-27',
-        time: '07:30 Uhr',
-        location: 'Zürich, Schweiz',
-        venue: 'Landiwiese Zürich',
+        date: '2026-07-11',
+        time: '09:00 Uhr',
+        location: 'Nottwil, Schweiz',
+        venue: 'SPZ Nottwil',
         country: 'CH',
-        organizer: 'IRONMAN Switzerland AG',
+        organizer: 'Tri Club Sursee / Datasport',
         distances: [
-          { name: '5150 Standard', swimMeters: 1500, bikeKm: 40, runKm: 10 },
-          { name: '4184 Sprint', swimMeters: 400, bikeKm: 18, runKm: 4.2 }
+          { name: 'Circuit Distanz', swimMeters: 500, bikeKm: 20, runKm: 5 }
         ],
-        desc: 'Schneller, flacher Kurs direkt an der Uferpromenade des Zürichsees. Ideal für neue Bestzeiten.',
-        schedule: '07:30 Uhr Erster Start',
-        link: 'https://swisstriathlon.ch'
+        desc: 'Sehr beliebter Sprint-Triathlon rund um die Anlagen des Paraplegiker-Zentrums Nottwil.',
+        schedule: '08:00 Startnummernausgabe | 09:00 Start',
+        link: 'https://www.datasport.ch'
       }
     ];
 
-    /* SVG OUTLINE ICONS */
     const calendarIconSVG = `<svg class="calendar-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>`;
     const swimIconSVG = `<svg viewBox="0 0 24 24"><path d="M2 12c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1M2 17c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1"/></svg>`;
     const bikeIconSVG = `<svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2m-5 0h3l-3 6.5H6.5L10 6h2m3 11.5L12 9l-2.5 3.5"/></svg>`;
     const runIconSVG = `<svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.6-1.7-1.5-1.9L15 10l-3-4H8L5 9v3h3l2.5 3H19zM2 17h15v2H2z"/></svg>`;
 
-    /* API-IMPORT OPTION A: Live-Daten abrufen */
-    async function loadSwissTriathlonEvents() {
+    /* MULTI-SOURCE FETCH: Parallel von Swiss Triathlon & Datasport laden */
+    async function fetchAllEvents() {
       const statusDot = document.getElementById('statusDot');
       const statusText = document.getElementById('statusText');
 
-      try {
-        // Offizielle Swiss Triathlon API
-        const response = await fetch('https://api.swisstriathlon.ch/v1/events?year=2026');
-        
-        if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
-        
-        const rawData = await response.json();
-        
-        // Mappen der API-Struktur in unser Datenmodell
-        events = rawData.map((item, index) => ({
-          id: item.id || index + 1,
-          title: item.title || item.name || 'Unbenanntes Event',
+      const fetchSwissTri = fetch('https://api.swisstriathlon.ch/v1/events?year=2026')
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => data.map((item, idx) => ({
+          id: `st-${item.id || idx}`,
+          source: 'swisstriathlon',
+          sourceName: 'Swiss Triathlon',
+          title: item.title || item.name,
           category: item.category || 'Triathlon',
           date: item.startDate || item.date || '2026-06-01',
           time: item.startTime || 'TBA',
-          location: item.city ? `${item.city}, Schweiz` : (item.location || 'Schweiz'),
+          location: item.city ? `${item.city}, Schweiz` : 'Schweiz',
           venue: item.venue || item.city || 'Schweiz',
           country: item.countryCode || 'CH',
           organizer: item.organizer || 'Swiss Triathlon Associated',
-          distances: (item.races && item.races.length > 0) ? item.races.map(r => ({
-            name: r.name || 'Wettkampf',
-            swimMeters: r.swimMeters || 1500,
-            bikeKm: r.bikeKm || 40,
-            runKm: r.runKm || 10
-          })) : [
-            { name: 'Standard Distanz', swimMeters: 1500, bikeKm: 40, runKm: 10 }
-          ],
-          desc: item.description || 'Offizielles Event im Kalender von Swiss Triathlon.',
-          schedule: item.schedule || 'Informationen zum Zeitplan folgen direkt über den Veranstalter.',
-          link: item.website || item.link || 'https://swisstriathlon.ch'
-        }));
+          distances: (item.races && item.races.length) ? item.races.map(r => ({
+            name: r.name || 'Wettkampf', swimMeters: r.swimMeters || 1500, bikeKm: r.bikeKm || 40, runKm: r.runKm || 10
+          })) : [{ name: 'Standard', swimMeters: 1500, bikeKm: 40, runKm: 10 }],
+          desc: item.description || 'Offizielles Event von Swiss Triathlon.',
+          schedule: item.schedule || 'Informationen folgen über den Veranstalter.',
+          link: item.website || 'https://swisstriathlon.ch'
+        })));
+
+      const fetchDatasport = fetch('https://api.datasport.com/v1/events?year=2026&sport=triathlon')
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => data.map((item, idx) => ({
+          id: `ds-${item.id || idx}`,
+          source: 'datasport',
+          sourceName: 'Datasport',
+          title: item.eventName || item.title,
+          category: item.sportType || 'Triathlon',
+          date: item.eventDate || '2026-06-01',
+          time: item.startTime || 'TBA',
+          location: item.location || 'Schweiz',
+          venue: item.venue || item.location,
+          country: item.country || 'CH',
+          organizer: item.organizer || 'Datasport Partner',
+          distances: item.categories ? item.categories.map(c => ({
+            name: c.name, swimMeters: c.swim || 750, bikeKm: c.bike || 20, runKm: c.run || 5
+          })) : [{ name: 'Standard', swimMeters: 750, bikeKm: 20, runKm: 5 }],
+          desc: item.infoText || 'Datasport Wettkampf mit offizieller Zeitmessung.',
+          schedule: 'Details direkt auf der Datasport Plattform.',
+          link: item.link || 'https://www.datasport.ch'
+        })));
+
+      const results = await Promise.allSettled([fetchSwissTri, fetchDatasport]);
+
+      let loadedEvents = [];
+      let loadedSources = [];
+
+      if (results[0].status === 'fulfilled') {
+        loadedEvents.push(...results[0].value);
+        loadedSources.push('Swiss Triathlon');
+      }
+      if (results[1].status === 'fulfilled') {
+        loadedEvents.push(...results[1].value);
+        loadedSources.push('Datasport');
+      }
+
+      if (loadedEvents.length > 0) {
+        // Entduplizierung basierend auf Titel & Datum
+        const seen = new Set();
+        events = loadedEvents.filter(e => {
+          const key = `${e.title.toLowerCase().trim()}_${e.date}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
 
         statusDot.className = 'status-dot';
-        statusText.innerText = `Live-Daten von Swiss Triathlon geladen (${events.length} Events)`;
-
-      } catch (err) {
-        console.warn('API-Abruf fehlgeschlagen oder blockiert. Verwende Fallback-Daten:', err);
+        statusText.innerText = `Geladen von: ${loadedSources.join(' & ')} (${events.length} Events)`;
+      } else {
+        console.warn('Beide APIs nicht erreichbar. Aktiviere Fallback-Daten.');
         events = fallbackEvents;
-        
         statusDot.className = 'status-dot error';
-        statusText.innerText = 'Fallback-Daten geladen (Swiss Triathlon API im Offline-Modus)';
+        statusText.innerText = 'Fallback-Modus: Daten von Swiss Triathlon & Datasport (Offline)';
       }
 
       applyFilters();
@@ -486,12 +551,13 @@
               <h3>${event.title}</h3>
               <div class="event-meta">📍 ${event.location}</div>
               <div class="tags">
+                <span class="source-badge source-${event.source}">${event.sourceName}</span>
                 <span class="tag">${event.category}</span>
                 ${event.distances.map(dist => `<span class="tag" style="background:var(--tag-bg); color:var(--text-muted);">${dist.name}</span>`).join('')}
               </div>
             </div>
             <div>
-              <button class="btn btn-primary" onclick="event.stopPropagation(); openDetailPage(${event.id})">Details</button>
+              <button class="btn btn-primary" onclick="event.stopPropagation(); openDetailPage('${event.id}')">Details</button>
             </div>
           `;
           eventsContainer.appendChild(card);
@@ -503,14 +569,10 @@
       });
     }
 
-    /* RECHNER-LOGIK UND HELPER-FUNKTIONEN */
     function parseTimeString(str) {
       if (!str) return 0;
       const parts = str.split(':').map(Number);
-      if (parts.length === 2) {
-        return (parts[0] * 60) + (parts[1] || 0);
-      }
-      return Number(str) || 0;
+      return parts.length === 2 ? (parts[0] * 60) + (parts[1] || 0) : (Number(str) || 0);
     }
 
     function formatSecondsToHMS(totalSeconds) {
@@ -540,39 +602,32 @@
     }
 
     function calculateTotalTime() {
-      // 1. Schwimmen
       const swimDist = parseFloat(document.getElementById('calcSwimDist')?.value) || 0;
       const swimPaceSec = parseTimeString(document.getElementById('calcSwimPace')?.value);
       const swimTotalSec = (swimDist / 100) * swimPaceSec;
 
-      // 2. Wechsel 1
       const t1Sec = parseTimeString(document.getElementById('calcT1')?.value);
 
-      // 3. Radfahren
       const bikeDist = parseFloat(document.getElementById('calcBikeDist')?.value) || 0;
       const bikeSpeed = parseFloat(document.getElementById('calcBikeSpeed')?.value) || 0;
       const bikeTotalSec = bikeSpeed > 0 ? (bikeDist / bikeSpeed) * 3600 : 0;
 
-      // 4. Wechsel 2
       const t2Sec = parseTimeString(document.getElementById('calcT2')?.value);
 
-      // 5. Laufen
       const runDist = parseFloat(document.getElementById('calcRunDist')?.value) || 0;
       const runPaceSec = parseTimeString(document.getElementById('calcRunPace')?.value);
       const runTotalSec = runDist * runPaceSec;
 
-      // Zwischenzeiten Aktualisieren
       if (document.getElementById('swimSubtotal')) document.getElementById('swimSubtotal').innerText = formatSecondsToHMS(swimTotalSec);
       if (document.getElementById('bikeSubtotal')) document.getElementById('bikeSubtotal').innerText = formatSecondsToHMS(bikeTotalSec);
       if (document.getElementById('runSubtotal')) document.getElementById('runSubtotal').innerText = formatSecondsToHMS(runTotalSec);
 
-      // Gesamtzustand Berechnen
       const grandTotalSec = swimTotalSec + t1Sec + bikeTotalSec + t2Sec + runTotalSec;
       if (document.getElementById('grandTotalDisplay')) document.getElementById('grandTotalDisplay').innerText = formatSecondsToHMS(grandTotalSec);
     }
 
     function openDetailPage(id) {
-      const ev = events.find(e => e.id == id);
+      const ev = events.find(e => e.id === id);
       if (!ev) return;
 
       currentEventDistances = ev.distances;
@@ -580,9 +635,11 @@
       const countdown = getCountdownText(ev.date);
 
       document.getElementById('detailContent').innerHTML = `
-        <!-- HERO BLOCK -->
         <div class="event-hero">
-          <div class="breadcrumbs">Swiss Triathlon / ${ev.category}</div>
+          <div class="breadcrumbs">
+            <span class="source-badge source-${ev.source}" style="margin-right: 0.5rem;">${ev.sourceName}</span>
+            ${ev.category}
+          </div>
           <h1>${ev.title}</h1>
           <div class="hero-meta">
             <div class="hero-meta-item">📅 <span>${formattedDate}</span></div>
@@ -591,24 +648,18 @@
           </div>
         </div>
 
-        <!-- 2-COLUMN CONTENT GRID -->
         <div class="detail-grid">
-          
-          <!-- MAIN CONTENT (LINKS) -->
           <div class="detail-main">
-            
             <div class="content-box">
               <h3>Über das Event</h3>
               <p>${ev.desc}</p>
             </div>
 
-            <!-- DISTANZEN BLÖCKE -->
             <div>
               ${ev.distances.map(d => `
                 <div class="race-category-card">
                   <div class="race-title">${d.name}</div>
                   <div class="discipline-grid">
-                    
                     ${d.swimMeters ? `
                     <div class="discipline-subcard swim">
                       <div class="discipline-icon-box">${swimIconSVG}</div>
@@ -635,16 +686,13 @@
                         <span class="discipline-value">${d.runKm} km</span>
                       </div>
                     </div>` : ''}
-
                   </div>
                 </div>
               `).join('')}
             </div>
 
-            <!-- ZEITRECHNER BLOCK -->
             <div class="calculator-card">
               <h3>Zeitrechner</h3>
-              
               ${ev.distances.length > 1 ? `
                 <div class="calc-tabs">
                   ${ev.distances.map((d, idx) => `
@@ -654,13 +702,8 @@
               ` : ''}
 
               <div class="calc-grid">
-                
-                <!-- SCHWIMMEN -->
                 <div class="calc-row">
-                  <div class="calc-row-title" style="color: var(--swim-color);">
-                    <span class="discipline-icon-box" style="width:22px; height:22px;"><svg viewBox="0 0 24 24" style="stroke:var(--swim-color); width:14px; height:14px; fill:none; stroke-width:2;"><path d="M2 12c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1M2 17c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1"/></svg></span>
-                    Schwimmen
-                  </div>
+                  <div class="calc-row-title" style="color: var(--swim-color);">Schwimmen</div>
                   <div class="calc-field">
                     <label>Distanz (m)</label>
                     <input type="number" id="calcSwimDist" value="${ev.distances[0]?.swimMeters || 1500}" oninput="calculateTotalTime()">
@@ -672,7 +715,6 @@
                   <div class="calc-subtotal" id="swimSubtotal">00:00</div>
                 </div>
 
-                <!-- WECHSEL 1 -->
                 <div class="calc-row" style="background: rgba(255,255,255,0.01);">
                   <div class="calc-row-title" style="color: var(--text-muted); font-size: 0.78rem;">⚡ T1 (Wechsel)</div>
                   <div class="calc-field" style="grid-column: span 2;">
@@ -682,12 +724,8 @@
                   <div class="calc-subtotal"></div>
                 </div>
 
-                <!-- RADFAHREN -->
                 <div class="calc-row">
-                  <div class="calc-row-title" style="color: var(--bike-color);">
-                    <span class="discipline-icon-box" style="width:22px; height:22px;"><svg viewBox="0 0 24 24" style="stroke:var(--bike-color); width:14px; height:14px; fill:none; stroke-width:2;"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2m-5 0h3l-3 6.5H6.5L10 6h2m3 11.5L12 9l-2.5 3.5"/></svg></span>
-                    Radfahren
-                  </div>
+                  <div class="calc-row-title" style="color: var(--bike-color);">Radfahren</div>
                   <div class="calc-field">
                     <label>Distanz (km)</label>
                     <input type="number" id="calcBikeDist" value="${ev.distances[0]?.bikeKm || 40}" step="0.1" oninput="calculateTotalTime()">
@@ -699,7 +737,6 @@
                   <div class="calc-subtotal" id="bikeSubtotal">00:00</div>
                 </div>
 
-                <!-- WECHSEL 2 -->
                 <div class="calc-row" style="background: rgba(255,255,255,0.01);">
                   <div class="calc-row-title" style="color: var(--text-muted); font-size: 0.78rem;">⚡ T2 (Wechsel)</div>
                   <div class="calc-field" style="grid-column: span 2;">
@@ -709,12 +746,8 @@
                   <div class="calc-subtotal"></div>
                 </div>
 
-                <!-- LAUFEN -->
                 <div class="calc-row">
-                  <div class="calc-row-title" style="color: var(--run-color);">
-                    <span class="discipline-icon-box" style="width:22px; height:22px;"><svg viewBox="0 0 24 24" style="stroke:var(--run-color); width:14px; height:14px; fill:none; stroke-width:2;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.6-1.7-1.5-1.9L15 10l-3-4H8L5 9v3h3l2.5 3H19zM2 17h15v2H2z"/></svg></span>
-                    Laufen
-                  </div>
+                  <div class="calc-row-title" style="color: var(--run-color);">Laufen</div>
                   <div class="calc-field">
                     <label>Distanz (km)</label>
                     <input type="number" id="calcRunDist" value="${ev.distances[0]?.runKm || 10}" step="0.1" oninput="calculateTotalTime()">
@@ -725,30 +758,28 @@
                   </div>
                   <div class="calc-subtotal" id="runSubtotal">00:00</div>
                 </div>
-
               </div>
 
-              <!-- TOTAL DISPLAY -->
               <div class="calc-total-box">
                 <span class="calc-total-label">Geschätzte Zielzeit</span>
                 <span class="calc-total-time" id="grandTotalDisplay">00:00:00</span>
               </div>
-
             </div>
 
             <div class="content-box">
               <h3>Ablauf & Zeitplan</h3>
-              <p>${ev.schedule || 'Detaillierter Zeitplan folgt in Kürze.'}</p>
+              <p>${ev.schedule}</p>
             </div>
-
           </div>
 
-          <!-- SIDEBAR (RECHTS) -->
           <div class="detail-sidebar">
-            
             <div class="content-box">
               <h3>Event Details</h3>
               <div class="info-group">
+                <div class="info-pair">
+                  <label>Datenquelle</label>
+                  <span><strong style="color: var(--accent-gray);">${ev.sourceName}</strong></span>
+                </div>
                 <div class="info-pair">
                   <label>Datum</label>
                   <span>${formattedDate}</span>
@@ -763,18 +794,16 @@
                 </div>
                 <div class="info-pair">
                   <label>Veranstalter</label>
-                  <span>${ev.organizer || 'Swiss Triathlon'}</span>
+                  <span>${ev.organizer}</span>
                 </div>
               </div>
 
               <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                ${ev.link ? `<a href="${ev.link}" target="_blank" class="btn btn-primary" style="width:100%;">Zur Anmeldeseite</a>` : ''}
+                ${ev.link ? `<a href="${ev.link}" target="_blank" class="btn btn-primary" style="width:100%;">Zur Eventseite (${ev.sourceName})</a>` : ''}
                 <a href="https://maps.google.com/?q=${encodeURIComponent(ev.location)}" target="_blank" class="btn btn-outline" style="width:100%;">Google Maps Route</a>
               </div>
             </div>
-
           </div>
-
         </div>
       `;
 
@@ -799,20 +828,22 @@
 
     function applyFilters() {
       const search = document.getElementById('searchInput').value.toLowerCase();
+      const source = document.getElementById('sourceFilter').value;
       const country = document.getElementById('countryFilter').value;
 
       const filtered = events.filter(e => {
         const matchCat = activeCategory === 'all' || e.category.toLowerCase().includes(activeCategory.toLowerCase());
         const matchSearch = e.title.toLowerCase().includes(search) || e.location.toLowerCase().includes(search);
+        const matchSource = source === 'all' || e.source === source;
         const matchCountry = country === 'all' || e.country === country;
-        return matchCat && matchSearch && matchCountry;
+        return matchCat && matchSearch && matchSource && matchCountry;
       });
 
       renderGroupedList(filtered);
     }
 
-    // Initiales Laden ausführen
-    loadSwissTriathlonEvents();
+    // Startet das Laden aus beiden Quellen
+    fetchAllEvents();
   </script>
 </body>
 </html>
