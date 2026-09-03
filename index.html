@@ -9,11 +9,13 @@
 
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #38bdf8;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #121212;            /* Sehr dunkles Grau */
+      --card-bg: #1e1e1e;       /* Etwas helleres Dunkelgrau für Karten */
+      --card-hover: #2a2a2a;    /* Hover-Effekt */
+      --accent: #38bdf8;        /* Akzentfarbe Blau */
+      --text: #f3f4f6;          /* Heller Text */
+      --text-muted: #9ca3af;    /* Inaktiver/Nebentext */
+      --border: #2d2d2d;        /* Dezente Rahmen */
     }
 
     body {
@@ -21,37 +23,107 @@
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 2rem;
+      padding: 2rem 1rem;
+      box-sizing: border-box;
     }
 
     header {
       text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    h1 { margin-bottom: 0.5rem; font-size: 2.2rem; }
+
+    /* ==========================================
+       SEITE 1: VORAUSWAHL / CATEGORY SELECTION
+       ========================================== */
+    .selection-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .category-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .category-card:hover {
+      background: var(--card-hover);
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .category-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .category-card h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    /* ==========================================
+       SEITE 2: EVENT-VIEW (KARTE & LISTE)
+       ========================================== */
+    #eventView {
+      display: none; /* Inaktiv bis eine Kategorie geklickt wird */
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 1.5rem;
+    }
+
+    .btn-back {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn-back:hover {
+      background: var(--card-hover);
     }
 
     /* Karten-Container */
     #map {
       height: 350px;
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto 2rem auto;
       border-radius: 12px;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
       z-index: 1;
     }
 
-    /* Filter & Suche */
+    /* Suche & Filter */
     .controls {
       display: flex;
       gap: 1rem;
-      justify-content: center;
-      max-width: 600px;
-      margin: 0 auto 2rem auto;
+      margin-bottom: 2rem;
     }
 
     input, select {
       background: var(--card-bg);
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
       color: var(--text);
       padding: 0.75rem 1rem;
       border-radius: 8px;
@@ -64,15 +136,13 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1.5rem;
-      max-width: 1200px;
-      margin: 0 auto;
     }
 
     .card {
       background: var(--card-bg);
       border-radius: 12px;
       padding: 1.5rem;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -80,7 +150,7 @@
 
     .badge {
       align-self: flex-start;
-      background: rgba(56, 189, 248, 0.1);
+      background: rgba(56, 189, 248, 0.15);
       color: var(--accent);
       padding: 0.25rem 0.75rem;
       border-radius: 99px;
@@ -95,9 +165,9 @@
 
     .btn {
       background: var(--accent);
-      color: #0f172a;
+      color: #000;
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1rem;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
@@ -109,105 +179,155 @@
 <body>
 
   <header>
-    <h1>Sportveranstaltungen 2026</h1>
-    <p style="color: var(--text-muted)">Entdecke Events in deiner Nähe</p>
+    <h1 id="mainTitle">Sportveranstaltungen 2026</h1>
+    <p style="color: var(--text-muted)" id="subTitle">Wähle eine Sportart aus, um passende Events zu finden</p>
   </header>
 
-  <div id="map"></div>
-
-  <div class="controls">
-    <input type="text" id="searchInput" placeholder="Event suchen..." onkeyup="filterEvents()">
-    <select id="categoryFilter" onchange="filterEvents()">
-      <option value="all">Alle Sportarten</option>
-      <option value="Laufen">Laufen</option>
-      <option value="Radsport">Radsport</option>
-      <option value="Fußball">Fußball</option>
-    </select>
+  <div id="selectionView" class="selection-container">
+    <div class="category-card" onclick="selectCategory('Laufen')">
+      <span class="category-icon">🏃</span>
+      <h2>Laufen</h2>
+    </div>
+    <div class="category-card" onclick="selectCategory('Triathlon')">
+      <span class="category-icon">🏊🚴🏃</span>
+      <h2>Triathlon</h2>
+    </div>
+    <div class="category-card" onclick="selectCategory('Rennrad')">
+      <span class="category-icon">🚴</span>
+      <h2>Rennrad</h2>
+    </div>
   </div>
 
-  <div class="grid" id="eventGrid"></div>
+  <div id="eventView">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="showSelection()">← Zurück zur Auswahl</button>
+      <h2 id="currentCategoryTitle" style="margin: 0;"></h2>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Nach Event oder Ort suchen..." onkeyup="filterEvents()">
+    </div>
+
+    <div class="grid" id="eventGrid"></div>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    // 1. Beispiel-Daten mit Koordinaten (Breitengrad, Längengrad)
+    // 1. Spieldaten für deine Events
     const events = [
-      { id: 1, title: 'Stadt-Marathon', category: 'Laufen', date: '15. Mai 2026', location: 'Berlin', lat: 52.5200, lng: 13.4050 },
-      { id: 2, title: 'Velothon Challenge', category: 'Radsport', date: '22. Juni 2026', location: 'Hamburg', lat: 53.5511, lng: 9.9937 },
-      { id: 3, title: 'Sommer-Cup Final', category: 'Fußball', date: '10. Juli 2026', location: 'München', lat: 48.1351, lng: 11.5820 }
+      { id: 1, title: 'Berlin Marathon', category: 'Laufen', date: '20. September 2026', location: 'Berlin', lat: 52.5200, lng: 13.4050 },
+      { id: 2, title: 'City Night Run', category: 'Laufen', date: '15. Mai 2026', location: 'Frankfurt', lat: 50.1109, lng: 8.6821 },
+      { id: 3, title: 'Challenge Roth', category: 'Triathlon', date: '05. Juli 2026', location: 'Roth', lat: 49.2464, lng: 11.0911 },
+      { id: 4, title: 'Ostsee Triathlon', category: 'Triathlon', date: '12. August 2026', location: 'Kiel', lat: 54.3233, lng: 10.1228 },
+      { id: 5, title: 'Velothon Challenge', category: 'Rennrad', date: '22. Juni 2026', location: 'Hamburg', lat: 53.5511, lng: 9.9937 },
+      { id: 6, title: 'Rad-Klassiker', category: 'Rennrad', date: '01. Mai 2026', location: 'Eschborn', lat: 50.1436, lng: 8.5686 }
     ];
 
-    let map;
+    let currentCategory = '';
+    let map = null;
     let markers = [];
 
-    // 2. Karte initialisieren
-    function initMap() {
-      // Zentriert auf Deutschland
-      map = L.map('map').setView([51.1657, 10.4515], 6);
+    // 2. Kategorie auswählen
+    function selectCategory(category) {
+      currentCategory = category;
 
-      // OpenStreetMap Tiles (Kartenbilder) laden
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap-Mitwirkende'
-      }).addTo(map);
+      // Ansichten umschalten
+      document.getElementById('selectionView').style.display = 'none';
+      document.getElementById('eventView').style.display = 'block';
+      document.getElementById('subTitle').style.display = 'none';
+      document.getElementById('currentCategoryTitle').innerText = category;
 
-      renderEvents(events);
+      // Karte beim ersten Aufruf initialisieren
+      if (!map) {
+        initMap();
+      }
+
+      filterEvents();
     }
 
-    // 3. Events im Grid und auf der Karte anzeigen
+    // 3. Zurück zur Auswahl gehen
+    function showSelection() {
+      document.getElementById('selectionView').style.display = 'grid';
+      document.getElementById('eventView').style.display = 'none';
+      document.getElementById('subTitle').style.display = 'block';
+      document.getElementById('searchInput').value = '';
+    }
+
+    // 4. Karte initialisieren
+    function initMap() {
+      map = L.map('map').setView([51.1657, 10.4515], 6);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+    }
+
+    // 5. Events filtern und rendern
+    function filterEvents() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+
+      // Filtere nach aktiver Kategorie UND Suchbegriff
+      const filtered = events.filter(e => {
+        const matchesCategory = e.category === currentCategory;
+        const matchesSearch = e.title.toLowerCase().includes(search) || e.location.toLowerCase().includes(search);
+        return matchesCategory && matchesSearch;
+      });
+
+      renderEvents(filtered);
+    }
+
+    // 6. Events in Grid & Karte einfügen
     function renderEvents(eventList) {
       const grid = document.getElementById('eventGrid');
       grid.innerHTML = '';
 
-      // Alte Marker von der Karte entfernen
+      // Alte Marker löschen
       markers.forEach(m => map.removeLayer(m));
       markers = [];
 
+      if (eventList.length === 0) {
+        grid.innerHTML = '<p style="color: var(--text-muted)">Keine Events gefunden.</p>';
+        return;
+      }
+
       eventList.forEach(event => {
-        // Card HTML erstellen
+        // Event-Karte bauen
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
           <div>
             <span class="badge">${event.category}</span>
             <h3>${event.title}</h3>
-            <p class="meta">📅 ${event.date} | 📍 ${event.location}</p>
+            <p class="meta">📅 ${event.date}<br>📍 ${event.location}</p>
           </div>
-          <a href="#" class="btn" onclick="zoomToEvent(${event.lat}, ${event.lng})">Auf Karte zeigen</a>
+          <button class="btn" onclick="zoomToEvent(${event.lat}, ${event.lng})">Auf Karte zeigen</button>
         `;
         grid.appendChild(card);
 
-        // Marker zur Karte hinzufügen
+        // Karten-Marker hinzufügen
         const marker = L.marker([event.lat, event.lng])
           .addTo(map)
-          .bindPopup(`<b>${event.title}</b><br>${event.category}<br>${event.date}`);
+          .bindPopup(`<b>${event.title}</b><br>${event.location}<br>${event.date}`);
         
         markers.push(marker);
       });
+
+      // Karten-Ausschnitt automatisch an die sichtbaren Marker anpassen
+      if (markers.length > 0) {
+        const group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.2));
+      }
     }
 
-    // 4. Klick auf "Auf Karte zeigen" zentriert die Karte
+    // 7. Auf Event zoomen
     function zoomToEvent(lat, lng) {
       map.setView([lat, lng], 12);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
     }
-
-    // 5. Filter-Funktion
-    function filterEvents() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const category = document.getElementById('categoryFilter').value;
-
-      const filtered = events.filter(e => {
-        const matchesSearch = e.title.toLowerCase().includes(search) || e.location.toLowerCase().includes(search);
-        const matchesCategory = category === 'all' || e.category === category;
-        return matchesSearch && matchesCategory;
-      });
-
-      renderEvents(filtered);
-    }
-
-    // Initialisierung starten
-    window.onload = initMap;
   </script>
 
 </body>
