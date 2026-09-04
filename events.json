@@ -23,8 +23,7 @@
     "category": "Extreme Triathlon",
     "distances": {
       "swim": "3.1km",
-      "roadBike": "97km",
-      "mountainBike": "30km",
+      "bike": "97km Rennrad + 30km MTB",
       "run": "25km"
     },
     "registerUrl": "https://inferno.ch/triathlon",
