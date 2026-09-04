@@ -1,4 +1,4 @@
-// Berechnet die verbleibende Zeit
+// Berechnet die verbleibende Zeit (z. B. "IN 2 WOCHEN")
 function getWeeksAwayText(eventDateStr) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -36,7 +36,7 @@ function formatLocation(locationStr) {
   return locationStr.replace(/,\s*(Switzerland|Schweiz)$/i, '').trim();
 }
 
-// Hauptfunktion zum Laden und Rendern
+// Hauptfunktion zum Laden und Rendern der Event-Tabelle
 async function renderEvents() {
   const container = document.getElementById('events-container');
   const counter = document.getElementById('event-counter');
@@ -74,7 +74,6 @@ async function renderEvents() {
     });
 
     let htmlContent = '';
-    let globalIndex = 0;
 
     for (const [monthYear, monthEvents] of Object.entries(groupedEvents)) {
       // Monats-Header ohne Pin-Symbol
@@ -86,16 +85,13 @@ async function renderEvents() {
 
       // Events der Monatsgruppe
       monthEvents.forEach(event => {
-        const swim = event.distances?.swim || '—';
-        const bike = event.distances?.bike || (event.distances?.roadBike ? `${event.distances.roadBike} + ${event.distances.mountainBike || ''}` : '—');
-        const run = event.distances?.run || '—';
         const registerUrl = event.registerUrl || '#';
         const cleanLocation = formatLocation(event.location);
 
         htmlContent += `
           <div class="event-item border-b border-[#3D3730]/40 last:border-0">
-            <!-- Klickbare Hauptzeile -->
-            <div class="event-row grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors select-none" data-target="details-${globalIndex}">
+            <!-- Klickbare Hauptzeile -> führt zu event.html -->
+            <div class="event-row grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors select-none" data-id="${event.id}">
               
               <div class="text-[#E5A93C] font-bold col-span-2 text-xs sm:text-sm">${formatDate(event.date)}</div>
               
@@ -122,49 +118,25 @@ async function renderEvents() {
               <div class="text-[#A89F8D] col-span-1 truncate">${event.category}</div>
               
               <div class="text-right col-span-1 font-bold text-[#E5A93C]">
-                <span id="arrow-${globalIndex}" class="arrow-icon inline-block transition-transform duration-200">→</span>
-              </div>
-            </div>
-
-            <!-- Ausklappbereich -->
-            <div id="details-${globalIndex}" class="details-panel hidden bg-[#1C1A17]/90 px-4 py-4 border-t border-[#3D3730] text-[#C2B7A3] space-y-3">
-              <p class="text-xs sm:text-sm leading-relaxed text-[#D6CFC4]">
-                ${event.description || 'Keine Beschreibung verfügbar.'}
-              </p>
-              <div class="flex flex-wrap gap-4 text-xs font-medium pt-1 border-t border-[#3D3730]/60">
-                <span class="text-[#8B9A68]">🏊 Schwimmen: <strong class="text-[#E8E2D5]">${swim}</strong></span>
-                <span class="text-[#E5A93C]">🚴 Radfahren: <strong class="text-[#E8E2D5]">${bike}</strong></span>
-                <span class="text-[#C86D51]">🏃 Laufen: <strong class="text-[#E8E2D5]">${run}</strong></span>
+                <span class="inline-block transition-transform duration-200">→</span>
               </div>
             </div>
           </div>
         `;
-        globalIndex++;
       });
     }
 
     container.innerHTML = htmlContent;
 
-    // Event-Listener für das Ausklappen zuweisen
+    // Klick-Listener zum Öffnen der Detailseite (event.html)
     document.querySelectorAll('.event-row').forEach(row => {
       row.addEventListener('click', (e) => {
-        // Verhindern, dass der Klick auf den Website-Link das Zeilen-Ausklappen auslöst
+        // Wenn direkt auf den externen Website-Link geklickt wird, keine Weiterleitung auslösen
         if (e.target.closest('.external-link')) return;
 
-        const targetId = row.getAttribute('data-target');
-        const detailsPanel = document.getElementById(targetId);
-        const arrow = row.querySelector('.arrow-icon');
-
-        if (detailsPanel) {
-          const isHidden = detailsPanel.classList.contains('hidden');
-          
-          if (isHidden) {
-            detailsPanel.classList.remove('hidden');
-            if (arrow) arrow.style.transform = 'rotate(90deg)';
-          } else {
-            detailsPanel.classList.add('hidden');
-            if (arrow) arrow.style.transform = 'rotate(0deg)';
-          }
+        const eventId = row.getAttribute('data-id');
+        if (eventId) {
+          window.location.href = `event.html?id=${eventId}`;
         }
       });
     });
