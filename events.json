@@ -1,8 +1,8 @@
 [
   {
-    "id": "triathlon-basel-2026",
+    "id": "triathlon-basel-2027",
     "title": "Triathlon Basel",
-    "date": "2026-08-29",
+    "date": "2027-08-28",
     "location": "Basel, Switzerland",
     "category": "Triathlon",
     "distances": {
@@ -16,9 +16,9 @@
     "active": true
   },
   {
-    "id": "inferno-triathlon-2026",
+    "id": "inferno-triathlon-2027",
     "title": "Inferno Triathlon",
-    "date": "2026-08-15",
+    "date": "2027-08-14",
     "location": "Thun - Schilthorn, Switzerland",
     "category": "Extreme Triathlon",
     "distances": {
