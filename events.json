@@ -4,7 +4,7 @@
     "title": "Triathlon Basel",
     "date": "2027-08-28",
     "location": "Basel, Switzerland",
-    "category": "Triathlon",
+    "category": "Olympisch",
     "distances": {
       "swim": "500m",
       "bike": "20km",
@@ -20,7 +20,7 @@
     "title": "Inferno Triathlon",
     "date": "2027-08-14",
     "location": "Thun - Schilthorn, Switzerland",
-    "category": "Extreme Triathlon",
+    "category": "Langdistanz",
     "distances": {
       "swim": "3.1km",
       "bike": "97km Rennrad + 30km MTB",
