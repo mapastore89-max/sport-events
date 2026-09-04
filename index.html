@@ -1,639 +1,137 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tri Northwest Style - Event Calendar 2026</title>
-  
-  <style>
-    :root {
-      --bg: #0d0e12;
-      --card-bg: #15171e;
-      --card-hover: #1c1f29;
-      --border: #232733;
-      --border-light: #2e3445;
-      --text: #f0f2f5;
-      --text-muted: #8c94a6;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      
-      /* Status-Farben */
-      --open-bg: rgba(34, 197, 94, 0.12);
-      --open-text: #4ade80;
-      --open-border: rgba(34, 197, 94, 0.3);
-
-      --closed-bg: rgba(239, 68, 68, 0.12);
-      --closed-text: #f87171;
-      --closed-border: rgba(239, 68, 68, 0.3);
-
-      /* Disziplinen Farben */
-      --swim-color: #38bdf8;
-      --bike-color: #4ade80;
-      --run-color: #f87171;
-      --trans-color: #fbbf24;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    .container { max-width: 1000px; margin: 0 auto; }
-
-    header { margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; }
-    h1 { font-size: 2rem; font-weight: 800; margin: 0 0 0.5rem 0; letter-spacing: -0.03em; color: #ffffff; }
-    p.sub { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
-
-    /* CONTROLS BAR (Suche & Filter) */
-    .controls-bar {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    input, select {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.6rem 0.85rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      outline: none;
-      transition: all 0.2s ease;
-      width: 100%;
-    }
-    input:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-    }
-
-    /* TRI NORTHWEST EVENT TABLE */
-    .table-container {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .events-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    .events-table th {
-      background: #111319;
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 600;
-      padding: 0.85rem 1.2rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .events-table td {
-      padding: 1rem 1.2rem;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-
-    .events-table tr:last-child td { border-bottom: none; }
-    .events-table tr.event-row { cursor: pointer; transition: background 0.15s ease; }
-    .events-table tr.event-row:hover { background: var(--card-hover); }
-
-    /* SPALTEN DESIGN */
-    .col-date { font-weight: 700; color: var(--text); white-space: nowrap; width: 110px; }
-    .col-title { font-weight: 600; font-size: 1rem; color: #ffffff; }
-    .col-title .location { font-weight: 400; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
-
-    /* DISZIPLINEN BADGES */
-    .distances-flex { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .dist-badge {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      background: #1e222e;
-      border: 1px solid var(--border-light);
-      color: var(--text);
-    }
-
-    /* REGISTRATION BADGES */
-    .reg-badge {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.25rem 0.6rem;
-      border-radius: 99px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-    .reg-badge.open { background: var(--open-bg); color: var(--open-text); border: 1px solid var(--open-border); }
-    .reg-badge.completed { background: var(--closed-bg); color: var(--closed-text); border: 1px solid var(--closed-border); }
-
-    .btn-details {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .event-row:hover .btn-details { background: var(--accent); color: #ffffff; border-color: var(--accent); }
-
-    /* DETAIL VIEW MODAL / PAGE OVERLAY */
-    #detailView { display: none; }
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--card-bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      margin-bottom: 1.5rem;
-    }
-    .back-btn:hover { background: var(--card-hover); }
-
-    .detail-hero {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 1.5rem;
-    }
-    .detail-hero h2 { font-size: 1.8rem; font-weight: 800; margin: 0 0 0.5rem 0; }
-    .detail-meta { color: var(--text-muted); font-size: 0.9rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
-
-    .detail-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
-    .detail-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .detail-box h3 { font-size: 1.05rem; font-weight: 700; margin: 0 0 1rem 0; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-
-    /* DISZIPLINEN RACES DETAIL CARD */
-    .discipline-cards { display: flex; flex-direction: column; gap: 0.75rem; }
-    .race-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-    }
-    .race-card-title { font-weight: 700; color: #fff; margin-bottom: 0.75rem; font-size: 0.95rem; }
-    .discipline-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
-
-    .disc-item {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
-      display: flex;
-      flex-direction: column;
-    }
-    .disc-item.swim { border-left: 3px solid var(--swim-color); }
-    .disc-item.bike { border-left: 3px solid var(--bike-color); }
-    .disc-item.run { border-left: 3px solid var(--run-color); }
-
-    .disc-label { font-size: 0.65rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); }
-    .disc-val { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-top: 0.1rem; }
-
-    /* ELEVATION BADGE */
-    .elevation-info {
-      margin-top: 0.75rem;
-      padding-top: 0.5rem;
-      border-top: 1px dashed var(--border);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      display: flex;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-    }
-
-    /* GPX BUTTONS */
-    .gpx-section {
-      margin-top: 1rem;
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .btn-gpx {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      background: #1e222e;
-      border: 1px solid var(--border-light);
-      color: var(--accent);
-      padding: 0.4rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-    .btn-gpx:hover {
-      background: var(--accent);
-      color: #ffffff;
-      border-color: var(--accent);
-    }
-
-    /* RECHNER */
-    .calc-select-container {
-      margin-bottom: 1rem;
-    }
-    .calc-row {
-      display: grid;
-      grid-template-columns: 100px 1fr 1fr 80px;
-      gap: 0.5rem;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      background: var(--bg);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-    }
-    .calc-subtotal { text-align: right; font-weight: 700; color: #fff; }
-
-    @media (max-width: 768px) {
-      .controls-bar { grid-template-columns: 1fr; }
-      .detail-layout { grid-template-columns: 1fr; }
-      .events-table th:nth-child(3), .events-table td:nth-child(3) { display: none; }
-      .discipline-grid { grid-template-columns: 1fr; }
-      .calc-row { grid-template-columns: 80px 1fr 1fr 70px; gap: 0.35rem; }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
+<main class="page-transition min-h-[calc(100vh-64px)] pb-14 lg:pb-0">
+  <div class="relative w-full bg-[#0B1121] text-slate-200 font-sans overflow-x-hidden">
     
-    <!-- MAIN LIST VIEW -->
-    <div id="listView">
-      <header>
-        <h1>2026 Race Calendar</h1>
-        <p class="sub">Triathlon, Duathlon & Aquathlon Events in der Schweiz & der Region</p>
-      </header>
+    <!-- HEADER BEREICH: Breadcrumb, Titel & Buttons -->
+    <div class="relative z-10 w-full border-b border-slate-800">
+      <div class="relative z-10 px-4 py-3 sm:px-6 lg:px-10 flex flex-col gap-3 lg:flex-row lg:justify-between lg:items-center">
+        
+        <!-- Titel & Meta-Infos -->
+        <div class="max-w-full lg:max-w-4xl space-y-1">
+          <!-- Navigation / Breadcrumb -->
+          <nav class="mb-1 flex items-start gap-2 text-xs text-slate-400">
+            <a href="/events" class="hover:text-slate-200">Events</a>
+            <span>/</span>
+            <a href="/events/region" class="hover:text-slate-200">Region Name</a>
+            <span>/</span>
+            <span class="text-slate-200">Event Name</span>
+          </nav>
+          
+          <!-- Haupt-Titel -->
+          <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-slate-50 tracking-tight">
+            <span class="bg-gradient-to-r from-sky-300 via-emerald-300 to-sky-400 bg-clip-text text-transparent">
+              Mein Event Name
+            </span>
+          </h1>
 
-      <div class="controls-bar">
-        <input type="text" id="searchInput" placeholder="Suche nach Rennen oder Ort..." oninput="applyFilters()">
-        <select id="categoryFilter" onchange="applyFilters()">
-          <option value="all">Alle Kategorien</option>
-          <option value="Triathlon">Triathlon</option>
-          <option value="Duathlon">Duathlon</option>
-        </select>
-        <select id="statusFilter" onchange="applyFilters()">
-          <option value="all">Alle Status</option>
-          <option value="Open">Offen</option>
-          <option value="Completed">Beendet</option>
-        </select>
-      </div>
+          <!-- Datum, Ort & Badge -->
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium text-slate-300 pt-1">
+            <div class="flex items-center gap-1">
+              <span class="text-emerald-400">📅</span>
+              <span>10. Oktober 2026</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="text-sky-400">📍</span>
+              <span>München, Deutschland</span>
+            </div>
+            <span class="inline-flex items-center rounded-full border border-sky-500/50 bg-sky-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase text-sky-300">
+              Triathlon
+            </span>
+          </div>
+        </div>
 
-      <div class="table-container">
-        <table class="events-table">
-          <thead>
-            <tr>
-              <th>Datum</th>
-              <th>Wettkampf</th>
-              <th>Distanzen</th>
-              <th>Anmeldung</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="eventTableBody">
-            <!-- Dynamischer Content -->
-          </tbody>
-        </table>
+        <!-- Action Buttons (Anmeldung, Ergebnisse, Tools) -->
+        <div class="flex flex-wrap gap-2 items-center">
+          <a href="https://deine-anmeldung.de" target="_blank" rel="noopener noreferrer" 
+             class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 shadow transition-all">
+            Anmelden ↗
+          </a>
+          <a href="https://deine-ergebnisse.de" target="_blank" rel="noopener noreferrer" 
+             class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-amber-600 text-white text-sm font-bold hover:bg-amber-500 shadow transition-all">
+            Ergebnisse ↗
+          </a>
+          <button class="px-3 py-2 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-700 text-slate-300 transition-colors" title="Zum Kalender hinzufügen">
+            📅 +
+          </button>
+          <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-700 text-slate-300 transition-colors" title="Route planen">
+            🗺️
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- DETAIL VIEW -->
-    <div id="detailView">
-      <button class="back-btn" onclick="showListView()">← Zurück zum Kalender</button>
-      <div id="detailContent"></div>
+    <!-- MAIN CONTENT: Distanzen, Details & Countdown -->
+    <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 items-start">
+        
+        <div class="space-y-4 lg:col-span-3">
+          
+          <!-- Distanz-Kacheln (Schwimmen, Rad, Lauf) -->
+          <div class="grid grid-cols-3 gap-2">
+            <div class="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+              <span class="text-xl">🏊</span>
+              <div>
+                <div class="text-[10px] uppercase text-slate-400 font-bold">Schwimmen</div>
+                <div class="text-sm font-bold text-slate-200">1.5 km</div>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+              <span class="text-xl">🚴</span>
+              <div>
+                <div class="text-[10px] uppercase text-slate-400 font-bold">Radfahren</div>
+                <div class="text-sm font-bold text-slate-200">40 km</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+              <span class="text-xl">🏃</span>
+              <div>
+                <div class="text-[10px] uppercase text-slate-400 font-bold">Laufen</div>
+                <div class="text-sm font-bold text-slate-200">10 km</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Haupt-Infobox mit Countdown & Text -->
+          <div class="overflow-hidden rounded-xl border border-sky-500/30 bg-slate-800/60 p-4 shadow-md">
+            
+            <!-- Countdown Header -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 border-b border-slate-700/50 pb-3">
+              <div>
+                <h2 class="text-lg font-bold text-slate-50">Event Details</h2>
+                <p class="text-xs text-slate-400 uppercase">Wichtige Informationen zum Wettkampf</p>
+              </div>
+
+              <!-- Live Countdown Widget -->
+              <div class="flex items-center rounded-xl bg-slate-950/90 px-4 py-2 border border-slate-800 gap-3">
+                <div class="text-center"><span class="block text-xl font-bold text-white">30</span><span class="text-[9px] uppercase text-slate-400">Tage</span></div>
+                <div class="h-6 w-px bg-slate-800"></div>
+                <div class="text-center"><span class="block text-xl font-bold text-white">12</span><span class="text-[9px] uppercase text-slate-400">Std</span></div>
+                <div class="h-6 w-px bg-slate-800"></div>
+                <div class="text-center"><span class="block text-xl font-bold text-emerald-400">45</span><span class="text-[9px] uppercase text-slate-400">Min</span></div>
+              </div>
+            </div>
+
+            <!-- Beschreibungstext -->
+            <div class="text-sm text-slate-200 leading-relaxed space-y-3">
+              <p>
+                Willkommen beim offiziellen Wettkampf! Die Strecke führt durch malerische Landschaften mit schnellen Asphaltpassagen auf dem Rad und einem stimmungsvollen Zieleinlauf im Stadtzentrum.
+              </p>
+              
+              <!-- Hinweis-Box -->
+              <div class="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-300">
+                <span>⚠️</span>
+                <div>
+                  <strong>Wichtiger Hinweis:</strong> Die Startnummernausgabe schließt pünktlich um 08:00 Uhr am Wettkampftag.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </div>
-
-  <script>
-    // Events Daten im Tri Northwest Schema inkl. Höhendaten & GPX Links
-    const events = [
-      {
-        id: "1",
-        date: "2026-05-30",
-        title: "Greifensee Triathlon",
-        location: "Uster, Schweiz",
-        category: "Triathlon",
-        status: "Open",
-        distances: [
-          { name: "Standard / Olympic", swimMeters: 1500, bikeKm: 40, runKm: 10, bikeElev: 220, runElev: 45, gpxBike: "#", gpxRun: "#" },
-          { name: "Sprint", swimMeters: 750, bikeKm: 20, runKm: 5, bikeElev: 110, runElev: 20, gpxBike: "#", gpxRun: "#" }
-        ],
-        desc: "Traditionsreicher Wettkampf am Greifensee mit einer flachen, schnellen Streckenführung.",
-        schedule: "07:30 Uhr Startnummernausgabe | 08:30 Uhr Start Welle 1"
-      },
-      {
-        id: "2",
-        date: "2026-06-07",
-        title: "IRONMAN 70.3 Switzerland",
-        location: "Rapperswil-Jona, Schweiz",
-        category: "Triathlon",
-        status: "Open",
-        distances: [
-          { name: "Mitteldistanz (70.3)", swimMeters: 1900, bikeKm: 90.1, runKm: 21.1, bikeElev: 1100, runElev: 140, gpxBike: "#", gpxRun: "#" }
-        ],
-        desc: "Der Schweizer Klassiker mit dem Aufstieg über die Stairway to Heaven und Zieleinlauf am Obersee.",
-        schedule: "06:30 Uhr Profis | 06:40 Uhr Rolling Start Age Group"
-      },
-      {
-        id: "3",
-        date: "2026-06-20",
-        title: "Spiezathlon 2026",
-        location: "Spiez, Schweiz",
-        category: "Triathlon",
-        status: "Open",
-        distances: [
-          { name: "Olympic", swimMeters: 1500, bikeKm: 40, runKm: 10, bikeElev: 550, runElev: 120, gpxBike: "#", gpxRun: "#" },
-          { name: "Sprint", swimMeters: 500, bikeKm: 20, runKm: 5, bikeElev: 280, runElev: 60, gpxBike: "#", gpxRun: "#" }
-        ],
-        desc: "Wunderschöner Wettkampf im Berner Oberland mit Schwimmen im Thunersee.",
-        schedule: "08:00 Uhr Start Olympic | 11:00 Uhr Start Sprint"
-      },
-      {
-        id: "4",
-        date: "2026-07-11",
-        title: "Sempachersee Triathlon",
-        location: "Nottwil, Schweiz",
-        category: "Triathlon",
-        status: "Completed",
-        distances: [
-          { name: "Sprint", swimMeters: 500, bikeKm: 20, runKm: 5, bikeElev: 180, runElev: 30, gpxBike: "#", gpxRun: "#" }
-        ],
-        desc: "Sehr beliebter Sprint-Triathlon rund um das Schweizer Paraplegiker-Zentrum Nottwil.",
-        schedule: "09:00 Uhr Massenstart"
-      }
-    ];
-
-    let currentEvent = null;
-
-    function renderTable(data) {
-      const tbody = document.getElementById('eventTableBody');
-      tbody.innerHTML = '';
-
-      if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 2rem;">Keine Events gefunden.</td></tr>`;
-        return;
-      }
-
-      data.forEach(event => {
-        const tr = document.createElement('tr');
-        tr.className = 'event-row';
-        tr.onclick = () => openDetail(event.id);
-
-        const statusClass = event.status === 'Open' ? 'open' : 'completed';
-        const statusText = event.status === 'Open' ? 'Open' : 'Completed';
-
-        tr.innerHTML = `
-          <td class="col-date">${event.date}</td>
-          <td class="col-title">
-            ${event.title}
-            <div class="location">📍 ${event.location}</div>
-          </td>
-          <td>
-            <div class="distances-flex">
-              ${event.distances.map(d => `<span class="dist-badge">${d.name}</span>`).join('')}
-            </div>
-          </td>
-          <td>
-            <span class="reg-badge ${statusClass}">${statusText}</span>
-          </td>
-          <td>
-            <button class="btn-details" onclick="event.stopPropagation(); openDetail('${event.id}')">Details</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function applyFilters() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const category = document.getElementById('categoryFilter').value;
-      const status = document.getElementById('statusFilter').value;
-
-      const filtered = events.filter(e => {
-        const matchesSearch = e.title.toLowerCase().includes(search) || e.location.toLowerCase().includes(search);
-        const matchesCategory = category === 'all' || e.category === category;
-        const matchesStatus = status === 'all' || e.status === status;
-        return matchesSearch && matchesCategory && matchesStatus;
-      });
-
-      renderTable(filtered);
-    }
-
-    function openDetail(id) {
-      const ev = events.find(e => e.id === id);
-      if (!ev) return;
-
-      currentEvent = ev;
-
-      document.getElementById('detailContent').innerHTML = `
-        <div class="detail-hero">
-          <h2>${ev.title}</h2>
-          <div class="detail-meta">
-            <span>📅 ${ev.date}</span>
-            <span>📍 ${ev.location}</span>
-            <span>🏷️ ${ev.category}</span>
-          </div>
-        </div>
-
-        <div class="detail-layout">
-          <div>
-            <div class="detail-box">
-              <h3>Übersicht & Distanzen</h3>
-              <p style="color: var(--text-muted); margin-bottom: 1.25rem;">${ev.desc}</p>
-
-              <div class="discipline-cards">
-                ${ev.distances.map(d => `
-                  <div class="race-card">
-                    <div class="race-card-title">${d.name}</div>
-                    <div class="discipline-grid">
-                      <div class="disc-item swim">
-                        <span class="disc-label">Swim</span>
-                        <span class="disc-val">${d.swimMeters} m</span>
-                      </div>
-                      <div class="disc-item bike">
-                        <span class="disc-label">Bike</span>
-                        <span class="disc-val">${d.bikeKm} km</span>
-                      </div>
-                      <div class="disc-item run">
-                        <span class="disc-label">Run</span>
-                        <span class="disc-val">${d.runKm} km</span>
-                      </div>
-                    </div>
-                    ${(d.bikeElev || d.runElev) ? `
-                      <div class="elevation-info">
-                        ${d.bikeElev ? `<span>🚴 Höhenmeter Rad: <strong>+${d.bikeElev} m</strong></span>` : ''}
-                        ${d.runElev ? `<span>🏃 Höhenmeter Lauf: <strong>+${d.runElev} m</strong></span>` : ''}
-                      </div>
-                    ` : ''}
-                    <div class="gpx-section">
-                      <a href="${d.gpxBike || '#'}" class="btn-gpx" onclick="if(this.getAttribute('href')==='#') { alert('GPX-Track steht in Kürze zur Verfügung.'); return false; }">🗺️ GPX Bike Track</a>
-                      <a href="${d.gpxRun || '#'}" class="btn-gpx" onclick="if(this.getAttribute('href')==='#') { alert('GPX-Track steht in Kürze zur Verfügung.'); return false; }">🗺️ GPX Run Track</a>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-
-            <div class="detail-box">
-              <h3>Zeitrechner</h3>
-              
-              <div class="calc-select-container">
-                <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; font-weight:600;">Wettkampf-Distanz wählen:</label>
-                <select id="calcDistanceSelect" onchange="onDistanceSelectChange()">
-                  ${ev.distances.map((d, index) => `<option value="${index}">${d.name}</option>`).join('')}
-                </select>
-              </div>
-
-              <div class="calc-row">
-                <span style="color: var(--swim-color); font-weight:700;">Swim</span>
-                <input type="number" id="cSwimDist" value="${ev.distances[0]?.swimMeters || 1500}" oninput="calcTime()">
-                <input type="text" id="cSwimPace" value="2:00" placeholder="Pace /100m" oninput="calcTime()">
-                <div class="calc-subtotal" id="sSwim">00:00</div>
-              </div>
-
-              <div class="calc-row">
-                <span style="color: var(--trans-color); font-weight:700;">T1 (Wechsel)</span>
-                <span style="grid-column: span 2; font-size: 0.8rem; color: var(--text-muted);">Swim to Bike</span>
-                <input type="text" id="cT1" value="02:30" placeholder="mm:ss" oninput="calcTime()">
-              </div>
-
-              <div class="calc-row">
-                <span style="color: var(--bike-color); font-weight:700;">Bike</span>
-                <input type="number" id="cBikeDist" value="${ev.distances[0]?.bikeKm || 40}" oninput="calcTime()">
-                <input type="number" id="cBikeSpeed" value="30" placeholder="km/h" oninput="calcTime()">
-                <div class="calc-subtotal" id="sBike">00:00</div>
-              </div>
-
-              <div class="calc-row">
-                <span style="color: var(--trans-color); font-weight:700;">T2 (Wechsel)</span>
-                <span style="grid-column: span 2; font-size: 0.8rem; color: var(--text-muted);">Bike to Run</span>
-                <input type="text" id="cT2" value="01:45" placeholder="mm:ss" oninput="calcTime()">
-              </div>
-
-              <div class="calc-row">
-                <span style="color: var(--run-color); font-weight:700;">Run</span>
-                <input type="number" id="cRunDist" value="${ev.distances[0]?.runKm || 10}" oninput="calcTime()">
-                <input type="text" id="cRunPace" value="5:30" placeholder="Pace /km" oninput="calcTime()">
-                <div class="calc-subtotal" id="sRun">00:00</div>
-              </div>
-
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-                <span style="font-weight:700;">Geschätzte Gesamtzeit:</span>
-                <span id="grandTotal" style="font-size: 1.3rem; font-weight:800; color: var(--accent);">00:00:00</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="detail-box">
-              <h3>Zeitplan & Info</h3>
-              <p style="color: var(--text-muted); font-size: 0.85rem;">${ev.schedule}</p>
-              <button style="width:100%; background: var(--accent); color:#fff; border:none; padding: 0.6rem; border-radius: 6px; font-weight:700; margin-top: 1rem; cursor:pointer;">Jetzt Anmelden</button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('listView').style.display = 'none';
-      document.getElementById('detailView').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      calcTime();
-    }
-
-    function onDistanceSelectChange() {
-      if (!currentEvent) return;
-      const select = document.getElementById('calcDistanceSelect');
-      const index = parseInt(select.value, 10);
-      const selectedDist = currentEvent.distances[index];
-
-      if (selectedDist) {
-        document.getElementById('cSwimDist').value = selectedDist.swimMeters;
-        document.getElementById('cBikeDist').value = selectedDist.bikeKm;
-        document.getElementById('cRunDist').value = selectedDist.runKm;
-        calcTime();
-      }
-    }
-
-    function parseTime(str) {
-      if (!str) return 0;
-      const p = str.split(':').map(Number);
-      if (p.length === 2) {
-        return (p[0] * 60) + p[1];
-      } else if (p.length === 3) {
-        return (p[0] * 3600) + (p[1] * 60) + p[2];
-      }
-      return Number(str) || 0;
-    }
-
-    function fmtHMS(sec) {
-      if (isNaN(sec) || sec <= 0) return '00:00:00';
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = Math.round(sec % 60);
-      return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    }
-
-    function calcTime() {
-      const sDist = parseFloat(document.getElementById('cSwimDist')?.value) || 0;
-      const sPace = parseTime(document.getElementById('cSwimPace')?.value);
-      const sSec = (sDist / 100) * sPace;
-
-      const t1Sec = parseTime(document.getElementById('cT1')?.value);
-
-      const bDist = parseFloat(document.getElementById('cBikeDist')?.value) || 0;
-      const bSpeed = parseFloat(document.getElementById('cBikeSpeed')?.value) || 0;
-      const bSec = bSpeed > 0 ? (bDist / bSpeed) * 3600 : 0;
-
-      const t2Sec = parseTime(document.getElementById('cT2')?.value);
-
-      const rDist = parseFloat(document.getElementById('cRunDist')?.value) || 0;
-      const rPace = parseTime(document.getElementById('cRunPace')?.value);
-      const rSec = rDist * rPace;
-
-      if(document.getElementById('sSwim')) document.getElementById('sSwim').innerText = fmtHMS(sSec);
-      if(document.getElementById('sBike')) document.getElementById('sBike').innerText = fmtHMS(bSec);
-      if(document.getElementById('sRun')) document.getElementById('sRun').innerText = fmtHMS(rSec);
-
-      const totalSec = sSec + t1Sec + bSec + t2Sec + rSec;
-
-      if(document.getElementById('grandTotal')) document.getElementById('grandTotal').innerText = fmtHMS(totalSec);
-    }
-
-    function showListView() {
-      document.getElementById('detailView').style.display = 'none';
-      document.getElementById('listView').style.display = 'block';
-    }
-
-    // Initial rendern
-    renderTable(events);
-  </script>
-</body>
-</html>
+</main>
