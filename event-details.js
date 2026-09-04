@@ -34,20 +34,22 @@ async function loadEventDetail() {
 
       if (diffDays > 0) {
         const weeks = Math.floor(diffDays / 7);
+        const wochenText = weeks === 1 ? 'Noch 1 Woche' : `Noch ${weeks} Wochen`;
+
         document.getElementById('cd-weeks').textContent = weeks;
         document.getElementById('cd-weeks-label').textContent = weeks === 1 ? 'Woche' : 'Wochen';
-        document.getElementById('training-weeks-left').textContent = `${weeks}w to go`;
+        document.getElementById('training-weeks-left').textContent = wochenText;
 
         // Trainingsphasen-Logik
         updateTrainingPhase(weeks);
 
       } else if (diffDays === 0) {
         document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#E5A93C] font-bold uppercase tracking-wider">Heute</span>';
-        document.getElementById('training-weeks-left').textContent = `0w to go`;
+        document.getElementById('training-weeks-left').textContent = 'Heute';
         updateTrainingPhase(0);
       } else {
         document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#A89F8D] font-bold uppercase tracking-wider">Abgeschlossen</span>';
-        document.getElementById('training-weeks-left').textContent = `Passed`;
+        document.getElementById('training-weeks-left').textContent = 'Beendet';
         updateTrainingPhase(-1);
       }
     }
@@ -78,7 +80,7 @@ async function loadEventDetail() {
   }
 }
 
-// Dynamische Steuerung der Trainingsphase
+// Dynamische Steuerung der Trainingsphase auf Deutsch
 function updateTrainingPhase(weeksLeft) {
   const titleEl = document.getElementById('current-phase-title');
   const descEl = document.getElementById('current-phase-desc');
@@ -86,27 +88,27 @@ function updateTrainingPhase(weeksLeft) {
 
   if (weeksLeft > 16) {
     titleEl.textContent = "Base Phase";
-    descEl.textContent = "Building fundamental aerobic endurance, strength, and movement economy for upcoming race prep.";
+    descEl.textContent = "Aufbau der grundlegenden aeroben Ausdauer, Kraft und Bewegungseffizienz für die kommende Wettkampfvorbereitung.";
     barEl.style.width = "20%";
   } else if (weeksLeft > 8) {
     titleEl.textContent = "Build Phase";
-    descEl.textContent = "Increasing intensity with race-specific intervals, threshold workouts, and brick sessions.";
+    descEl.textContent = "Steigerung der Intensität mit wettkampfspezifischen Intervallen, Schwellentraining und Koppeleinheiten.";
     barEl.style.width = "40%";
   } else if (weeksLeft > 3) {
     titleEl.textContent = "Peak Phase";
-    descEl.textContent = "Reaching maximum race fitness, testing race-day nutrition, and fine-tuning gear under load.";
+    descEl.textContent = "Erreichen der maximalen Wettkampfform, Testen der Verpflegung unter Rennbedingungen und Feinschliff am Material.";
     barEl.style.width = "60%";
   } else if (weeksLeft > 1) {
     titleEl.textContent = "Taper Phase";
-    descEl.textContent = "Reducing volume to absorb training gains, restore glycogen, and fresh muscles for race day.";
+    descEl.textContent = "Reduzierung des Trainingsvolumens, um Kraft zu tanken, Glykogenspeicher zu füllen und frisch an den Start zu gehen.";
     barEl.style.width = "80%";
   } else if (weeksLeft >= 0) {
     titleEl.textContent = "Race Prep";
-    descEl.textContent = "Final gear checks, course recon, and mental prep. Stay rested and confident.";
+    descEl.textContent = "Letzter Materialcheck, Streckenbesichtigung und mentale Vorbereitung. Erholt und fokussiert bleiben.";
     barEl.style.width = "100%";
   } else {
-    titleEl.textContent = "Post Race / Recovery";
-    descEl.textContent = "Focus on active recovery, injury prevention, and reflecting on race performance.";
+    titleEl.textContent = "Post Race / Regeneration";
+    descEl.textContent = "Fokus auf aktive Erholung, Regeneration und die Analyse der Rennleistung.";
     barEl.style.width = "100%";
   }
 }
