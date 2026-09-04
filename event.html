@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Details – SWIM BIKE RUN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#1C1A17] text-[#E8E2D5] font-sans min-h-screen antialiased p-4 sm:p-8">
+
+  <div class="max-w-7xl mx-auto space-y-6">
+    
+    <!-- Zurück Button -->
+    <a href="index.html" class="inline-flex items-center gap-2 text-[#E5A93C] hover:text-[#f0ba53] transition-colors font-bold text-xs uppercase tracking-widest">
+      ← Zurück zur Übersicht
+    </a>
+
+    <!-- HEADER / HERO BEREICH -->
+    <header class="space-y-3 border-b border-[#3D3730] pb-6">
+      <div class="flex flex-wrap items-center gap-3">
+        <h1 id="event-title" class="text-3xl sm:text-5xl font-black tracking-wider text-[#F0EAE1]">
+          Loading Event...
+        </h1>
+      </div>
+      
+      <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-[#C2B7A3]">
+        <span class="flex items-center gap-1.5">
+          📅 <strong id="event-date" class="text-[#E5A93C]">--.--.----</strong>
+        </span>
+        <span class="flex items-center gap-1.5">
+          📍 <span id="event-location">--</span>
+        </span>
+        <span id="event-category-badge" class="bg-[#8B9A68]/20 border border-[#8B9A68]/40 text-[#B5C492] px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider">
+          --
+        </span>
+      </div>
+    </header>
+
+    <!-- MAIN DASHBOARD GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- LINKESEITE (Hauptinfos, Distanzen & Beschreibung) - 7 Spalten -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- DISTANZEN KACHELN -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-[#282420] border border-[#3D3730] p-4 rounded-xl flex flex-col items-center justify-center text-center">
+            <span class="text-xl mb-1">🏊</span>
+            <span class="text-[10px] uppercase font-bold text-[#A89F8D]">Schwimmen</span>
+            <span id="dist-swim" class="text-sm sm:text-base font-bold text-[#E8E2D5] mt-1">--</span>
+          </div>
+          <div class="bg-[#282420] border border-[#3D3730] p-4 rounded-xl flex flex-col items-center justify-center text-center">
+            <span class="text-xl mb-1">🚴</span>
+            <span class="text-[10px] uppercase font-bold text-[#A89F8D]">Radfahren</span>
+            <span id="dist-bike" class="text-sm sm:text-base font-bold text-[#E8E2D5] mt-1">--</span>
+          </div>
+          <div class="bg-[#282420] border border-[#3D3730] p-4 rounded-xl flex flex-col items-center justify-center text-center">
+            <span class="text-xl mb-1">🏃</span>
+            <span class="text-[10px] uppercase font-bold text-[#A89F8D]">Laufen</span>
+            <span id="dist-run" class="text-sm sm:text-base font-bold text-[#E8E2D5] mt-1">--</span>
+          </div>
+        </div>
+
+        <!-- DETAILS & COUNTDOWN CARD -->
+        <div class="bg-[#282420] border border-[#3D3730] rounded-xl p-5 space-y-6">
+          
+          <div class="flex flex-wrap items-center justify-between border-b border-[#3D3730] pb-4 gap-4">
+            <div>
+              <h2 class="text-xs font-bold uppercase tracking-widest text-[#E5A93C]">Event Details</h2>
+              <p class="text-xs text-[#A89F8D] uppercase mt-0.5">About the race</p>
+            </div>
+
+            <!-- COUNTDOWN BOX -->
+            <div id="countdown-box" class="bg-[#1C1A17] border border-[#3D3730] px-4 py-2 rounded-lg flex items-center gap-3 text-center">
+              <div>
+                <span id="cd-days" class="block font-black text-base text-[#E5A93C]">00</span>
+                <span class="text-[9px] text-[#A89F8D] uppercase tracking-wider">Tage</span>
+              </div>
+              <span class="text-[#3D3730] font-bold">:</span>
+              <div>
+                <span id="cd-hours" class="block font-black text-base text-[#E5A93C]">00</span>
+                <span class="text-[9px] text-[#A89F8D] uppercase tracking-wider">Std</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BESCHREIBUNG -->
+          <p id="event-description" class="text-sm leading-relaxed text-[#C2B7A3]">
+            Beschreibung wird geladen...
+          </p>
+
+          <!-- EXTERNE LINKS BUTTONS -->
+          <div class="flex flex-wrap gap-3 pt-2">
+            <a id="btn-website" href="#" target="_blank" class="bg-[#E5A93C] hover:bg-[#f0ba53] text-[#1C1A17] font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition-colors inline-flex items-center gap-2">
+              <span>Offizielle Website</span> ↗
+            </a>
+            <a id="btn-results" href="#" target="_blank" class="bg-[#211E1B] border border-[#3D3730] hover:border-[#E5A93C] text-[#E8E2D5] font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition-colors inline-flex items-center gap-2">
+              <span>Start- & Ranglisten</span> ↗
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RECHTE SEITE (Wetter & Standort-Karte) - 5 Spalten -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- WETTER KACHEL (Live Conditions Platzhalter) -->
+        <div class="bg-[#282420] border border-[#3D3730] rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-[#3D3730] pb-3">
+            <span class="text-xs font-bold uppercase tracking-widest text-[#E5A93C] flex items-center gap-1.5">
+              ☁️ Wetter-Prognose
+            </span>
+            <span id="weather-location" class="text-xs text-[#A89F8D]">--</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-3xl font-black text-[#F0EAE1]">18°C</span>
+              <span class="block text-xs text-[#A89F8D] mt-1">Leicht bewölkt</span>
+            </div>
+            <div class="text-4xl">🌤️</div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-[#C2B7A3] pt-2 border-t border-[#3D3730]/60">
+            <div>💨 Wind: <strong class="text-[#E8E2D5]">12 km/h</strong></div>
+            <div>💧 Feuchte: <strong class="text-[#E8E2D5]">65%</strong></div>
+          </div>
+        </div>
+
+        <!-- STANDORT & KARTE PLATZHALTER -->
+        <div class="bg-[#282420] border border-[#3D3730] rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-widest text-[#E5A93C]">
+              📍 Event Location
+            </span>
+            <a id="map-directions" href="#" target="_blank" class="text-xs text-[#E5A93C] hover:underline">
+              Route planen ↗
+            </a>
+          </div>
+
+          <!-- Karten-Container -->
+          <div class="w-full h-48 bg-[#1C1A17] border border-[#3D3730] rounded-lg overflow-hidden flex items-center justify-center relative">
+            <iframe id="google-map" class="w-full h-full border-0 opacity-80 hover:opacity-100 transition-opacity" loading="lazy" src=""></iframe>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="event-detail.js"></script>
+</body>
+</html>
