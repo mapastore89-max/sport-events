@@ -27,7 +27,6 @@
       </div>
       
       <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-[#C2B7A3]">
-        <!-- Datum Icon -->
         <span class="flex items-center gap-1.5">
           <svg class="w-4 h-4 text-[#E5A93C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
@@ -35,7 +34,6 @@
           <strong id="event-date" class="text-[#E5A93C]">--.--.----</strong>
         </span>
 
-        <!-- Ort Icon -->
         <span class="flex items-center gap-1.5">
           <svg class="w-4 h-4 text-[#C2B7A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -44,7 +42,6 @@
           <span id="event-location">--</span>
         </span>
 
-        <!-- Kategorie Badge -->
         <span id="event-category-badge" class="bg-[#8B9A68]/20 border border-[#8B9A68]/40 text-[#B5C492] px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider">
           --
         </span>
@@ -56,7 +53,6 @@
       
       <!-- DISTANZEN KACHELN -->
       <div class="grid grid-cols-3 gap-3">
-        <!-- Schwimmen -->
         <div class="bg-[#282420] border border-[#3D3730] p-4 rounded-xl flex flex-col items-center justify-center text-center">
           <svg class="w-6 h-6 stroke-[#8B9A68] mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 3.75h16.5m-16.5 3.75h16.5"/>
@@ -65,7 +61,6 @@
           <span id="dist-swim" class="text-sm sm:text-base font-bold text-[#E8E2D5] mt-1">--</span>
         </div>
 
-        <!-- Radfahren -->
         <div class="bg-[#282420] border border-[#3D3730] p-4 rounded-xl flex flex-col items-center justify-center text-center">
           <svg class="w-6 h-6 stroke-[#E5A93C] mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
             <circle cx="5.5" cy="17.5" r="3.5" />
@@ -76,7 +71,6 @@
           <span id="dist-bike" class="text-sm sm:text-base font-bold text-[#E8E2D5] mt-1">--</span>
         </div>
 
-        <!-- Laufen -->
         <div class="bg-[#282420] border border-[#3D3730] p-4 rounded-xl flex flex-col items-center justify-center text-center">
           <svg class="w-6 h-6 stroke-[#C86D51] mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.118a7.5 7.5 0 0114.998 0"/>
@@ -86,7 +80,7 @@
         </div>
       </div>
 
-      <!-- DETAILS & WOCHEN CARD -->
+      <!-- ABSCHNITT 1: DETAILS & WOCHEN CARD -->
       <div class="bg-[#282420] border border-[#3D3730] rounded-xl p-5 sm:p-6 space-y-6">
         
         <div class="flex flex-wrap items-center justify-between border-b border-[#3D3730] pb-4 gap-4">
@@ -95,7 +89,6 @@
             <p class="text-xs text-[#A89F8D] uppercase mt-0.5">Über das Rennen</p>
           </div>
 
-          <!-- WOCHEN ANZEIGE -->
           <div id="countdown-box" class="bg-[#1C1A17] border border-[#3D3730] px-4 py-2 rounded-lg flex items-center justify-center text-center">
             <div>
               <span id="cd-weeks" class="block font-black text-xl text-[#E5A93C]">--</span>
@@ -104,12 +97,10 @@
           </div>
         </div>
 
-        <!-- BESCHREIBUNG -->
         <p id="event-description" class="text-sm sm:text-base leading-relaxed text-[#C2B7A3]">
           Beschreibung wird geladen...
         </p>
 
-        <!-- EXTERNE LINKS BUTTONS -->
         <div class="flex flex-wrap gap-3 pt-2">
           <a id="btn-website" href="#" target="_blank" class="bg-[#E5A93C] hover:bg-[#f0ba53] text-[#1C1A17] font-bold text-xs uppercase px-5 py-2.5 rounded-lg transition-colors inline-flex items-center gap-2">
             <span>Offizielle Website</span>
@@ -123,6 +114,87 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25"/>
             </svg>
           </a>
+        </div>
+
+      </div>
+
+      <!-- ABSCHNITT 2: TRAINING PHASE KACHEL (NUN DARUNTER) -->
+      <div class="bg-[#282420] border border-[#3D3730] rounded-xl p-5 sm:p-6 space-y-5">
+        
+        <!-- Header & Verbleibende Wochen -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-[#8B9A68] text-xs font-bold uppercase tracking-widest">
+            <svg class="w-4 h-4 stroke-current" fill="none" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a.5.5 0 00.71 0l7.234-7.234M21 8.25V12M21 8.25H17.25"/>
+            </svg>
+            TRAINING PHASE
+          </div>
+          <span id="training-weeks-left" class="text-xs text-[#A89F8D] font-medium">--w to go</span>
+        </div>
+
+        <!-- Aktuelle Phase Titel & Kurzbeschreibung -->
+        <div>
+          <h2 id="current-phase-title" class="text-2xl sm:text-3xl font-black text-[#C86D51] tracking-wide">
+            Base Phase
+          </h2>
+          <p id="current-phase-desc" class="text-sm text-[#C2B7A3] mt-1.5 leading-relaxed">
+            Building fundamental aerobic endurance, strength, and movement economy for upcoming race prep.
+          </p>
+        </div>
+
+        <!-- Fortschrittsbalken -->
+        <div class="w-full bg-[#1C1A17] h-2.5 rounded-full overflow-hidden border border-[#3D3730]/60">
+          <div id="training-progress-bar" class="bg-[#C86D51] h-full transition-all duration-500 rounded-full" style="width: 20%;"></div>
+        </div>
+
+        <!-- Phasennamen mit Hover-Tooltips -->
+        <div class="grid grid-cols-5 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#A89F8D] pt-1">
+          
+          <!-- BASE -->
+          <div class="group relative cursor-pointer hover:text-[#E8E2D5] transition-colors">
+            <a href="#" class="training-plan-link block py-1">BASE</a>
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-[#1C1A17] border border-[#3D3730] rounded-lg text-left text-xs font-normal text-[#C2B7A3] normal-case shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+              <strong class="text-[#E5A93C] block font-bold mb-1">Base Phase (Grundlagenausdauer)</strong>
+              Die Grundlagenphase bildet das Fundament für die gesamte Saison. Der Fokus liegt auf der Entwicklung der aeroben Kapazität durch lange, ruhige Einheiten bei niedriger Intensität. Gleichzeitig werden Bewegungseffizienz, Schwimmtechnik sowie Kraftausdauer aufgebaut. Höhere Umfänge bereiten Sehnen und Muskeln schonend auf die intensiveren Belastungen vor.
+            </div>
+          </div>
+
+          <!-- BUILD -->
+          <div class="group relative cursor-pointer hover:text-[#E8E2D5] transition-colors">
+            <a href="#" class="training-plan-link block py-1">BUILD</a>
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-[#1C1A17] border border-[#3D3730] rounded-lg text-left text-xs font-normal text-[#C2B7A3] normal-case shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+              <strong class="text-[#E5A93C] block font-bold mb-1">Build Phase (Aufbauphase)</strong>
+              In der Aufbaustufe steigt die Intensität deutlich an. Spezifische Schwelleneinheiten, Intervalltraining und wettkampfspezifische Koppeleinheiten treten an die Stelle des reinen Ausdauertrainings. Ziel ist es, die anaerobe Schwelle anzuheben und die Renngeschwindigkeit über längere Abschnitte zu halten, während das Gesamttrainingsvolumen seinen Höhepunkt erreicht.
+            </div>
+          </div>
+
+          <!-- PEAK -->
+          <div class="group relative cursor-pointer hover:text-[#E8E2D5] transition-colors">
+            <a href="#" class="training-plan-link block py-1">PEAK</a>
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-[#1C1A17] border border-[#3D3730] rounded-lg text-left text-xs font-normal text-[#C2B7A3] normal-case shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+              <strong class="text-[#E5A93C] block font-bold mb-1">Peak Phase (Spitzenform)</strong>
+              Die Spitzenphase simuliert exakt die Belastungen des Wettkampfs. Das Trainingsvolumen wird leicht reduziert, um Frische zu gewinnen, während hochintensive Schlüsselreize beibehalten werden. Hier werden auch Verpflegungsstrategien unter Volllast getestet, das Material final abgestimmt und die psychische Fokusierung auf den Rennverlauf geschärft.
+            </div>
+          </div>
+
+          <!-- TAPER -->
+          <div class="group relative cursor-pointer hover:text-[#E8E2D5] transition-colors">
+            <a href="#" class="training-plan-link block py-1">TAPER</a>
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-[#1C1A17] border border-[#3D3730] rounded-lg text-left text-xs font-normal text-[#C2B7A3] normal-case shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+              <strong class="text-[#E5A93C] block font-bold mb-1">Taper Phase (Tapering)</strong>
+              In den letzten Wochen vor dem Rennen wird das Trainingsvolumen drastisch gesenkt (um 40–60 %), um Glykogenspeicher maximal zu füllen und Muskelschäden zu reparieren. Kurze, knackige Antritte halten die Muskelspannung aufrecht. Die Regeneration steht im Vordergrund, damit der Körper am Wettkampftag mit maximaler Energie an der Startlinie steht.
+            </div>
+          </div>
+
+          <!-- RACE -->
+          <div class="group relative cursor-pointer hover:text-[#E8E2D5] transition-colors">
+            <a href="#" class="training-plan-link block py-1">RACE</a>
+            <div class="absolute bottom-full right-0 mb-2 w-64 p-3 bg-[#1C1A17] border border-[#3D3730] rounded-lg text-left text-xs font-normal text-[#C2B7A3] normal-case shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+              <strong class="text-[#E5A93C] block font-bold mb-1">Race Prep (Wettkampftag)</strong>
+              Die finale Phase umfasst die direkten Rennvorbereitungen: Materialcheck, Streckenbesichtigung, logistische Planung und die finale mentale Einstellung. An den letzten Tagen gilt es, Ruhe zu bewahren, ausreichend zu hydrieren und die erarbeitete Form punktgenau am Rennwochenende abzurufen.
+            </div>
+          </div>
+
         </div>
 
       </div>
