@@ -15,10 +15,25 @@ function getWeeksAwayText(eventDateStr) {
   return `IN ${weeks} ${weeks === 1 ? 'WOCHE' : 'WOCHEN'}`;
 }
 
-// Datum formatieren (z. B. "12. SEP")
+// Datum im Format "28. AUG 2027"
 function formatDate(dateStr) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase();
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = date.toLocaleDateString('de-DE', { month: 'short' }).toUpperCase().replace('.', '');
+  const year = date.getFullYear();
+  return `${day}. ${month} ${year}`;
+}
+
+// Monat + Jahr für Gruppen-Header ermitteln (z. B. "AUGUST 2027")
+function getMonthYearHeader(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }).toUpperCase();
+}
+
+// Säubere Ort-Namen von ", Switzerland" / ", Schweiz"
+function formatLocation(locationStr) {
+  if (!locationStr) return '—';
+  return locationStr.replace(/,\s*(Switzerland|Schweiz)$/i, '').trim();
 }
 
 // Hauptfunktion zum Laden und Rendern
@@ -32,12 +47,11 @@ async function renderEvents() {
 
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Nur aktive Events ab heute filtern und sortieren
+    // Nur aktive Events ab heute filtern und chronologisch sortieren
     const upcomingEvents = events
       .filter(event => event.active && event.date >= todayStr)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // Zähler aktualisieren (Deutsch)
     if (counter) {
       counter.textContent = `ANSTEHENDE EVENTS (${upcomingEvents.length})`;
     }
@@ -50,59 +64,90 @@ async function renderEvents() {
       return;
     }
 
-    // HTML für Events aufbauen
-    container.innerHTML = upcomingEvents.map((event, index) => {
-      const swim = event.distances?.swim || '—';
-      const bike = event.distances?.bike || '—';
-      const run = event.distances?.run || '—';
-      const registerUrl = event.registerUrl || '#';
+    // Events nach Monaten gruppieren
+    const groupedEvents = {};
+    upcomingEvents.forEach(event => {
+      const monthYear = getMonthYearHeader(event.date);
+      if (!groupedEvents[monthYear]) {
+        groupedEvents[monthYear] = [];
+      }
+      groupedEvents[monthYear].push(event);
+    });
 
-      return `
-        <div class="group">
-          <!-- Hauptzeile -->
-          <div onclick="toggleRow('details-${index}', 'arrow-${index}')" 
-               class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors">
-            
-            <div class="text-[#E5A93C] font-bold col-span-1">${formatDate(event.date)}</div>
-            
-            <div class="col-span-1 md:col-span-2">
-              <span class="inline-block border border-[#8B9A68]/40 bg-[#8B9A68]/20 text-[#B5C492] px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
-                ${getWeeksAwayText(event.date)}
-              </span>
-            </div>
-            
-            <div class="font-bold text-[#F0EAE1] col-span-2 md:col-span-3 text-base md:text-sm">
-              ${event.title}
-            </div>
-            
-            <div class="hidden md:block col-span-1">
-              <a href="${registerUrl}" target="_blank" onclick="event.stopPropagation()" class="text-[#C86D51] hover:underline inline-flex items-center gap-0.5 font-semibold">
-                Website ↗
-              </a>
-            </div>
-            
-            <div class="text-[#C2B7A3] col-span-2">${event.location}</div>
-            <div class="text-[#A89F8D] col-span-2">${event.category}</div>
-            
-            <div class="text-right col-span-1 font-bold text-[#E5A93C]">
-              <span id="arrow-${index}" class="inline-block transition-transform duration-200">→</span>
-            </div>
-          </div>
+    let htmlContent = '';
+    let globalIndex = 0;
 
-          <!-- Ausklappbereich -->
-          <div id="details-${index}" class="hidden bg-[#1C1A17]/80 px-4 py-3 border-t border-[#3D3730] text-[#C2B7A3] space-y-2">
-            <p class="text-xs leading-relaxed text-[#A89F8D]">
-              ${event.description || 'Keine Beschreibung verfügbar.'}
-            </p>
-            <div class="flex flex-wrap gap-4 text-xs font-semibold pt-1">
-              <span class="text-[#8B9A68]">🏊 Schwimmen: ${swim}</span>
-              <span class="text-[#E5A93C]">🚴 Radfahren: ${bike}</span>
-              <span class="text-[#C86D51]">🏃 Laufen: ${run}</span>
-            </div>
-          </div>
+    // Durch jede Monatsgruppe iterieren
+    for (const [monthYear, monthEvents] of Object.entries(groupedEvents)) {
+      // Monatsüberschrift
+      htmlContent += `
+        <div class="bg-[#211E1B] px-4 py-2 border-y border-[#3D3730] text-[#E5A93C] font-bold text-xs tracking-widest uppercase">
+          📌 ${monthYear}
         </div>
       `;
-    }).join('');
+
+      // Events in diesem Monat
+      monthEvents.forEach(event => {
+        const swim = event.distances?.swim || '—';
+        const bike = event.distances?.bike || (event.distances?.roadBike ? `${event.distances.roadBike} + ${event.distances.mountainBike || ''}` : '—');
+        const run = event.distances?.run || '—';
+        const registerUrl = event.registerUrl || '#';
+        const cleanLocation = formatLocation(event.location);
+
+        htmlContent += `
+          <div class="group">
+            <!-- Hauptzeile -->
+            <div onclick="toggleRow('details-${globalIndex}', 'arrow-${globalIndex}')" 
+                 class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors">
+              
+              <div class="text-[#E5A93C] font-bold col-span-2 text-xs sm:text-sm">${formatDate(event.date)}</div>
+              
+              <div class="col-span-1 md:col-span-2">
+                <span class="inline-block border border-[#8B9A68]/40 bg-[#8B9A68]/20 text-[#B5C492] px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
+                  ${getWeeksAwayText(event.date)}
+                </span>
+              </div>
+              
+              <div class="font-bold text-[#F0EAE1] col-span-2 md:col-span-3 text-base md:text-sm">
+                ${event.title}
+              </div>
+              
+              <div class="hidden md:block col-span-1">
+                <a href="${registerUrl}" target="_blank" onclick="event.stopPropagation()" class="text-[#E8E2D5] hover:text-[#E5A93C] inline-flex items-center gap-1 font-semibold transition-colors">
+                  <span>Visit</span>
+                  <!-- Schlichtes Pfeil-Icon (Weiße Outlines) -->
+                  <svg class="w-3.5 h-3.5 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25" />
+                  </svg>
+                </a>
+              </div>
+              
+              <div class="text-[#C2B7A3] col-span-2">${cleanLocation}</div>
+              <div class="text-[#A89F8D] col-span-1">${event.category}</div>
+              
+              <div class="text-right col-span-1 font-bold text-[#E5A93C]">
+                <span id="arrow-${globalIndex}" class="inline-block transition-transform duration-200">→</span>
+              </div>
+            </div>
+
+            <!-- Ausklappbereich -->
+            <div id="details-${globalIndex}" class="hidden bg-[#1C1A17]/80 px-4 py-3 border-t border-[#3D3730] text-[#C2B7A3] space-y-2">
+              <p class="text-xs leading-relaxed text-[#A89F8D]">
+                ${event.description || 'Keine Beschreibung verfügbar.'}
+              </p>
+              <div class="flex flex-wrap gap-4 text-xs font-semibold pt-1">
+                <span class="text-[#8B9A68]">🏊 Schwimmen: ${swim}</span>
+                <span class="text-[#E5A93C]">🚴 Radfahren: ${bike}</span>
+                <span class="text-[#C86D51]">🏃 Laufen: ${run}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        globalIndex++;
+      });
+    }
+
+    container.innerHTML = htmlContent;
 
   } catch (error) {
     console.error("Fehler beim Laden der Events:", error);
@@ -129,5 +174,4 @@ function toggleRow(detailId, arrowId) {
   }
 }
 
-// Beim Laden ausführen
 renderEvents();
