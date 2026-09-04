@@ -1,0 +1,18 @@
+[
+  {
+    "id": "dodge-city-2026",
+    "title": "Dodge City X Off-Road",
+    "date": "2026-09-04",
+    "location": "Cumberland, BC",
+    "category": "Off-Road",
+    "distances": {
+      "swim": "750m",
+      "bike": "20km",
+      "run": "5km"
+    },
+    "registerUrl": "https://beispiel-anmeldung.de",
+    "resultsUrl": "https://beispiel-ergebnisse.de",
+    "description": "OFF-ROAD. Das Event bietet Olympic-, Sprint- und Relay-Distanzen...",
+    "active": true
+  }
+]
