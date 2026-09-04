@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" class="dark">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,47 +7,45 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#0B1121] text-slate-200 font-sans min-h-screen antialiased p-4 sm:p-8">
+<body class="bg-[#1C1A17] text-[#E8E2D5] font-sans min-h-screen antialiased p-4 sm:p-8">
 
   <div class="max-w-6xl mx-auto space-y-6">
     
-    <!-- HEADER BEREICH -->
-    <header class="space-y-1">
-      <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white">
-        <span class="bg-gradient-to-r from-sky-400 via-emerald-400 to-sky-300 bg-clip-text text-transparent">
-          SWIM BIKE RUN
-        </span>
+    <!-- HEADER BEREICH (Mid-Century Style) -->
+    <header class="space-y-1 border-b border-[#3D3730] pb-6">
+      <h1 class="text-3xl sm:text-5xl font-black tracking-wider uppercase text-[#E5A93C]">
+        SWIM BIKE RUN
       </h1>
-      <p class="text-sm sm:text-base text-slate-400 font-medium tracking-wide">
+      <p class="text-sm sm:text-base text-[#C2B7A3] font-medium tracking-widest uppercase">
         Triathlonkalender Schweiz
       </p>
     </header>
 
     <!-- EVENT TABELLE / LISTE -->
-    <div class="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-2xl backdrop-blur-sm">
+    <div class="rounded-xl border border-[#3D3730] bg-[#282420] overflow-hidden shadow-2xl">
       
-      <!-- Tabellen-Kopfzeile mit dynamischem Zähler -->
-      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-        <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+      <!-- Tabellen-Kopfzeile -->
+      <div class="p-4 border-b border-[#3D3730] bg-[#211E1B] flex items-center justify-between">
+        <div class="flex items-center gap-2 text-[#E5A93C] text-xs font-bold uppercase tracking-widest">
           <span>📅</span>
-          <span id="event-counter">UPCOMING EVENTS (0)</span>
+          <span id="event-counter">ANSTEHENDE EVENTS (0)</span>
         </div>
       </div>
 
-      <!-- Spaltenüberschriften (Desktop) -->
-      <div class="hidden md:grid grid-cols-12 gap-2 px-4 py-2 text-[11px] font-bold text-slate-400 uppercase border-b border-slate-800/60">
-        <div class="col-span-1">DATE</div>
-        <div class="col-span-2">WEEKS AWAY</div>
+      <!-- Spaltenüberschriften auf Deutsch (Desktop) -->
+      <div class="hidden md:grid grid-cols-12 gap-2 px-4 py-3 text-[11px] font-bold text-[#A89F8D] uppercase tracking-wider border-b border-[#3D3730] bg-[#211E1B]/50">
+        <div class="col-span-1">DATUM</div>
+        <div class="col-span-2">VERBLEIBEND</div>
         <div class="col-span-3">EVENT</div>
-        <div class="col-span-1">WEBSITE</div>
-        <div class="col-span-2">LOCATION</div>
-        <div class="col-span-2">RACE TYPES</div>
+        <div class="col-span-1">WEBSEITE</div>
+        <div class="col-span-2">ORT</div>
+        <div class="col-span-2">DISTANZEN</div>
         <div class="col-span-1 text-right">INFO</div>
       </div>
 
-      <!-- ZIEL-CONTAINER FÜR AUTOMATISCHE EVENTS -->
-      <div id="events-container" class="divide-y divide-slate-800/60 text-xs sm:text-sm">
-        <div class="p-8 text-center text-slate-400">
+      <!-- ZIEL-CONTAINER FÜR EVENTS -->
+      <div id="events-container" class="divide-y divide-[#3D3730] text-xs sm:text-sm">
+        <div class="p-8 text-center text-[#A89F8D]">
           Events werden geladen...
         </div>
       </div>
@@ -56,7 +54,7 @@
 
   </div>
 
-  <!-- JavaScript für die Daten und das Ausklappen -->
+  <!-- JavaScript für Daten und Ausklappen -->
   <script src="app.js"></script>
 </body>
 </html>
