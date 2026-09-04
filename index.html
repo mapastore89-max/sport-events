@@ -30,6 +30,7 @@
       --swim-color: #38bdf8;
       --bike-color: #4ade80;
       --run-color: #f87171;
+      --trans-color: #fbbf24;
     }
 
     * { box-sizing: border-box; }
@@ -67,6 +68,7 @@
       font-size: 0.875rem;
       outline: none;
       transition: all 0.2s ease;
+      width: 100%;
     }
     input:focus, select:focus {
       border-color: var(--accent);
@@ -215,8 +217,59 @@
     .disc-label { font-size: 0.65rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); }
     .disc-val { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-top: 0.1rem; }
 
+    /* ELEVATION BADGE */
+    .elevation-info {
+      margin-top: 0.75rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    /* GPX BUTTONS */
+    .gpx-section {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .btn-gpx {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #1e222e;
+      border: 1px solid var(--border-light);
+      color: var(--accent);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-gpx:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
     /* RECHNER */
-    .calc-row { display: grid; grid-template-columns: 100px 1fr 1fr 80px; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; background: var(--bg); padding: 0.5rem; border-radius: 6px; }
+    .calc-select-container {
+      margin-bottom: 1rem;
+    }
+    .calc-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 1fr 80px;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      background: var(--bg);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+    }
     .calc-subtotal { text-align: right; font-weight: 700; color: #fff; }
 
     @media (max-width: 768px) {
@@ -224,6 +277,7 @@
       .detail-layout { grid-template-columns: 1fr; }
       .events-table th:nth-child(3), .events-table td:nth-child(3) { display: none; }
       .discipline-grid { grid-template-columns: 1fr; }
+      .calc-row { grid-template-columns: 80px 1fr 1fr 70px; gap: 0.35rem; }
     }
   </style>
 </head>
@@ -279,7 +333,7 @@
   </div>
 
   <script>
-    // Events Daten im Tri Northwest Schema
+    // Events Daten im Tri Northwest Schema inkl. Höhendaten & GPX Links
     const events = [
       {
         id: "1",
@@ -289,8 +343,8 @@
         category: "Triathlon",
         status: "Open",
         distances: [
-          { name: "Standard / Olympic", swimMeters: 1500, bikeKm: 40, runKm: 10 },
-          { name: "Sprint", swimMeters: 750, bikeKm: 20, runKm: 5 }
+          { name: "Standard / Olympic", swimMeters: 1500, bikeKm: 40, runKm: 10, bikeElev: 220, runElev: 45, gpxBike: "#", gpxRun: "#" },
+          { name: "Sprint", swimMeters: 750, bikeKm: 20, runKm: 5, bikeElev: 110, runElev: 20, gpxBike: "#", gpxRun: "#" }
         ],
         desc: "Traditionsreicher Wettkampf am Greifensee mit einer flachen, schnellen Streckenführung.",
         schedule: "07:30 Uhr Startnummernausgabe | 08:30 Uhr Start Welle 1"
@@ -303,7 +357,7 @@
         category: "Triathlon",
         status: "Open",
         distances: [
-          { name: "Mitteldistanz (70.3)", swimMeters: 1900, bikeKm: 90.1, runKm: 21.1 }
+          { name: "Mitteldistanz (70.3)", swimMeters: 1900, bikeKm: 90.1, runKm: 21.1, bikeElev: 1100, runElev: 140, gpxBike: "#", gpxRun: "#" }
         ],
         desc: "Der Schweizer Klassiker mit dem Aufstieg über die Stairway to Heaven und Zieleinlauf am Obersee.",
         schedule: "06:30 Uhr Profis | 06:40 Uhr Rolling Start Age Group"
@@ -316,8 +370,8 @@
         category: "Triathlon",
         status: "Open",
         distances: [
-          { name: "Olympic", swimMeters: 1500, bikeKm: 40, runKm: 10 },
-          { name: "Sprint", swimMeters: 500, bikeKm: 20, runKm: 5 }
+          { name: "Olympic", swimMeters: 1500, bikeKm: 40, runKm: 10, bikeElev: 550, runElev: 120, gpxBike: "#", gpxRun: "#" },
+          { name: "Sprint", swimMeters: 500, bikeKm: 20, runKm: 5, bikeElev: 280, runElev: 60, gpxBike: "#", gpxRun: "#" }
         ],
         desc: "Wunderschöner Wettkampf im Berner Oberland mit Schwimmen im Thunersee.",
         schedule: "08:00 Uhr Start Olympic | 11:00 Uhr Start Sprint"
@@ -330,14 +384,14 @@
         category: "Triathlon",
         status: "Completed",
         distances: [
-          { name: "Sprint", swimMeters: 500, bikeKm: 20, runKm: 5 }
+          { name: "Sprint", swimMeters: 500, bikeKm: 20, runKm: 5, bikeElev: 180, runElev: 30, gpxBike: "#", gpxRun: "#" }
         ],
         desc: "Sehr beliebter Sprint-Triathlon rund um das Schweizer Paraplegiker-Zentrum Nottwil.",
         schedule: "09:00 Uhr Massenstart"
       }
     ];
 
-    let currentEventDistances = [];
+    let currentEvent = null;
 
     function renderTable(data) {
       const tbody = document.getElementById('eventTableBody');
@@ -397,7 +451,7 @@
       const ev = events.find(e => e.id === id);
       if (!ev) return;
 
-      currentEventDistances = ev.distances;
+      currentEvent = ev;
 
       document.getElementById('detailContent').innerHTML = `
         <div class="detail-hero">
@@ -433,6 +487,16 @@
                         <span class="disc-val">${d.runKm} km</span>
                       </div>
                     </div>
+                    ${(d.bikeElev || d.runElev) ? `
+                      <div class="elevation-info">
+                        ${d.bikeElev ? `<span>🚴 Höhenmeter Rad: <strong>+${d.bikeElev} m</strong></span>` : ''}
+                        ${d.runElev ? `<span>🏃 Höhenmeter Lauf: <strong>+${d.runElev} m</strong></span>` : ''}
+                      </div>
+                    ` : ''}
+                    <div class="gpx-section">
+                      <a href="${d.gpxBike || '#'}" class="btn-gpx" onclick="if(this.getAttribute('href')==='#') { alert('GPX-Track steht in Kürze zur Verfügung.'); return false; }">🗺️ GPX Bike Track</a>
+                      <a href="${d.gpxRun || '#'}" class="btn-gpx" onclick="if(this.getAttribute('href')==='#') { alert('GPX-Track steht in Kürze zur Verfügung.'); return false; }">🗺️ GPX Run Track</a>
+                    </div>
                   </div>
                 `).join('')}
               </div>
@@ -440,18 +504,40 @@
 
             <div class="detail-box">
               <h3>Zeitrechner</h3>
+              
+              <div class="calc-select-container">
+                <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; font-weight:600;">Wettkampf-Distanz wählen:</label>
+                <select id="calcDistanceSelect" onchange="onDistanceSelectChange()">
+                  ${ev.distances.map((d, index) => `<option value="${index}">${d.name}</option>`).join('')}
+                </select>
+              </div>
+
               <div class="calc-row">
                 <span style="color: var(--swim-color); font-weight:700;">Swim</span>
                 <input type="number" id="cSwimDist" value="${ev.distances[0]?.swimMeters || 1500}" oninput="calcTime()">
                 <input type="text" id="cSwimPace" value="2:00" placeholder="Pace /100m" oninput="calcTime()">
                 <div class="calc-subtotal" id="sSwim">00:00</div>
               </div>
+
+              <div class="calc-row">
+                <span style="color: var(--trans-color); font-weight:700;">T1 (Wechsel)</span>
+                <span style="grid-column: span 2; font-size: 0.8rem; color: var(--text-muted);">Swim to Bike</span>
+                <input type="text" id="cT1" value="02:30" placeholder="mm:ss" oninput="calcTime()">
+              </div>
+
               <div class="calc-row">
                 <span style="color: var(--bike-color); font-weight:700;">Bike</span>
                 <input type="number" id="cBikeDist" value="${ev.distances[0]?.bikeKm || 40}" oninput="calcTime()">
                 <input type="number" id="cBikeSpeed" value="30" placeholder="km/h" oninput="calcTime()">
                 <div class="calc-subtotal" id="sBike">00:00</div>
               </div>
+
+              <div class="calc-row">
+                <span style="color: var(--trans-color); font-weight:700;">T2 (Wechsel)</span>
+                <span style="grid-column: span 2; font-size: 0.8rem; color: var(--text-muted);">Bike to Run</span>
+                <input type="text" id="cT2" value="01:45" placeholder="mm:ss" oninput="calcTime()">
+              </div>
+
               <div class="calc-row">
                 <span style="color: var(--run-color); font-weight:700;">Run</span>
                 <input type="number" id="cRunDist" value="${ev.distances[0]?.runKm || 10}" oninput="calcTime()">
@@ -482,10 +568,29 @@
       calcTime();
     }
 
+    function onDistanceSelectChange() {
+      if (!currentEvent) return;
+      const select = document.getElementById('calcDistanceSelect');
+      const index = parseInt(select.value, 10);
+      const selectedDist = currentEvent.distances[index];
+
+      if (selectedDist) {
+        document.getElementById('cSwimDist').value = selectedDist.swimMeters;
+        document.getElementById('cBikeDist').value = selectedDist.bikeKm;
+        document.getElementById('cRunDist').value = selectedDist.runKm;
+        calcTime();
+      }
+    }
+
     function parseTime(str) {
-      if(!str) return 0;
+      if (!str) return 0;
       const p = str.split(':').map(Number);
-      return p.length === 2 ? (p[0] * 60) + p[1] : (Number(str) || 0);
+      if (p.length === 2) {
+        return (p[0] * 60) + p[1];
+      } else if (p.length === 3) {
+        return (p[0] * 3600) + (p[1] * 60) + p[2];
+      }
+      return Number(str) || 0;
     }
 
     function fmtHMS(sec) {
@@ -501,9 +606,13 @@
       const sPace = parseTime(document.getElementById('cSwimPace')?.value);
       const sSec = (sDist / 100) * sPace;
 
+      const t1Sec = parseTime(document.getElementById('cT1')?.value);
+
       const bDist = parseFloat(document.getElementById('cBikeDist')?.value) || 0;
       const bSpeed = parseFloat(document.getElementById('cBikeSpeed')?.value) || 0;
       const bSec = bSpeed > 0 ? (bDist / bSpeed) * 3600 : 0;
+
+      const t2Sec = parseTime(document.getElementById('cT2')?.value);
 
       const rDist = parseFloat(document.getElementById('cRunDist')?.value) || 0;
       const rPace = parseTime(document.getElementById('cRunPace')?.value);
@@ -513,7 +622,9 @@
       if(document.getElementById('sBike')) document.getElementById('sBike').innerText = fmtHMS(bSec);
       if(document.getElementById('sRun')) document.getElementById('sRun').innerText = fmtHMS(rSec);
 
-      if(document.getElementById('grandTotal')) document.getElementById('grandTotal').innerText = fmtHMS(sSec + bSec + rSec);
+      const totalSec = sSec + t1Sec + bSec + t2Sec + rSec;
+
+      if(document.getElementById('grandTotal')) document.getElementById('grandTotal').innerText = fmtHMS(totalSec);
     }
 
     function showListView() {
