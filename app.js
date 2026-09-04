@@ -30,27 +30,11 @@ function getMonthYearHeader(dateStr) {
   return date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }).toUpperCase();
 }
 
-// Säubere Ort-Namen von ", Switzerland" / ", Schweiz"
+// Säubere Ort-Namen
 function formatLocation(locationStr) {
   if (!locationStr) return '—';
   return locationStr.replace(/,\s*(Switzerland|Schweiz)$/i, '').trim();
 }
-
-// Ausklappfunktion direkt an Fenster binden
-window.toggleRow = function(detailId, arrowId) {
-  const details = document.getElementById(detailId);
-  const arrow = document.getElementById(arrowId);
-  
-  if (details && arrow) {
-    if (details.classList.contains('hidden')) {
-      details.classList.remove('hidden');
-      arrow.style.transform = 'rotate(90deg)';
-    } else {
-      details.classList.add('hidden');
-      arrow.style.transform = 'rotate(0deg)';
-    }
-  }
-};
 
 // Hauptfunktion zum Laden und Rendern
 async function renderEvents() {
@@ -63,7 +47,6 @@ async function renderEvents() {
 
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Nur aktive Events filtern und sortieren
     const upcomingEvents = events
       .filter(event => event.active && event.date >= todayStr)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -94,10 +77,10 @@ async function renderEvents() {
     let globalIndex = 0;
 
     for (const [monthYear, monthEvents] of Object.entries(groupedEvents)) {
-      // Monats-Header
+      // Monats-Header ohne Pin-Symbol
       htmlContent += `
-        <div class="bg-[#211E1B] px-4 py-2 border-y border-[#3D3730] text-[#E5A93C] font-bold text-xs tracking-widest uppercase">
-          📌 ${monthYear}
+        <div class="bg-[#211E1B] px-4 py-2.5 border-y border-[#3D3730] text-[#E5A93C] font-bold text-xs tracking-widest uppercase">
+          ${monthYear}
         </div>
       `;
 
@@ -110,10 +93,9 @@ async function renderEvents() {
         const cleanLocation = formatLocation(event.location);
 
         htmlContent += `
-          <div class="group border-b border-[#3D3730]/40 last:border-0">
-            <!-- Hauptzeile (Exakt passende Grid-Breiten: 2-2-3-1-2-1-1 = 12) -->
-            <div onclick="toggleRow('details-${globalIndex}', 'arrow-${globalIndex}')" 
-                 class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors">
+          <div class="event-item border-b border-[#3D3730]/40 last:border-0">
+            <!-- Klickbare Hauptzeile -->
+            <div class="event-row grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors select-none" data-target="details-${globalIndex}">
               
               <div class="text-[#E5A93C] font-bold col-span-2 text-xs sm:text-sm">${formatDate(event.date)}</div>
               
@@ -128,7 +110,7 @@ async function renderEvents() {
               </div>
               
               <div class="hidden md:block col-span-1">
-                <a href="${registerUrl}" target="_blank" onclick="event.stopPropagation()" class="text-[#E8E2D5] hover:text-[#E5A93C] inline-flex items-center gap-1 font-semibold transition-colors">
+                <a href="${registerUrl}" target="_blank" class="external-link text-[#E8E2D5] hover:text-[#E5A93C] inline-flex items-center gap-1 font-semibold transition-colors">
                   <span>Website</span>
                   <svg class="w-3.5 h-3.5 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25" />
@@ -140,19 +122,19 @@ async function renderEvents() {
               <div class="text-[#A89F8D] col-span-1 truncate">${event.category}</div>
               
               <div class="text-right col-span-1 font-bold text-[#E5A93C]">
-                <span id="arrow-${globalIndex}" class="inline-block transition-transform duration-200">→</span>
+                <span id="arrow-${globalIndex}" class="arrow-icon inline-block transition-transform duration-200">→</span>
               </div>
             </div>
 
             <!-- Ausklappbereich -->
-            <div id="details-${globalIndex}" class="hidden bg-[#1C1A17]/80 px-4 py-3 border-t border-[#3D3730] text-[#C2B7A3] space-y-2">
-              <p class="text-xs leading-relaxed text-[#A89F8D]">
+            <div id="details-${globalIndex}" class="details-panel hidden bg-[#1C1A17]/90 px-4 py-4 border-t border-[#3D3730] text-[#C2B7A3] space-y-3">
+              <p class="text-xs sm:text-sm leading-relaxed text-[#D6CFC4]">
                 ${event.description || 'Keine Beschreibung verfügbar.'}
               </p>
-              <div class="flex flex-wrap gap-4 text-xs font-semibold pt-1">
-                <span class="text-[#8B9A68]">🏊 Schwimmen: ${swim}</span>
-                <span class="text-[#E5A93C]">🚴 Radfahren: ${bike}</span>
-                <span class="text-[#C86D51]">🏃 Laufen: ${run}</span>
+              <div class="flex flex-wrap gap-4 text-xs font-medium pt-1 border-t border-[#3D3730]/60">
+                <span class="text-[#8B9A68]">🏊 Schwimmen: <strong class="text-[#E8E2D5]">${swim}</strong></span>
+                <span class="text-[#E5A93C]">🚴 Radfahren: <strong class="text-[#E8E2D5]">${bike}</strong></span>
+                <span class="text-[#C86D51]">🏃 Laufen: <strong class="text-[#E8E2D5]">${run}</strong></span>
               </div>
             </div>
           </div>
@@ -162,6 +144,30 @@ async function renderEvents() {
     }
 
     container.innerHTML = htmlContent;
+
+    // Event-Listener für das Ausklappen zuweisen
+    document.querySelectorAll('.event-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        // Verhindern, dass der Klick auf den Website-Link das Zeilen-Ausklappen auslöst
+        if (e.target.closest('.external-link')) return;
+
+        const targetId = row.getAttribute('data-target');
+        const detailsPanel = document.getElementById(targetId);
+        const arrow = row.querySelector('.arrow-icon');
+
+        if (detailsPanel) {
+          const isHidden = detailsPanel.classList.contains('hidden');
+          
+          if (isHidden) {
+            detailsPanel.classList.remove('hidden');
+            if (arrow) arrow.style.transform = 'rotate(90deg)';
+          } else {
+            detailsPanel.classList.add('hidden');
+            if (arrow) arrow.style.transform = 'rotate(0deg)';
+          }
+        }
+      });
+    });
 
   } catch (error) {
     console.error("Fehler beim Laden der Events:", error);
