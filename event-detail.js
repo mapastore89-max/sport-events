@@ -20,10 +20,16 @@ async function loadEventDetail() {
     // Titel & Metadaten
     document.title = `${event.title} – SWIM BIKE RUN`;
     document.getElementById('event-title').textContent = event.title;
-    document.getElementById('event-date').textContent = new Date(event.date).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
-    document.getElementById('event-location').textContent = event.location;
-    document.getElementById('event-category-badge').textContent = event.category;
-    document.getElementById('weather-location').textContent = event.location.split(',')[0];
+    
+    // Datumsformatierung
+    const eventDateObj = new Date(event.date);
+    document.getElementById('event-date').textContent = eventDateObj.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+    
+    document.getElementById('event-location').textContent = event.location || '—';
+    document.getElementById('event-category-badge').textContent = event.category || 'Standard';
+    
+    const city = event.location ? event.location.split(',')[0] : 'Schweiz';
+    document.getElementById('weather-location').textContent = city;
 
     // Distanzen
     document.getElementById('dist-swim').textContent = event.distances?.swim || '—';
@@ -36,11 +42,11 @@ async function loadEventDetail() {
     document.getElementById('btn-results').href = event.resultsUrl || '#';
     document.getElementById('map-directions').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`;
     
-    // Google Maps Embed (Passiver Platzhalter)
+    // Google Maps Embed
     document.getElementById('google-map').src = `https://maps.google.com/maps?q=${encodeURIComponent(event.location)}&t=&z=11&ie=UTF8&iwloc=&output=embed`;
 
     // Countdown Berechnung
-    const eventTime = new Date(event.date).getTime();
+    const eventTime = eventDateObj.getTime();
     const now = new Date().getTime();
     const diff = eventTime - now;
 
