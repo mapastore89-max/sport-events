@@ -1,137 +1,22 @@
-<main class="page-transition min-h-[calc(100vh-64px)] pb-14 lg:pb-0">
-  <div class="relative w-full bg-[#0B1121] text-slate-200 font-sans overflow-x-hidden">
-    
-    <!-- HEADER BEREICH: Breadcrumb, Titel & Buttons -->
-    <div class="relative z-10 w-full border-b border-slate-800">
-      <div class="relative z-10 px-4 py-3 sm:px-6 lg:px-10 flex flex-col gap-3 lg:flex-row lg:justify-between lg:items-center">
-        
-        <!-- Titel & Meta-Infos -->
-        <div class="max-w-full lg:max-w-4xl space-y-1">
-          <!-- Navigation / Breadcrumb -->
-          <nav class="mb-1 flex items-start gap-2 text-xs text-slate-400">
-            <a href="/events" class="hover:text-slate-200">Events</a>
-            <span>/</span>
-            <a href="/events/region" class="hover:text-slate-200">Region Name</a>
-            <span>/</span>
-            <span class="text-slate-200">Event Name</span>
-          </nav>
-          
-          <!-- Haupt-Titel -->
-          <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-slate-50 tracking-tight">
-            <span class="bg-gradient-to-r from-sky-300 via-emerald-300 to-sky-400 bg-clip-text text-transparent">
-              Mein Event Name
-            </span>
-          </h1>
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sport Events</title>
+  <!-- Tailwind CSS via CDN einbinden -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0B1121] text-slate-200">
 
-          <!-- Datum, Ort & Badge -->
-          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium text-slate-300 pt-1">
-            <div class="flex items-center gap-1">
-              <span class="text-emerald-400">📅</span>
-              <span>10. Oktober 2026</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span class="text-sky-400">📍</span>
-              <span>München, Deutschland</span>
-            </div>
-            <span class="inline-flex items-center rounded-full border border-sky-500/50 bg-sky-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase text-sky-300">
-              Triathlon
-            </span>
-          </div>
-        </div>
-
-        <!-- Action Buttons (Anmeldung, Ergebnisse, Tools) -->
-        <div class="flex flex-wrap gap-2 items-center">
-          <a href="https://deine-anmeldung.de" target="_blank" rel="noopener noreferrer" 
-             class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 shadow transition-all">
-            Anmelden ↗
-          </a>
-          <a href="https://deine-ergebnisse.de" target="_blank" rel="noopener noreferrer" 
-             class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-amber-600 text-white text-sm font-bold hover:bg-amber-500 shadow transition-all">
-            Ergebnisse ↗
-          </a>
-          <button class="px-3 py-2 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-700 text-slate-300 transition-colors" title="Zum Kalender hinzufügen">
-            📅 +
-          </button>
-          <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl border border-slate-700 bg-slate-800/50 hover:bg-slate-700 text-slate-300 transition-colors" title="Route planen">
-            🗺️
-          </a>
-        </div>
-      </div>
+  <!-- In diesen Container lädt app.js das Event -->
+  <div id="event-container">
+    <div class="p-8 text-center text-slate-400">
+      Event-Daten werden geladen...
     </div>
-
-    <!-- MAIN CONTENT: Distanzen, Details & Countdown -->
-    <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-6">
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 items-start">
-        
-        <div class="space-y-4 lg:col-span-3">
-          
-          <!-- Distanz-Kacheln (Schwimmen, Rad, Lauf) -->
-          <div class="grid grid-cols-3 gap-2">
-            <div class="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-              <span class="text-xl">🏊</span>
-              <div>
-                <div class="text-[10px] uppercase text-slate-400 font-bold">Schwimmen</div>
-                <div class="text-sm font-bold text-slate-200">1.5 km</div>
-              </div>
-            </div>
-            
-            <div class="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-              <span class="text-xl">🚴</span>
-              <div>
-                <div class="text-[10px] uppercase text-slate-400 font-bold">Radfahren</div>
-                <div class="text-sm font-bold text-slate-200">40 km</div>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-              <span class="text-xl">🏃</span>
-              <div>
-                <div class="text-[10px] uppercase text-slate-400 font-bold">Laufen</div>
-                <div class="text-sm font-bold text-slate-200">10 km</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Haupt-Infobox mit Countdown & Text -->
-          <div class="overflow-hidden rounded-xl border border-sky-500/30 bg-slate-800/60 p-4 shadow-md">
-            
-            <!-- Countdown Header -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 border-b border-slate-700/50 pb-3">
-              <div>
-                <h2 class="text-lg font-bold text-slate-50">Event Details</h2>
-                <p class="text-xs text-slate-400 uppercase">Wichtige Informationen zum Wettkampf</p>
-              </div>
-
-              <!-- Live Countdown Widget -->
-              <div class="flex items-center rounded-xl bg-slate-950/90 px-4 py-2 border border-slate-800 gap-3">
-                <div class="text-center"><span class="block text-xl font-bold text-white">30</span><span class="text-[9px] uppercase text-slate-400">Tage</span></div>
-                <div class="h-6 w-px bg-slate-800"></div>
-                <div class="text-center"><span class="block text-xl font-bold text-white">12</span><span class="text-[9px] uppercase text-slate-400">Std</span></div>
-                <div class="h-6 w-px bg-slate-800"></div>
-                <div class="text-center"><span class="block text-xl font-bold text-emerald-400">45</span><span class="text-[9px] uppercase text-slate-400">Min</span></div>
-              </div>
-            </div>
-
-            <!-- Beschreibungstext -->
-            <div class="text-sm text-slate-200 leading-relaxed space-y-3">
-              <p>
-                Willkommen beim offiziellen Wettkampf! Die Strecke führt durch malerische Landschaften mit schnellen Asphaltpassagen auf dem Rad und einem stimmungsvollen Zieleinlauf im Stadtzentrum.
-              </p>
-              
-              <!-- Hinweis-Box -->
-              <div class="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-300">
-                <span>⚠️</span>
-                <div>
-                  <strong>Wichtiger Hinweis:</strong> Die Startnummernausgabe schließt pünktlich um 08:00 Uhr am Wettkampftag.
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </div>
-
   </div>
-</main>
+
+  <!-- Skript zur Daten-Logik einbinden -->
+  <script src="app.js"></script>
+</body>
+</html>
