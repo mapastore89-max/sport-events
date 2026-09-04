@@ -31,4 +31,20 @@
     "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
     "active": true
   }
+  {
+    "id": "inferno-triathlon-2027",
+    "title": "Inferno Triathlon",
+    "date": "2027-09-14",
+    "location": "Thun - Schilthorn, Switzerland",
+    "category": "Langdistanz",
+    "distances": {
+      "swim": "3.1km",
+      "bike": "97km Rennrad + 30km MTB",
+      "run": "25km"
+    },
+    "registerUrl": "https://inferno.ch/triathlon",
+    "resultsUrl": "https://inferno.ch/start-ranglisten",
+    "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
+    "active": true
+  }
 ]
