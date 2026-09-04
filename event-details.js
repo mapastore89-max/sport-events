@@ -27,36 +27,32 @@ async function loadEventDetail() {
     
     document.getElementById('event-location').textContent = event.location || '—';
     document.getElementById('event-category-badge').textContent = event.category || 'Standard';
-    
-    const city = event.location ? event.location.split(',')[0] : 'Schweiz';
-    document.getElementById('weather-location').textContent = city;
 
     // Distanzen
     document.getElementById('dist-swim').textContent = event.distances?.swim || '—';
-    document.getElementById('dist-bike').textContent = event.distances?.bike || '—';
+    document.getElementById('dist-bike').textContent = event.distances?.bike || (event.distances?.roadBike ? `${event.distances.roadBike} + ${event.distances.mountainBike || ''}` : '—');
     document.getElementById('dist-run').textContent = event.distances?.run || '—';
 
     // Beschreibung & Links
     document.getElementById('event-description').textContent = event.description || 'Keine Beschreibung verfügbar.';
     document.getElementById('btn-website').href = event.registerUrl || '#';
     document.getElementById('btn-results').href = event.resultsUrl || '#';
-    document.getElementById('map-directions').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`;
+
+    // Wochenberechnung
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
-    // Google Maps Embed
-    document.getElementById('google-map').src = `https://maps.google.com/maps?q=${encodeURIComponent(event.location)}&t=&z=11&ie=UTF8&iwloc=&output=embed`;
+    const diffTime = eventDateObj - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    // Countdown Berechnung
-    const eventTime = eventDateObj.getTime();
-    const now = new Date().getTime();
-    const diff = eventTime - now;
-
-    if (diff > 0) {
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
-      document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+    if (diffDays > 0) {
+      const weeks = Math.floor(diffDays / 7);
+      document.getElementById('cd-weeks').textContent = weeks;
+      document.getElementById('cd-weeks-label').textContent = weeks === 1 ? 'Woche' : 'Wochen';
+    } else if (diffDays === 0) {
+      document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#E5A93C] font-bold uppercase tracking-wider">Heute</span>';
     } else {
-      document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#E5A93C] font-bold">EVENT ABGESCHLOSSEN</span>';
+      document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#A89F8D] font-bold uppercase tracking-wider">Abgeschlossen</span>';
     }
 
   } catch (error) {
