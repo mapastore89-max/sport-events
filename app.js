@@ -1,4 +1,4 @@
-// Funktion zum Berechnen der verbleibenden Zeit
+// Berechnet die verbleibende Zeit
 function getWeeksAwayText(eventDateStr) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -24,7 +24,7 @@ function formatDate(dateStr) {
   return `${day}. ${month} ${year}`;
 }
 
-// Monat + Jahr für Gruppen-Header ermitteln (z. B. "AUGUST 2027")
+// Monat + Jahr für Header (z. B. "AUGUST 2027")
 function getMonthYearHeader(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }).toUpperCase();
@@ -35,6 +35,22 @@ function formatLocation(locationStr) {
   if (!locationStr) return '—';
   return locationStr.replace(/,\s*(Switzerland|Schweiz)$/i, '').trim();
 }
+
+// Ausklappfunktion direkt an Fenster binden
+window.toggleRow = function(detailId, arrowId) {
+  const details = document.getElementById(detailId);
+  const arrow = document.getElementById(arrowId);
+  
+  if (details && arrow) {
+    if (details.classList.contains('hidden')) {
+      details.classList.remove('hidden');
+      arrow.style.transform = 'rotate(90deg)';
+    } else {
+      details.classList.add('hidden');
+      arrow.style.transform = 'rotate(0deg)';
+    }
+  }
+};
 
 // Hauptfunktion zum Laden und Rendern
 async function renderEvents() {
@@ -47,7 +63,7 @@ async function renderEvents() {
 
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Nur aktive Events ab heute filtern und chronologisch sortieren
+    // Nur aktive Events filtern und sortieren
     const upcomingEvents = events
       .filter(event => event.active && event.date >= todayStr)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -64,7 +80,7 @@ async function renderEvents() {
       return;
     }
 
-    // Events nach Monaten gruppieren
+    // Nach Monaten gruppieren
     const groupedEvents = {};
     upcomingEvents.forEach(event => {
       const monthYear = getMonthYearHeader(event.date);
@@ -77,16 +93,15 @@ async function renderEvents() {
     let htmlContent = '';
     let globalIndex = 0;
 
-    // Durch jede Monatsgruppe iterieren
     for (const [monthYear, monthEvents] of Object.entries(groupedEvents)) {
-      // Monatsüberschrift
+      // Monats-Header
       htmlContent += `
         <div class="bg-[#211E1B] px-4 py-2 border-y border-[#3D3730] text-[#E5A93C] font-bold text-xs tracking-widest uppercase">
           📌 ${monthYear}
         </div>
       `;
 
-      // Events in diesem Monat
+      // Events der Monatsgruppe
       monthEvents.forEach(event => {
         const swim = event.distances?.swim || '—';
         const bike = event.distances?.bike || (event.distances?.roadBike ? `${event.distances.roadBike} + ${event.distances.mountainBike || ''}` : '—');
@@ -95,8 +110,8 @@ async function renderEvents() {
         const cleanLocation = formatLocation(event.location);
 
         htmlContent += `
-          <div class="group">
-            <!-- Hauptzeile -->
+          <div class="group border-b border-[#3D3730]/40 last:border-0">
+            <!-- Hauptzeile (Exakt passende Grid-Breiten: 2-2-3-1-2-1-1 = 12) -->
             <div onclick="toggleRow('details-${globalIndex}', 'arrow-${globalIndex}')" 
                  class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors">
               
@@ -114,8 +129,7 @@ async function renderEvents() {
               
               <div class="hidden md:block col-span-1">
                 <a href="${registerUrl}" target="_blank" onclick="event.stopPropagation()" class="text-[#E8E2D5] hover:text-[#E5A93C] inline-flex items-center gap-1 font-semibold transition-colors">
-                  <span>Visit</span>
-                  <!-- Schlichtes Pfeil-Icon (Weiße Outlines) -->
+                  <span>Website</span>
                   <svg class="w-3.5 h-3.5 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25" />
                   </svg>
@@ -123,7 +137,7 @@ async function renderEvents() {
               </div>
               
               <div class="text-[#C2B7A3] col-span-2">${cleanLocation}</div>
-              <div class="text-[#A89F8D] col-span-1">${event.category}</div>
+              <div class="text-[#A89F8D] col-span-1 truncate">${event.category}</div>
               
               <div class="text-right col-span-1 font-bold text-[#E5A93C]">
                 <span id="arrow-${globalIndex}" class="inline-block transition-transform duration-200">→</span>
@@ -155,22 +169,6 @@ async function renderEvents() {
       <div class="p-8 text-center text-[#C86D51]">
         Fehler beim Laden der Events. Bitte prüfe, ob die events.json vorhanden ist.
       </div>`;
-  }
-}
-
-// Funktion zum Ausklappen
-function toggleRow(detailId, arrowId) {
-  const details = document.getElementById(detailId);
-  const arrow = document.getElementById(arrowId);
-  
-  if (details && arrow) {
-    if (details.classList.contains('hidden')) {
-      details.classList.remove('hidden');
-      arrow.style.transform = 'rotate(90deg)';
-    } else {
-      details.classList.add('hidden');
-      arrow.style.transform = 'rotate(0deg)';
-    }
   }
 }
 
