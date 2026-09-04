@@ -3,20 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sport Events</title>
-  <!-- Tailwind CSS via CDN einbinden -->
+  <title>SWIM BIKE RUN – Triathlonkalender Schweiz</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#0B1121] text-slate-200">
+<body class="bg-[#0B1121] text-slate-200 font-sans min-h-screen antialiased p-4 sm:p-8">
 
-  <!-- In diesen Container lädt app.js das Event -->
-  <div id="event-container">
-    <div class="p-8 text-center text-slate-400">
-      Event-Daten werden geladen...
+  <div class="max-w-6xl mx-auto space-y-6">
+    
+    <!-- HEADER BEREICH -->
+    <header class="space-y-1">
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white">
+        <span class="bg-gradient-to-r from-sky-400 via-emerald-400 to-sky-300 bg-clip-text text-transparent">
+          SWIM BIKE RUN
+        </span>
+      </h1>
+      <p class="text-sm sm:text-base text-slate-400 font-medium tracking-wide">
+        Triathlonkalender Schweiz
+      </p>
+    </header>
+
+    <!-- EVENT TABELLE / LISTE -->
+    <div class="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-2xl backdrop-blur-sm">
+      
+      <!-- Tabellen-Kopfzeile -->
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+          <span>📅</span>
+          <span>UPCOMING EVENTS (3)</span>
+        </div>
+      </div>
+
+      <!-- Spaltenüberschriften (Desktop) -->
+      <div class="hidden md:grid grid-cols-12 gap-2 px-4 py-2 text-[11px] font-bold text-slate-400 uppercase border-b border-slate-800/60">
+        <div class="col-span-1">DATE</div>
+        <div class="col-span-2">WEEKS AWAY</div>
+        <div class="col-span-3">EVENT</div>
+        <div class="col-span-1">WEBSITE</div>
+        <div class="col-span-2">LOCATION</div>
+        <div class="col-span-2">RACE TYPES</div>
+        <div class="col-span-1 text-right">INFO</div>
+      </div>
+
+      <!-- EVENT ZEILEN -->
+      <div class="divide-y divide-slate-800/60 text-xs sm:text-sm">
+
+        <!-- Event 1 -->
+        <div class="group">
+          <!-- Zeile klickbar zum Aufklappen -->
+          <div onclick="toggleRow('details-1', 'arrow-1')" class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-slate-800/40 cursor-pointer transition-colors">
+            <div class="text-sky-400 font-bold col-span-1">12. SEP</div>
+            <div class="col-span-1 md:col-span-2">
+              <span class="inline-block border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                IN 1 WOCHE
+              </span>
+            </div>
+            <div class="font-bold text-slate-100 col-span-2 md:col-span-3 text-base md:text-sm">
+              Zürich City Triathlon
+            </div>
+            <div class="hidden md:block col-span-1">
+              <a href="#" target="_blank" onclick="event.stopPropagation()" class="text-sky-400 hover:underline inline-flex items-center gap-0.5 font-medium">
+                Visit ↗
+              </a>
+            </div>
+            <div class="text-slate-300 col-span-2">Zürich, ZH</div>
+            <div class="text-slate-400 col-span-2">Olympisch · Sprint</div>
+            <div class="text-right col-span-1 font-bold text-sky-400">
+              <span id="arrow-1" class="inline-block transition-transform duration-200">→</span>
+            </div>
+          </div>
+
+          <!-- Ausklappbarer Detailbereich -->
+          <div id="details-1" class="hidden bg-slate-950/50 px-4 py-3 border-t border-slate-800/40 text-slate-300 space-y-2">
+            <p class="text-xs leading-relaxed text-slate-400">
+              Der Klassiker im Herzen von Zürich. Schwimmen im Zürichsee, flache und schnelle Radstrecke entlang des Ufers.
+            </p>
+            <div class="flex gap-4 text-xs font-semibold pt-1">
+              <span class="text-emerald-400">🏊 1.5 km / 750 m</span>
+              <span class="text-sky-400">🚴 40 km / 20 km</span>
+              <span class="text-amber-400">🏃 10 km / 5 km</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event 2 -->
+        <div class="group">
+          <div onclick="toggleRow('details-2', 'arrow-2')" class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-slate-800/40 cursor-pointer transition-colors">
+            <div class="text-sky-400 font-bold col-span-1">26. SEP</div>
+            <div class="col-span-1 md:col-span-2">
+              <span class="inline-block border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                IN 3 WOCHEN
+              </span>
+            </div>
+            <div class="font-bold text-slate-100 col-span-2 md:col-span-3 text-base md:text-sm">
+              Greifensee Triathlon
+            </div>
+            <div class="hidden md:block col-span-1">
+              <a href="#" target="_blank" onclick="event.stopPropagation()" class="text-sky-400 hover:underline inline-flex items-center gap-0.5 font-medium">
+                Visit ↗
+              </a>
+            </div>
+            <div class="text-slate-300 col-span-2">Uster, ZH</div>
+            <div class="text-slate-400 col-span-2">Sprint · Aquathlon</div>
+            <div class="text-right col-span-1 font-bold text-sky-400">
+              <span id="arrow-2" class="inline-block transition-transform duration-200">→</span>
+            </div>
+          </div>
+
+          <div id="details-2" class="hidden bg-slate-950/50 px-4 py-3 border-t border-slate-800/40 text-slate-300 space-y-2">
+            <p class="text-xs leading-relaxed text-slate-400">
+              Wunderschöner Saisonabschluss um den naturbelassenen Greifensee mit idealen Bedingungen für Einsteiger.
+            </p>
+            <div class="flex gap-4 text-xs font-semibold pt-1">
+              <span class="text-emerald-400">🏊 500 m</span>
+              <span class="text-sky-400">🚴 20 km</span>
+              <span class="text-amber-400">🏃 5 km</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event 3 -->
+        <div class="group">
+          <div onclick="toggleRow('details-3', 'arrow-3')" class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-slate-800/40 cursor-pointer transition-colors">
+            <div class="text-sky-400 font-bold col-span-1">04. OKT</div>
+            <div class="col-span-1 md:col-span-2">
+              <span class="inline-block border border-slate-700 bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                IN 1 MONAT
+              </span>
+            </div>
+            <div class="font-bold text-slate-100 col-span-2 md:col-span-3 text-base md:text-sm">
+              Locarno Triathlon
+            </div>
+            <div class="hidden md:block col-span-1">
+              <a href="#" target="_blank" onclick="event.stopPropagation()" class="text-sky-400 hover:underline inline-flex items-center gap-0.5 font-medium">
+                Visit ↗
+              </a>
+            </div>
+            <div class="text-slate-300 col-span-2">Locarno, TI</div>
+            <div class="text-slate-400 col-span-2">Mitteldistanz · Olympisch</div>
+            <div class="text-right col-span-1 font-bold text-sky-400">
+              <span id="arrow-3" class="inline-block transition-transform duration-200">→</span>
+            </div>
+          </div>
+
+          <div id="details-3" class="hidden bg-slate-950/50 px-4 py-3 border-t border-slate-800/40 text-slate-300 space-y-2">
+            <p class="text-xs leading-relaxed text-slate-400">
+              Südländisches Flair im Tessin mit flacher, sehr schneller Rad- und Laufstrecke direkt am Lago Maggiore.
+            </p>
+            <div class="flex gap-4 text-xs font-semibold pt-1">
+              <span class="text-emerald-400">🏊 1.9 km</span>
+              <span class="text-sky-400">🚴 90 km</span>
+              <span class="text-amber-400">🏃 21.1 km</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
+
   </div>
 
-  <!-- Skript zur Daten-Logik einbinden -->
-  <script src="app.js"></script>
+  <!-- Skript für Ausklapp-Funktion -->
+  <script>
+    function toggleRow(detailId, arrowId) {
+      const details = document.getElementById(detailId);
+      const arrow = document.getElementById(arrowId);
+      
+      if (details.classList.contains('hidden')) {
+        details.classList.remove('hidden');
+        arrow.style.transform = 'rotate(90deg)';
+      } else {
+        details.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+  </script>
 </body>
 </html>
