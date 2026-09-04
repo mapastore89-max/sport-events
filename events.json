@@ -1,18 +1,18 @@
 [
   {
-    "id": "dodge-city-2026",
-    "title": "Dodge City X Off-Road",
-    "date": "2026-09-04",
-    "location": "Cumberland, BC",
-    "category": "Off-Road",
+    "id": "triathlon-basel-2026",
+    "title": "Triathlon Basel",
+    "date": "2026-09-06",
+    "location": "Basel, Switzerland",
+    "category": "Triathlon",
     "distances": {
-      "swim": "750m",
+      "swim": "500m",
       "bike": "20km",
       "run": "5km"
     },
-    "registerUrl": "https://beispiel-anmeldung.de",
-    "resultsUrl": "https://beispiel-ergebnisse.de",
-    "description": "OFF-ROAD. Das Event bietet Olympic-, Sprint- und Relay-Distanzen...",
+    "registerUrl": "https://triathlonbasel.ch/anmeldung",
+    "resultsUrl": "https://triathlonbasel.ch/resultate",
+    "description": "Der beliebte Basler Stadt-Triathlon mit Schwimmen im Rhein, Velostrecke entlang des Rhyufers und Lauf im Park. Angeboten werden Sprint-, Duathlon- und Staffeldistanzen für Einsteiger und Ambitionierte.",
     "active": true
   }
 ]
