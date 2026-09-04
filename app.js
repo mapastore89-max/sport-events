@@ -1,95 +1,133 @@
-async function loadAndRenderEvent() {
+// Funktion zum Berechnen der verbleibenden Zeit
+function getWeeksAwayText(eventDateStr) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const eventDate = new Date(eventDateStr);
+  const diffTime = eventDate - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "HEUTE";
+  if (diffDays === 1) return "MORGEN";
+  if (diffDays < 7) return `IN ${diffDays} TAGEN`;
+  
+  const weeks = Math.floor(diffDays / 7);
+  return `IN ${weeks} ${weeks === 1 ? 'WOCHE' : 'WOCHEN'}`;
+}
+
+// Datum formatieren (z. B. "12. SEP")
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase();
+}
+
+// Hauptfunktion zum Laden und Rendern
+async function renderEvents() {
+  const container = document.getElementById('events-container');
+  const counter = document.getElementById('event-counter');
+
   try {
-    // 1. JSON-Datei abrufen
     const response = await fetch('events.json');
     const events = await response.json();
 
-    // 2. Heutiges Datum ermitteln
-    const today = new Date().toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split('T')[0];
 
-    // 3. Nur aktive Events filtern, die heute oder in der Zukunft liegen
-    const upcomingEvents = events.filter(event => {
-      return event.active && event.date >= today;
-    });
+    // Nur aktive Events ab heute filtern und sortieren
+    const upcomingEvents = events
+      .filter(event => event.active && event.date >= todayStr)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const container = document.getElementById('event-container');
-    if (!container) return;
+    // Zähler aktualisieren (Deutsch)
+    if (counter) {
+      counter.textContent = `ANSTEHENDE EVENTS (${upcomingEvents.length})`;
+    }
 
-    // Falls kein Event vorhanden ist
     if (upcomingEvents.length === 0) {
       container.innerHTML = `
-        <div class="p-8 text-center text-slate-400 bg-slate-900 rounded-xl border border-slate-800">
+        <div class="p-8 text-center text-[#A89F8D]">
           Derzeit stehen keine anstehenden Events an.
         </div>`;
       return;
     }
 
-    // Nächstes Event auswählen
-    const event = upcomingEvents[0];
+    // HTML für Events aufbauen
+    container.innerHTML = upcomingEvents.map((event, index) => {
+      const swim = event.distances?.swim || '—';
+      const bike = event.distances?.bike || '—';
+      const run = event.distances?.run || '—';
+      const registerUrl = event.registerUrl || '#';
 
-    // HTML in den Container einfügen
-    container.innerHTML = `
-      <main class="page-transition min-h-[calc(100vh-64px)] pb-14 lg:pb-0">
-        <div class="relative w-full bg-[#0B1121] text-slate-200 font-sans overflow-x-hidden">
-          
-          <div class="relative z-10 w-full border-b border-slate-800">
-            <div class="relative z-10 px-4 py-3 sm:px-6 lg:px-10 flex flex-col gap-3 lg:flex-row lg:justify-between lg:items-center">
-              
-              <div class="max-w-full lg:max-w-4xl space-y-1">
-                <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-slate-50 tracking-tight">
-                  <span class="bg-gradient-to-r from-sky-300 via-emerald-300 to-sky-400 bg-clip-text text-transparent">
-                    ${event.title}
-                  </span>
-                </h1>
-                <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium text-slate-300 pt-1">
-                  <div>📅 ${event.date}</div>
-                  <div>📍 ${event.location}</div>
-                  <span class="inline-flex items-center rounded-full border border-sky-500/50 bg-sky-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase text-sky-300">
-                    ${event.category}
-                  </span>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-2 items-center">
-                <a href="${event.registerUrl}" target="_blank" class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-all">
-                  Anmelden ↗
-                </a>
-                <a href="${event.resultsUrl}" target="_blank" class="px-3 py-2 rounded-xl bg-amber-600 text-white text-sm font-bold hover:bg-amber-500 transition-all">
-                  Ergebnisse ↗
-                </a>
-              </div>
-
+      return `
+        <div class="group">
+          <!-- Hauptzeile -->
+          <div onclick="toggleRow('details-${index}', 'arrow-${index}')" 
+               class="grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors">
+            
+            <div class="text-[#E5A93C] font-bold col-span-1">${formatDate(event.date)}</div>
+            
+            <div class="col-span-1 md:col-span-2">
+              <span class="inline-block border border-[#8B9A68]/40 bg-[#8B9A68]/20 text-[#B5C492] px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
+                ${getWeeksAwayText(event.date)}
+              </span>
+            </div>
+            
+            <div class="font-bold text-[#F0EAE1] col-span-2 md:col-span-3 text-base md:text-sm">
+              ${event.title}
+            </div>
+            
+            <div class="hidden md:block col-span-1">
+              <a href="${registerUrl}" target="_blank" onclick="event.stopPropagation()" class="text-[#C86D51] hover:underline inline-flex items-center gap-0.5 font-semibold">
+                Website ↗
+              </a>
+            </div>
+            
+            <div class="text-[#C2B7A3] col-span-2">${event.location}</div>
+            <div class="text-[#A89F8D] col-span-2">${event.category}</div>
+            
+            <div class="text-right col-span-1 font-bold text-[#E5A93C]">
+              <span id="arrow-${index}" class="inline-block transition-transform duration-200">→</span>
             </div>
           </div>
 
-          <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-6">
-            <div class="grid grid-cols-3 gap-2 mb-4">
-              <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-                <div class="text-[10px] uppercase text-slate-400 font-bold">Schwimmen</div>
-                <div class="text-sm font-bold text-slate-200">${event.distances.swim}</div>
-              </div>
-              <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-                <div class="text-[10px] uppercase text-slate-400 font-bold">Radfahren</div>
-                <div class="text-sm font-bold text-slate-200">${event.distances.bike}</div>
-              </div>
-              <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-                <div class="text-[10px] uppercase text-slate-400 font-bold">Laufen</div>
-                <div class="text-sm font-bold text-slate-200">${event.distances.run}</div>
-              </div>
-            </div>
-
-            <div class="rounded-xl border border-sky-500/30 bg-slate-800/60 p-4 text-sm text-slate-200">
-              <p>${event.description}</p>
+          <!-- Ausklappbereich -->
+          <div id="details-${index}" class="hidden bg-[#1C1A17]/80 px-4 py-3 border-t border-[#3D3730] text-[#C2B7A3] space-y-2">
+            <p class="text-xs leading-relaxed text-[#A89F8D]">
+              ${event.description || 'Keine Beschreibung verfügbar.'}
+            </p>
+            <div class="flex flex-wrap gap-4 text-xs font-semibold pt-1">
+              <span class="text-[#8B9A68]">🏊 Schwimmen: ${swim}</span>
+              <span class="text-[#E5A93C]">🚴 Radfahren: ${bike}</span>
+              <span class="text-[#C86D51]">🏃 Laufen: ${run}</span>
             </div>
           </div>
-
         </div>
-      </main>
-    `;
+      `;
+    }).join('');
 
   } catch (error) {
-    console.error('Fehler beim Laden der Event-Daten:', error);
+    console.error("Fehler beim Laden der Events:", error);
+    container.innerHTML = `
+      <div class="p-8 text-center text-[#C86D51]">
+        Fehler beim Laden der Events. Bitte prüfe, ob die events.json vorhanden ist.
+      </div>`;
   }
 }
 
-loadAndRenderEvent();
+// Funktion zum Ausklappen
+function toggleRow(detailId, arrowId) {
+  const details = document.getElementById(detailId);
+  const arrow = document.getElementById(arrowId);
+  
+  if (details && arrow) {
+    if (details.classList.contains('hidden')) {
+      details.classList.remove('hidden');
+      arrow.style.transform = 'rotate(90deg)';
+    } else {
+      details.classList.add('hidden');
+      arrow.style.transform = 'rotate(0deg)';
+    }
+  }
+}
+
+// Beim Laden ausführen
+renderEvents();
