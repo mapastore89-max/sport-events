@@ -62,6 +62,22 @@
     "active": true
   },
   {
+    "id": "ironman-switzerland-thun-2027",
+    "title": "Ironman Switzerland",
+    "date": "2027-07-04",
+    "location": "Thun, Switzerland",
+    "category": "Langdistanz",
+    "distances": {
+      "swim": "3.8km",
+      "bike": "180km",
+      "run": "42.2km"
+    },
+    "registerUrl": "https://www.ironman.com/im-switzerland",
+    "resultsUrl": "https://www.ironman.com/im-switzerland",
+    "description": "Die volle Ironman-Distanz am Fusse der Berner Alpen: Schwimmstart im glasklaren Thunersee, eine Radstrecke mit zahllosen Kehren und alpiner Kulisse, und ein abschliessender Marathon entlang des Sees und mitten durch Thun. Start und Ziel an der Lachenwiese.",
+    "active": true
+  },
+  {
     "id": "inferno-triathlon-2027-aug",
     "title": "Inferno Triathlon",
     "date": "2027-08-14",
