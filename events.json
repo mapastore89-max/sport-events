@@ -13,7 +13,11 @@
     "registerUrl": "https://triathlonbasel.ch/anmeldung",
     "resultsUrl": "https://triathlonbasel.ch/start-ranglisten",
     "description": "Multisportanlass für alle im und um den Rhein. Bietet Sprint-, Staffellauf- und Duathlon-Kategorien entlang des Rheinufers in Basel.",
-    "active": true
+    "active": true,
+    "registrationFee": "CHF 120.–",
+    "registrationDeadline": "2027-08-01",
+    "startTime": "08:00 Uhr",
+    "maxParticipants": "1'500"
   },
   {
     "id": "inferno-triathlon-2027-aug",
@@ -29,7 +33,11 @@
     "registerUrl": "https://inferno.ch/triathlon",
     "resultsUrl": "https://inferno.ch/start-ranglisten",
     "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
-    "active": true
+    "active": true,
+    "registrationFee": "CHF 390.–",
+    "registrationDeadline": "2027-05-31",
+    "startTime": "06:30 Uhr",
+    "maxParticipants": "800"
   },
   {
     "id": "inferno-triathlon-2027-sep",
@@ -45,6 +53,10 @@
     "registerUrl": "https://inferno.ch/triathlon",
     "resultsUrl": "https://inferno.ch/start-ranglisten",
     "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
-    "active": true
+    "active": true,
+    "registrationFee": "CHF 390.–",
+    "registrationDeadline": "2027-06-30",
+    "startTime": "06:30 Uhr",
+    "maxParticipants": "800"
   }
 ]
