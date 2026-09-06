@@ -57,7 +57,7 @@ async function renderEvents() {
 
     if (upcomingEvents.length === 0) {
       container.innerHTML = `
-        <div class="p-8 text-center text-[#A89F8D]">
+        <div class="p-8 text-center text-[#7C8A90]">
           Derzeit stehen keine anstehenden Events an.
         </div>`;
       return;
@@ -78,7 +78,7 @@ async function renderEvents() {
     for (const [monthYear, monthEvents] of Object.entries(groupedEvents)) {
       // Monats-Header ohne Pin-Symbol
       htmlContent += `
-        <div class="bg-[#211E1B] px-4 py-2.5 border-y border-[#3D3730] text-[#E5A93C] font-bold text-xs tracking-widest uppercase">
+        <div class="bg-[#131C20] px-4 py-2.5 border-y border-[#26363D] text-[#F2A83E] font-bold text-xs tracking-widest uppercase">
           ${monthYear}
         </div>
       `;
@@ -89,24 +89,24 @@ async function renderEvents() {
         const cleanLocation = formatLocation(event.location);
 
         htmlContent += `
-          <div class="event-item border-b border-[#3D3730]/40 last:border-0">
+          <div class="event-item border-b border-[#26363D]/40 last:border-0">
             <!-- Klickbare Hauptzeile -> führt zu event.html -->
-            <div class="event-row grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#342F2A] cursor-pointer transition-colors select-none" data-id="${event.id}">
+            <div class="event-row grid grid-cols-2 md:grid-cols-12 gap-2 p-4 items-center hover:bg-[#1E2B31] cursor-pointer transition-colors select-none" data-id="${event.id}">
               
-              <div class="text-[#E5A93C] font-bold col-span-2 text-xs sm:text-sm">${formatDate(event.date)}</div>
+              <div class="text-[#F2A83E] font-bold col-span-2 text-xs sm:text-sm">${formatDate(event.date)}</div>
               
               <div class="col-span-1 md:col-span-2">
-                <span class="inline-block border border-[#8B9A68]/40 bg-[#8B9A68]/20 text-[#B5C492] px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
+                <span class="inline-block border border-[#5FA88C]/40 bg-[#5FA88C]/20 text-[#9FCFC0] px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider">
                   ${getWeeksAwayText(event.date)}
                 </span>
               </div>
               
-              <div class="font-bold text-[#F0EAE1] col-span-2 md:col-span-3 text-base md:text-sm">
+              <div class="font-bold text-[#F2EFE7] col-span-2 md:col-span-3 text-base md:text-sm">
                 ${event.title}
               </div>
               
               <div class="hidden md:block col-span-1">
-                <a href="${registerUrl}" target="_blank" class="external-link text-[#E8E2D5] hover:text-[#E5A93C] inline-flex items-center gap-1 font-semibold transition-colors">
+                <a href="${registerUrl}" target="_blank" class="external-link text-[#E6E1D6] hover:text-[#F2A83E] inline-flex items-center gap-1 font-semibold transition-colors">
                   <span>Website</span>
                   <svg class="w-3.5 h-3.5 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25" />
@@ -114,10 +114,10 @@ async function renderEvents() {
                 </a>
               </div>
               
-              <div class="text-[#C2B7A3] col-span-2">${cleanLocation}</div>
-              <div class="text-[#A89F8D] col-span-1 truncate">${event.category}</div>
+              <div class="text-[#A7B0B4] col-span-2">${cleanLocation}</div>
+              <div class="text-[#7C8A90] col-span-1 truncate">${event.category}</div>
               
-              <div class="text-right col-span-1 font-bold text-[#E5A93C]">
+              <div class="text-right col-span-1 font-bold text-[#F2A83E]">
                 <span class="inline-block transition-transform duration-200">→</span>
               </div>
             </div>
@@ -144,7 +144,7 @@ async function renderEvents() {
   } catch (error) {
     console.error("Fehler beim Laden der Events:", error);
     container.innerHTML = `
-      <div class="p-8 text-center text-[#C86D51]">
+      <div class="p-8 text-center text-[#E2694A]">
         Fehler beim Laden der Events. Bitte prüfe, ob die events.json vorhanden ist.
       </div>`;
   }
