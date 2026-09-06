@@ -1,137 +1,135 @@
-// Parst ein "YYYY-MM-DD"-Datum als lokales Datum (nicht UTC), damit
-// die Anzeige/Berechnung in jeder Zeitzone korrekt bleibt.
-function parseLocalDate(dateStr) {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(year, month - 1, day);
-}
-
-// Säubere Ort-Namen (z. B. ", Switzerland" / ", Schweiz" entfernen)
-function formatLocation(locationStr) {
-  if (!locationStr) return '—';
-  return locationStr.replace(/,\s*(Switzerland|Schweiz)$/i, '').trim();
-}
-
-async function loadEventDetail() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const eventId = urlParams.get('id');
-
-  if (!eventId) {
-    window.location.href = 'index.html';
-    return;
+[
+  {
+    "id": "wallisellen-triathlon-2027",
+    "title": "Wallisellen Triathlon",
+    "date": "2027-04-18",
+    "location": "Wallisellen, Switzerland",
+    "category": "Sprintdistanz",
+    "registerUrl": "https://www.wallisellentriathlon.ch/",
+    "resultsUrl": "https://www.wallisellentriathlon.ch/",
+    "description": "Einsteigerfreundlicher Saisonauftakt bei Zürich mit guter Infrastruktur, Team- und Staffeloptionen.",
+    "active": true
+  },
+  {
+    "id": "ironman-70-3-switzerland-2027",
+    "title": "Ironman 70.3 Switzerland",
+    "date": "2027-06-06",
+    "location": "Rapperswil-Jona, Switzerland",
+    "category": "Mitteldistanz",
+    "distances": {
+      "swim": "1.9km",
+      "bike": "90km",
+      "run": "21.1km"
+    },
+    "registerUrl": "https://www.ironman.com/im703-switzerland",
+    "resultsUrl": "https://www.ironman.com/im703-switzerland",
+    "description": "Seit 2007 lockt der Ironman 70.3 Switzerland tausende Athletinnen und Athleten an den Obersee bei Rapperswil-Jona – Schwimmen im See, hügelige Radstrecke Richtung Rickengebiet und ein Zieleinlauf mitten in der Rosenstadt.",
+    "active": true,
+    "registrationFee": "CHF 275.– – 355.– (+8% Active Fee)",
+    "startTime": "08:30 Uhr"
+  },
+  {
+    "id": "zurich-city-triathlon-2027",
+    "title": "Zurich City Triathlon",
+    "date": "2027-06-27",
+    "location": "Zürich, Switzerland",
+    "category": "Sprint / Olympisch",
+    "distances": {
+      "swim": "0.75–1.5km",
+      "bike": "20–40km",
+      "run": "5–10km"
+    },
+    "registerUrl": "https://zurichcitytriathlon.ch/",
+    "resultsUrl": "https://zurichcitytriathlon.ch/",
+    "description": "Der grösste Triathlon der Schweiz mitten in der Limmatstadt: Sprint- und Olympische Distanz für Einzelstarter und Teams, plus kostenloser Kidstriathlon am Vortag.",
+    "active": true,
+    "registrationFee": "ab CHF 79.– (Sprint) / CHF 129.– (Olympisch)"
+  },
+  {
+    "id": "geneve-triathlon-2027",
+    "title": "Genève Triathlon",
+    "date": "2027-07-03",
+    "location": "Genève, Switzerland",
+    "category": "Half / Standard / Short",
+    "distances": {
+      "swim": "1.5km",
+      "bike": "40km",
+      "run": "10km"
+    },
+    "registerUrl": "https://www.genevetriathlon.ch/individuel",
+    "resultsUrl": "https://www.genevetriathlon.ch/",
+    "description": "Einzigartige Strecke mitten in der Genfer Bucht: Schwimmen im Genfersee, Radfahren mit Blick auf den Jet d'Eau und Zieleinlauf durch den Englischen Garten.",
+    "active": true
+  },
+  {
+    "id": "inferno-triathlon-2027-aug",
+    "title": "Inferno Triathlon",
+    "date": "2027-08-14",
+    "location": "Thun - Schilthorn, Switzerland",
+    "category": "Langdistanz",
+    "distances": {
+      "swim": "3.1km",
+      "bike": "97km Rennrad + 30km MTB",
+      "run": "25km"
+    },
+    "registerUrl": "https://inferno.ch/triathlon",
+    "resultsUrl": "https://inferno.ch/start-ranglisten",
+    "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
+    "active": true,
+    "registrationFee": "CHF 390.–",
+    "registrationDeadline": "2027-05-31",
+    "startTime": "06:30 Uhr",
+    "maxParticipants": "800"
+  },
+  {
+    "id": "triathlon-basel-2027",
+    "title": "Triathlon Basel",
+    "date": "2027-08-28",
+    "location": "Basel, Switzerland",
+    "category": "Olympisch",
+    "distances": {
+      "swim": "500m",
+      "bike": "20km",
+      "run": "5km"
+    },
+    "registerUrl": "https://triathlonbasel.ch/anmeldung",
+    "resultsUrl": "https://triathlonbasel.ch/start-ranglisten",
+    "description": "Multisportanlass für alle im und um den Rhein. Bietet Sprint-, Staffellauf- und Duathlon-Kategorien entlang des Rheinufers in Basel.",
+    "active": true,
+    "registrationFee": "CHF 120.–",
+    "registrationDeadline": "2027-08-01",
+    "startTime": "08:00 Uhr",
+    "maxParticipants": "1'500"
+  },
+  {
+    "id": "uster-triathlon-2027",
+    "title": "Uster Triathlon",
+    "date": "2027-08-28",
+    "location": "Uster, Switzerland",
+    "category": "Mitteldistanz / Sprint / Olympisch",
+    "registerUrl": "https://www.ustertriathlon.ch/",
+    "resultsUrl": "https://www.ustertriathlon.ch/",
+    "description": "Das Multisport-Wochenende am Greifensee für die ganze Familie – von Kindertriathlon über Sprint- und Olympische Distanz bis zur Mitteldistanz, inklusive Seeüberquerung und SUP-Race.",
+    "active": true
+  },
+  {
+    "id": "inferno-triathlon-2027-sep",
+    "title": "Inferno Triathlon",
+    "date": "2027-09-14",
+    "location": "Thun - Schilthorn, Switzerland",
+    "category": "Langdistanz",
+    "distances": {
+      "swim": "3.1km",
+      "bike": "97km Rennrad + 30km MTB",
+      "run": "25km"
+    },
+    "registerUrl": "https://inferno.ch/triathlon",
+    "resultsUrl": "https://inferno.ch/start-ranglisten",
+    "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
+    "active": true,
+    "registrationFee": "CHF 390.–",
+    "registrationDeadline": "2027-06-30",
+    "startTime": "06:30 Uhr",
+    "maxParticipants": "800"
   }
-
-  try {
-    const response = await fetch('events.json');
-    const events = await response.json();
-    const event = events.find(e => e.id === eventId);
-
-    if (!event) {
-      document.body.innerHTML = '<div class="text-center p-12 text-[#E2694A]">Event nicht gefunden.</div>';
-      return;
-    }
-
-    // Titel & Metadaten
-    document.title = `${event.title || 'Event'} – SWIM BIKE RUN`;
-    document.getElementById('event-title').textContent = event.title || 'Unbekanntes Event';
-    
-    // Datumsformatierung & Wochenberechnung
-    if (event.date) {
-      const eventDateObj = parseLocalDate(event.date);
-      document.getElementById('event-date').textContent = eventDateObj.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const diffTime = eventDateObj - today;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays > 0) {
-        const weeks = Math.floor(diffDays / 7);
-        const wochenText = weeks === 1 ? 'Noch 1 Woche' : `Noch ${weeks} Wochen`;
-
-        document.getElementById('cd-weeks').textContent = weeks;
-        document.getElementById('cd-weeks-label').textContent = weeks === 1 ? 'Woche' : 'Wochen';
-        document.getElementById('training-weeks-left').textContent = wochenText;
-
-        // Trainingsphasen-Logik
-        updateTrainingPhase(weeks);
-
-      } else if (diffDays === 0) {
-        document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#F2A83E] font-bold uppercase tracking-wider">Heute</span>';
-        document.getElementById('training-weeks-left').textContent = 'Heute';
-        updateTrainingPhase(0);
-      } else {
-        document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#7C8A90] font-bold uppercase tracking-wider">Abgeschlossen</span>';
-        document.getElementById('training-weeks-left').textContent = 'Beendet';
-        updateTrainingPhase(-1);
-      }
-    }
-    
-    document.getElementById('event-location').textContent = formatLocation(event.location);
-    document.getElementById('event-category-badge').textContent = event.category || 'Standard';
-
-    // Anmeldung & Infos
-    document.getElementById('info-fee').textContent = event.registrationFee || '—';
-    document.getElementById('info-deadline').textContent = event.registrationDeadline
-      ? parseLocalDate(event.registrationDeadline).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
-      : '—';
-    document.getElementById('info-starttime').textContent = event.startTime || '—';
-    document.getElementById('info-maxparticipants').textContent = event.maxParticipants || '—';
-
-    // Distanzen
-    const swim = event.swim || event.distances?.swim || '—';
-    const bike = event.bike || event.distances?.bike || (event.distances?.roadBike ? `${event.distances.roadBike} + ${event.distances.mountainBike || ''}` : '—');
-    const run = event.run || event.distances?.run || '—';
-
-    document.getElementById('dist-swim').textContent = swim;
-    document.getElementById('dist-bike').textContent = bike;
-    document.getElementById('dist-run').textContent = run;
-
-    // Beschreibung & Links
-    document.getElementById('event-description').textContent = event.description || event.info || 'Keine Beschreibung verfügbar.';
-    
-    const webUrl = event.registerUrl || event.link || event.url || '#';
-    const resultsUrl = event.resultsUrl || event.results || webUrl;
-
-    document.getElementById('btn-website').href = webUrl;
-    document.getElementById('btn-results').href = resultsUrl;
-
-  } catch (error) {
-    console.error("Fehler beim Laden des Events:", error);
-  }
-}
-
-// Dynamische Steuerung der Trainingsphase auf Deutsch
-function updateTrainingPhase(weeksLeft) {
-  const titleEl = document.getElementById('current-phase-title');
-  const descEl = document.getElementById('current-phase-desc');
-  const barEl = document.getElementById('training-progress-bar');
-
-  if (weeksLeft > 16) {
-    titleEl.textContent = "Base Phase";
-    descEl.textContent = "Aufbau der grundlegenden aeroben Ausdauer, Kraft und Bewegungseffizienz für die kommende Wettkampfvorbereitung.";
-    barEl.style.width = "20%";
-  } else if (weeksLeft > 8) {
-    titleEl.textContent = "Build Phase";
-    descEl.textContent = "Steigerung der Intensität mit wettkampfspezifischen Intervallen, Schwellentraining und Koppeleinheiten.";
-    barEl.style.width = "40%";
-  } else if (weeksLeft > 3) {
-    titleEl.textContent = "Peak Phase";
-    descEl.textContent = "Erreichen der maximalen Wettkampfform, Testen der Verpflegung unter Rennbedingungen und Feinschliff am Material.";
-    barEl.style.width = "60%";
-  } else if (weeksLeft > 1) {
-    titleEl.textContent = "Taper Phase";
-    descEl.textContent = "Reduzierung des Trainingsvolumens, um Kraft zu tanken, Glykogenspeicher zu füllen und frisch an den Start zu gehen.";
-    barEl.style.width = "80%";
-  } else if (weeksLeft >= 0) {
-    titleEl.textContent = "Race Prep";
-    descEl.textContent = "Letzter Materialcheck, Streckenbesichtigung und mentale Vorbereitung. Erholt und fokussiert bleiben.";
-    barEl.style.width = "100%";
-  } else {
-    titleEl.textContent = "Post Race / Regeneration";
-    descEl.textContent = "Fokus auf aktive Erholung, Regeneration und die Analyse der Rennleistung.";
-    barEl.style.width = "100%";
-  }
-}
-
-loadEventDetail();
+]
