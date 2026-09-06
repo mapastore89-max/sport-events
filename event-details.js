@@ -13,7 +13,7 @@ async function loadEventDetail() {
     const event = events.find(e => e.id === eventId);
 
     if (!event) {
-      document.body.innerHTML = '<div class="text-center p-12 text-[#C86D51]">Event nicht gefunden.</div>';
+      document.body.innerHTML = '<div class="text-center p-12 text-[#E2694A]">Event nicht gefunden.</div>';
       return;
     }
 
@@ -44,11 +44,11 @@ async function loadEventDetail() {
         updateTrainingPhase(weeks);
 
       } else if (diffDays === 0) {
-        document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#E5A93C] font-bold uppercase tracking-wider">Heute</span>';
+        document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#F2A83E] font-bold uppercase tracking-wider">Heute</span>';
         document.getElementById('training-weeks-left').textContent = 'Heute';
         updateTrainingPhase(0);
       } else {
-        document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#A89F8D] font-bold uppercase tracking-wider">Abgeschlossen</span>';
+        document.getElementById('countdown-box').innerHTML = '<span class="text-xs text-[#7C8A90] font-bold uppercase tracking-wider">Abgeschlossen</span>';
         document.getElementById('training-weeks-left').textContent = 'Beendet';
         updateTrainingPhase(-1);
       }
