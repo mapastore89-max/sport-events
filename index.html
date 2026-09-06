@@ -16,10 +16,10 @@
 </head>
 <body class="bg-[#0E1518] text-[#E6E1D6] min-h-screen antialiased p-4 sm:p-8">
 
-  <div class="max-w-6xl mx-auto space-y-6">
+  <div class="max-w-4xl mx-auto space-y-10">
     
     <!-- HEADER BEREICH -->
-    <header class="space-y-3 border-b border-[#26363D] pb-6">
+    <header class="space-y-3">
       <h1 class="font-display text-5xl sm:text-7xl leading-none tracking-wide text-[#F2A83E]">
         SWIM BIKE RUN
       </h1>
@@ -33,34 +33,22 @@
       </div>
     </header>
 
-    <!-- EVENT TABELLE / LISTE -->
-    <div class="rounded-xl border border-[#26363D] bg-[#172126] overflow-hidden shadow-2xl">
-      
-      <!-- Tabellen-Kopfzeile -->
-      <div class="p-4 border-b border-[#26363D] bg-[#131C20] flex items-center justify-between">
-        <div class="flex items-center gap-2.5 text-[#F2A83E] text-xs font-bold uppercase tracking-widest">
-          <!-- Schlichtes Kalender Outline Icon -->
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-          </svg>
-          <span id="event-counter">ANSTEHENDE EVENTS (0)</span>
-        </div>
-      </div>
+    <!-- NÄCHSTES EVENT: HERO -->
+    <div id="next-event-hero"></div>
 
-      <!-- Spaltenüberschriften exakt an Grid angepasst (Desktop) -->
-      <div class="hidden md:grid grid-cols-12 gap-2 px-4 py-3 text-[11px] font-bold text-[#7C8A90] uppercase tracking-wider border-b border-[#26363D] bg-[#131C20]/50">
-        <div class="col-span-2">DATUM</div>
-        <div class="col-span-2">VERBLEIBEND</div>
-        <div class="col-span-3">EVENT</div>
-        <div class="col-span-1">WEBSEITE</div>
-        <div class="col-span-2">ORT</div>
-        <div class="col-span-1">KATEGORIE</div>
-        <div class="col-span-1 text-right">INFO</div>
+    <!-- EVENT LISTE -->
+    <div class="space-y-5">
+
+      <div class="flex items-center gap-2.5 text-[#7C8A90] text-xs font-bold uppercase tracking-widest">
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+        <span id="event-counter">ANSTEHENDE EVENTS (0)</span>
       </div>
 
       <!-- ZIEL-CONTAINER FÜR MONATS-GRUPPIERTE EVENTS -->
-      <div id="events-container" class="divide-y divide-[#26363D] text-xs sm:text-sm">
-        <div class="p-8 text-center text-[#7C8A90]">
+      <div id="events-container" class="space-y-8">
+        <div class="p-8 text-center text-[#7C8A90] border border-[#26363D] rounded-xl">
           Events werden geladen...
         </div>
       </div>
