@@ -47,50 +47,6 @@ function formatLocation(locationStr) {
   return locationStr.replace(/,\s*(Switzerland|Schweiz)$/i, '').trim();
 }
 
-// Baut die "Nächstes Event"-Hervorhebung im Header
-function renderHero(nextEvent) {
-  const heroContainer = document.getElementById('next-event-hero');
-  if (!heroContainer) return;
-
-  if (!nextEvent) {
-    heroContainer.innerHTML = '';
-    return;
-  }
-
-  const diffDays = getDaysRemaining(nextEvent.date);
-  const weeks = Math.floor(diffDays / 7);
-
-  let bigNumber, bigLabel;
-  if (diffDays <= 0) {
-    bigNumber = 'JETZT';
-    bigLabel = 'Startschuss';
-  } else if (diffDays < 14) {
-    bigNumber = diffDays;
-    bigLabel = diffDays === 1 ? 'Tag' : 'Tage';
-  } else {
-    bigNumber = weeks;
-    bigLabel = weeks === 1 ? 'Woche' : 'Wochen';
-  }
-
-  heroContainer.innerHTML = `
-    <a href="event.html?id=${nextEvent.id}" class="block rounded-2xl border border-[#F2A83E]/30 bg-gradient-to-br from-[#172126] to-[#131C20] p-6 sm:p-8 hover:border-[#F2A83E]/60 transition-colors">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
-        <div class="shrink-0">
-          <span class="font-display text-6xl sm:text-7xl leading-none text-[#F2A83E]">${bigNumber}</span>
-          <span class="block text-xs uppercase tracking-wider text-[#7C8A90] font-bold mt-1">${bigLabel} bis zum nächsten Event</span>
-        </div>
-        <div class="min-w-0 border-t sm:border-t-0 sm:border-l border-[#26363D] pt-5 sm:pt-0 sm:pl-10">
-          <h2 class="font-display text-3xl sm:text-4xl text-[#F2EFE7] tracking-wide truncate">${nextEvent.title}</h2>
-          <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-sm text-[#A7B0B4]">
-            <span>${formatDate(nextEvent.date)}</span>
-            <span>${formatLocation(nextEvent.location)}</span>
-          </div>
-        </div>
-      </div>
-    </a>
-  `;
-}
-
 // Baut eine einzelne Event-Karte
 function renderEventCard(event) {
   const registerUrl = event.registerUrl || '#';
@@ -158,8 +114,6 @@ async function renderEvents() {
     if (counter) {
       counter.textContent = `ANSTEHENDE EVENTS (${upcomingEvents.length})`;
     }
-
-    renderHero(upcomingEvents[0] || null);
 
     if (upcomingEvents.length === 0) {
       container.innerHTML = `
