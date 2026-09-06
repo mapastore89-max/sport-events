@@ -57,6 +57,14 @@ async function loadEventDetail() {
     document.getElementById('event-location').textContent = event.location || '—';
     document.getElementById('event-category-badge').textContent = event.category || 'Standard';
 
+    // Anmeldung & Infos
+    document.getElementById('info-fee').textContent = event.registrationFee || '—';
+    document.getElementById('info-deadline').textContent = event.registrationDeadline
+      ? new Date(event.registrationDeadline).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
+      : '—';
+    document.getElementById('info-starttime').textContent = event.startTime || '—';
+    document.getElementById('info-maxparticipants').textContent = event.maxParticipants || '—';
+
     // Distanzen
     const swim = event.swim || event.distances?.swim || '—';
     const bike = event.bike || event.distances?.bike || (event.distances?.roadBike ? `${event.distances.roadBike} + ${event.distances.mountainBike || ''}` : '—');
