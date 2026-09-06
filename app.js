@@ -1,9 +1,16 @@
+// Parst ein "YYYY-MM-DD"-Datum als lokales Datum (nicht UTC), damit
+// die Anzeige/Berechnung in jeder Zeitzone korrekt bleibt.
+function parseLocalDate(dateStr) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 // Berechnet die verbleibende Zeit (z. B. "IN 2 WOCHEN")
 function getWeeksAwayText(eventDateStr) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
-  const eventDate = new Date(eventDateStr);
+  const eventDate = parseLocalDate(eventDateStr);
   const diffTime = eventDate - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -17,7 +24,7 @@ function getWeeksAwayText(eventDateStr) {
 
 // Datum im Format "28. AUG 2027"
 function formatDate(dateStr) {
-  const date = new Date(dateStr);
+  const date = parseLocalDate(dateStr);
   const day = date.getDate().toString().padStart(2, '0');
   const month = date.toLocaleDateString('de-DE', { month: 'short' }).toUpperCase().replace('.', '');
   const year = date.getFullYear();
@@ -26,7 +33,7 @@ function formatDate(dateStr) {
 
 // Monat + Jahr für Header (z. B. "AUGUST 2027")
 function getMonthYearHeader(dateStr) {
-  const date = new Date(dateStr);
+  const date = parseLocalDate(dateStr);
   return date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }).toUpperCase();
 }
 
@@ -45,7 +52,9 @@ async function renderEvents() {
     const response = await fetch('events.json');
     const events = await response.json();
 
-    const todayStr = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     const upcomingEvents = events
       .filter(event => event.active && event.date >= todayStr)
