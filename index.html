@@ -70,12 +70,9 @@
       </div>
     </main>
 
-  </div>
-
-  <script>
+    <script>
     let allEvents = [];
 
-    // Sauberes Entfernen von Schweiz / Switzerland / CH aus Ortsangaben
     function cleanLocation(loc) {
       if (!loc) return '';
       return loc
@@ -84,7 +81,6 @@
         .trim();
     }
 
-    // Sichere Datumsformatierung
     function parseAndFormatDate(dateStr) {
       const defaultYear = 2026;
       
@@ -96,14 +92,12 @@
       let month = 0;
       let day = 1;
 
-      // 1. ISO-Format YYYY-MM-DD
       const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (isoMatch) {
         year = parseInt(isoMatch[1], 10);
         month = parseInt(isoMatch[2], 10) - 1;
         day = parseInt(isoMatch[3], 10);
       } else {
-        // 2. Format DD.MM.YYYY oder DD.MM.
         const dotMatch = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.?(\d{2,4})?$/);
         if (dotMatch) {
           day = parseInt(dotMatch[1], 10);
@@ -113,12 +107,11 @@
             year = y < 100 ? 2000 + y : y;
           }
         } else {
-          // 3. Textbasiertes Datum (z.B. "20. September")
           const monthsMap = {
             "jan": 0, "feb": 1, "mär": 2, "mar": 2, "apr": 3, "mai": 4, "jun": 5,
             "jul": 6, "aug": 7, "sep": 8, "okt": 9, "nov": 10, "dez": 11
           };
-          const textMatch = dateStr.match(/(\d{1,2})\.?\s*([a-zA-zA-ZäöüÄÖÜ]+)/);
+          const textMatch = dateStr.match(/(\d{1,2})\.?\s*([a-zA-zäöüÄÖÜ]+)/);
           if (textMatch) {
             day = parseInt(textMatch[1], 10);
             const mStr = textMatch[2].toLowerCase().substring(0, 3);
@@ -129,12 +122,9 @@
         }
       }
 
-      if (year < 2024) {
-        year = defaultYear;
-      }
+      if (year < 2024) year = defaultYear;
 
       const dateObj = new Date(year, month, day);
-      
       const formatted = dateObj.toLocaleDateString('de-CH', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
       });
@@ -158,6 +148,12 @@
       }
     }
 
+    // Speichert das Event temporär ab und leitet zur Detailseite weiter
+    function openEventDetails(eventObj) {
+      localStorage.setItem('selectedEvent', JSON.stringify(eventObj));
+      window.location.href = 'event-details.html';
+    }
+
     function renderEvents(events) {
       const container = document.getElementById('eventContainer');
 
@@ -168,13 +164,9 @@
 
       const processedEvents = events.map((e, index) => {
         const dateObj = parseAndFormatDate(e.date);
-        const eventId = e.id || index;
-
         return {
-          id: eventId,
-          title: e.title,
-          link: e.link,
-          source: e.source,
+          ...e,
+          id: e.id || index,
           cleanLoc: cleanLocation(e.location),
           dateFormatted: dateObj.formatted,
           monthKey: dateObj.monthKey,
@@ -182,10 +174,8 @@
         };
       });
 
-      // Nach Datum sortieren
       processedEvents.sort((a, b) => a.sortDate - b.sortDate);
 
-      // Nach Monaten gruppieren
       const grouped = {};
       processedEvents.forEach(e => {
         if (!grouped[e.monthKey]) grouped[e.monthKey] = [];
@@ -202,45 +192,47 @@
             </div>
             
             <div class="space-y-2.5">
-              ${monthEvents.map(e => `
-                <article class="bg-[#172126] border border-[#26363D] hover:border-[#5FA88C] rounded-xl p-4 sm:p-5 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
-                  <div class="space-y-1.5">
-                    <h3 class="font-bold text-base sm:text-lg text-[#F2EFE7] group-hover:text-[#5FA88C] transition-colors">
-                      <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}" class="hover:underline">
+              ${monthEvents.map((e, idx) => {
+                // Wir übergeben das Event-Objekt sicher als JSON an die Klick-Funktion
+                const eventJson = encodeURIComponent(JSON.stringify(e));
+                return `
+                  <article class="bg-[#172126] border border-[#26363D] hover:border-[#5FA88C] rounded-xl p-4 sm:p-5 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group cursor-pointer"
+                           onclick="openEventDetails(JSON.parse(decodeURIComponent('${eventJson}')))">
+                    <div class="space-y-1.5 pointer-events-none">
+                      <h3 class="font-bold text-base sm:text-lg text-[#F2EFE7] group-hover:text-[#5FA88C] transition-colors">
                         ${escapeHtml(e.title)}
-                      </a>
-                    </h3>
-                    
-                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#A7B0B4]">
-                      <span class="flex items-center gap-1">
-                        <span class="text-[#F2A83E]">📅</span>
-                        <span>${escapeHtml(e.dateFormatted)}</span>
-                      </span>
-                      ${e.cleanLoc ? `
+                      </h3>
+                      
+                      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#A7B0B4]">
                         <span class="flex items-center gap-1">
-                          <span class="text-[#A7B0B4]">📍</span>
-                          <span>${escapeHtml(e.cleanLoc)}</span>
+                          <span class="text-[#F2A83E]">📅</span>
+                          <span>${escapeHtml(e.dateFormatted)}</span>
                         </span>
-                      ` : ''}
-                      ${e.source ? `
-                        <span class="bg-[#26363D] text-[#9FCFC0] text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded">
-                          ${escapeHtml(e.source)}
-                        </span>
-                      ` : ''}
+                        ${e.cleanLoc ? `
+                          <span class="flex items-center gap-1">
+                            <span class="text-[#A7B0B4]">📍</span>
+                            <span>${escapeHtml(e.cleanLoc)}</span>
+                          </span>
+                        ` : ''}
+                        ${e.source ? `
+                          <span class="bg-[#26363D] text-[#9FCFC0] text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded">
+                            ${escapeHtml(e.source)}
+                          </span>
+                        ` : ''}
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="shrink-0">
-                    <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}" 
-                       class="inline-flex items-center gap-1.5 bg-[#26363D] hover:bg-[#F2A83E] text-[#E6E1D6] hover:text-[#0E1518] font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors w-full sm:w-auto justify-center">
-                      <span>Details</span>
-                      <svg class="w-3.5 h-3.5 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25"/>
-                      </svg>
-                    </a>
-                  </div>
-                </article>
-              `).join('')}
+                    <div class="shrink-0">
+                      <span class="inline-flex items-center gap-1.5 bg-[#26363D] group-hover:bg-[#F2A83E] text-[#E6E1D6] group-hover:text-[#0E1518] font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors w-full sm:w-auto justify-center">
+                        <span>Details</span>
+                        <svg class="w-3.5 h-3.5 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25"/>
+                        </svg>
+                      </span>
+                    </div>
+                  </article>
+                `;
+              }).join('')}
             </div>
           </section>
         `;
@@ -256,7 +248,6 @@
       })[m]);
     }
 
-    // Such-Filter
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       const filtered = allEvents.filter(event => 
@@ -268,5 +259,3 @@
 
     fetchEvents();
   </script>
-</body>
-</html>
