@@ -136,6 +136,16 @@
       margin-bottom: 0.35rem;
     }
 
+    .event-info h3 a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.15s;
+    }
+
+    .event-info h3 a:hover {
+      color: #5FA88C;
+    }
+
     .event-meta {
       font-size: 0.85rem;
       color: var(--text-muted);
@@ -224,11 +234,11 @@
 
     // Sauberes Formatieren des Datums
     function formatDate(dateStr) {
-      if (!dateStr || dateStr.toLowerCase().includes("tba")) return { formatted: "Termin offen", monthKey: "Weitere Termine", sortDate: new Date(2099, 0) };
+      if (!dateStr || dateStr.toLowerCase().includes("tba")) {
+        return { formatted: "Termin offen", monthKey: "Weitere Termine", sortDate: new Date(2099, 0) };
+      }
 
-      // Versuche ISO / Standard-Datum zu parsen (z.B. YYYY-MM-DD oder DD.MM.YYYY)
       let parsedDate = null;
-      
       const partsDot = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
       if (partsDot) {
         parsedDate = new Date(partsDot[3], partsDot[2] - 1, partsDot[1]);
@@ -240,7 +250,6 @@
       if (parsedDate) {
         const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
         const formatted = parsedDate.toLocaleDateString('de-CH', options);
-        
         const monthKey = parsedDate.toLocaleDateString('de-CH', { month: 'long', year: 'numeric' });
         return { formatted, monthKey, sortDate: parsedDate };
       }
@@ -269,11 +278,15 @@
         return;
       }
 
-      // Events mit aufbereiteten Datums- & Ortsangaben anreichern
-      const processedEvents = events.map(e => {
+      const processedEvents = events.map((e, index) => {
         const dateObj = formatDate(e.date);
+        const eventId = e.id || index;
+
         return {
-          ...e,
+          id: eventId,
+          title: e.title,
+          link: e.link,
+          source: e.source,
           cleanLoc: cleanLocation(e.location),
           dateFormatted: dateObj.formatted,
           monthKey: dateObj.monthKey,
@@ -284,14 +297,13 @@
       // Nach Datum sortieren
       processedEvents.sort((a, b) => a.sortDate - b.sortDate);
 
-      // Nach Monaten gruppieren
+      // Gruppieren nach Monaten
       const grouped = {};
       processedEvents.forEach(e => {
         if (!grouped[e.monthKey]) grouped[e.monthKey] = [];
         grouped[e.monthKey].push(e);
       });
 
-      // HTML aufbauen
       let html = '';
       for (const [month, monthEvents] of Object.entries(grouped)) {
         html += `
@@ -304,7 +316,11 @@
               ${monthEvents.map(e => `
                 <article class="event-card">
                   <div class="event-info">
-                    <h3>${escapeHtml(e.title)}</h3>
+                    <h3>
+                      <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}">
+                        ${escapeHtml(e.title)}
+                      </a>
+                    </h3>
                     <div class="event-meta">
                       <span>📅 ${escapeHtml(e.dateFormatted)}</span>
                       ${e.cleanLoc ? `<span>📍 ${escapeHtml(e.cleanLoc)}</span>` : ''}
@@ -312,7 +328,9 @@
                     </div>
                   </div>
                   <div class="event-action">
-                    <a href="${escapeHtml(e.link)}" target="_blank" rel="noopener noreferrer">Details ↗</a>
+                    <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}">
+                      Details ↗
+                    </a>
                   </div>
                 </article>
               `).join('')}
@@ -335,7 +353,7 @@
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       const filtered = allEvents.filter(event => 
-        event.title.toLowerCase().includes(query) || 
+        (event.title && event.title.toLowerCase().includes(query)) || 
         (event.location && event.location.toLowerCase().includes(query))
       );
       renderEvents(filtered);
