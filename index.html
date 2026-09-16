@@ -64,7 +64,7 @@
     .controls {
       display: flex;
       gap: 0.75rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
     .search-input {
@@ -84,29 +84,52 @@
       border-color: var(--text-main);
     }
 
+    /* Month Section */
+    .month-group {
+      margin-bottom: 2.5rem;
+    }
+
+    .month-header {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .month-header .count {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
     /* Event Cards */
     .event-list {
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.75rem;
     }
 
     .event-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
+      padding: 1.1rem 1.4rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: border-color 0.2s, transform 0.1s;
+      transition: border-color 0.2s;
     }
 
     .event-card:hover {
       border-color: var(--border-hover);
     }
 
-    .event-info h2 {
+    .event-info h3 {
       font-size: 1.05rem;
       font-weight: 600;
       letter-spacing: -0.01em;
@@ -119,6 +142,7 @@
       display: flex;
       gap: 0.8rem;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .source-badge {
@@ -162,7 +186,7 @@
       .event-card {
         flex-direction: column;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 0.9rem;
       }
       .event-action { width: 100%; }
       .event-action a { display: block; text-align: center; }
@@ -181,13 +205,48 @@
       <input type="text" id="searchInput" class="search-input" placeholder="Event oder Ort suchen...">
     </div>
 
-    <main id="eventContainer" class="event-list">
+    <main id="eventContainer">
       <div class="empty-state">Events werden geladen...</div>
     </main>
   </div>
 
   <script>
     let allEvents = [];
+
+    // Sauberes Bereinigen des Ortsnamens
+    function cleanLocation(loc) {
+      if (!loc) return '';
+      return loc
+        .replace(/,\s*(CH|Switzerland|Schweiz|Suisse|Svizzera)\b/gi, '')
+        .replace(/\b(CH|Switzerland|Schweiz|Suisse|Svizzera)\b/gi, '')
+        .trim();
+    }
+
+    // Sauberes Formatieren des Datums
+    function formatDate(dateStr) {
+      if (!dateStr || dateStr.toLowerCase().includes("tba")) return { formatted: "Termin offen", monthKey: "Weitere Termine", sortDate: new Date(2099, 0) };
+
+      // Versuche ISO / Standard-Datum zu parsen (z.B. YYYY-MM-DD oder DD.MM.YYYY)
+      let parsedDate = null;
+      
+      const partsDot = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+      if (partsDot) {
+        parsedDate = new Date(partsDot[3], partsDot[2] - 1, partsDot[1]);
+      } else {
+        const d = new Date(dateStr);
+        if (!isNaN(d.getTime())) parsedDate = d;
+      }
+
+      if (parsedDate) {
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const formatted = parsedDate.toLocaleDateString('de-CH', options);
+        
+        const monthKey = parsedDate.toLocaleDateString('de-CH', { month: 'long', year: 'numeric' });
+        return { formatted, monthKey, sortDate: parsedDate };
+      }
+
+      return { formatted: dateStr, monthKey: "Termine 2026", sortDate: new Date(2026, 0) };
+    }
 
     async function fetchEvents() {
       const container = document.getElementById('eventContainer');
@@ -210,21 +269,59 @@
         return;
       }
 
-      container.innerHTML = events.map(e => `
-        <article class="event-card">
-          <div class="event-info">
-            <h2>${escapeHtml(e.title)}</h2>
-            <div class="event-meta">
-              <span>📅 ${escapeHtml(e.date)}</span>
-              <span>📍 ${escapeHtml(e.location)}</span>
-              ${e.source ? `<span class="source-badge">${escapeHtml(e.source)}</span>` : ''}
+      // Events mit aufbereiteten Datums- & Ortsangaben anreichern
+      const processedEvents = events.map(e => {
+        const dateObj = formatDate(e.date);
+        return {
+          ...e,
+          cleanLoc: cleanLocation(e.location),
+          dateFormatted: dateObj.formatted,
+          monthKey: dateObj.monthKey,
+          sortDate: dateObj.sortDate
+        };
+      });
+
+      // Nach Datum sortieren
+      processedEvents.sort((a, b) => a.sortDate - b.sortDate);
+
+      // Nach Monaten gruppieren
+      const grouped = {};
+      processedEvents.forEach(e => {
+        if (!grouped[e.monthKey]) grouped[e.monthKey] = [];
+        grouped[e.monthKey].push(e);
+      });
+
+      // HTML aufbauen
+      let html = '';
+      for (const [month, monthEvents] of Object.entries(grouped)) {
+        html += `
+          <section class="month-group">
+            <div class="month-header">
+              <span>${month}</span>
+              <span class="count">${monthEvents.length} Event${monthEvents.length > 1 ? 's' : ''}</span>
             </div>
-          </div>
-          <div class="event-action">
-            <a href="${escapeHtml(e.link)}" target="_blank" rel="noopener noreferrer">Details ↗</a>
-          </div>
-        </article>
-      `).join('');
+            <div class="event-list">
+              ${monthEvents.map(e => `
+                <article class="event-card">
+                  <div class="event-info">
+                    <h3>${escapeHtml(e.title)}</h3>
+                    <div class="event-meta">
+                      <span>📅 ${escapeHtml(e.dateFormatted)}</span>
+                      ${e.cleanLoc ? `<span>📍 ${escapeHtml(e.cleanLoc)}</span>` : ''}
+                      ${e.source ? `<span class="source-badge">${escapeHtml(e.source)}</span>` : ''}
+                    </div>
+                  </div>
+                  <div class="event-action">
+                    <a href="${escapeHtml(e.link)}" target="_blank" rel="noopener noreferrer">Details ↗</a>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      container.innerHTML = html;
     }
 
     function escapeHtml(str) {
@@ -239,7 +336,7 @@
       const query = e.target.value.toLowerCase();
       const filtered = allEvents.filter(event => 
         event.title.toLowerCase().includes(query) || 
-        event.location.toLowerCase().includes(query)
+        (event.location && event.location.toLowerCase().includes(query))
       );
       renderEvents(filtered);
     });
