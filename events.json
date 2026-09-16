@@ -4,19 +4,13 @@
     "date": "20 Sep. 10",
     "location": "Schweiz",
     "source": "Swiss Triathlon",
-    "link": "https://swisstriathlon.ch/events/10-tempo-sport-aarau-triathlon/",
-    "distances": [
-      "Triathlon"
-    ]
+    "link": "https://swisstriathlon.ch/events/10-tempo-sport-aarau-triathlon/"
   },
   {
     "title": "S3-T Triathlon Oberwallis",
     "date": "26 Sep",
     "location": "Schweiz",
     "source": "Swiss Triathlon",
-    "link": "https://swisstriathlon.ch/events/s3-t-triathlon-oberwallis-3/",
-    "distances": [
-      "Triathlon"
-    ]
+    "link": "https://swisstriathlon.ch/events/s3-t-triathlon-oberwallis-3/"
   }
 ]
