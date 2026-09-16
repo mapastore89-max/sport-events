@@ -60,7 +60,7 @@
       margin-top: 0.25rem;
     }
 
-    /* Filter & Search Bar */
+    /* Suche & Steuerung */
     .controls {
       display: flex;
       gap: 0.75rem;
@@ -84,7 +84,7 @@
       border-color: var(--text-main);
     }
 
-    /* Month Section */
+    /* Monatsunterteilung */
     .month-group {
       margin-bottom: 2.5rem;
     }
@@ -107,7 +107,7 @@
       color: var(--text-muted);
     }
 
-    /* Event Cards */
+    /* Event Karten */
     .event-list {
       display: flex;
       flex-direction: column;
@@ -122,7 +122,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, transform 0.1s;
     }
 
     .event-card:hover {
@@ -176,6 +176,7 @@
       border-radius: var(--radius);
       transition: all 0.2s;
       white-space: nowrap;
+      display: inline-block;
     }
 
     .event-action a:hover {
@@ -190,7 +191,7 @@
       font-size: 0.95rem;
     }
 
-    /* Mobile Adaptions */
+    /* Mobile Anpassungen */
     @media (max-width: 580px) {
       body { padding: 1.5rem 1rem; }
       .event-card {
@@ -223,6 +224,7 @@
   <script>
     let allEvents = [];
 
+    // Sauberes Entfernen von Schweiz / Switzerland / CH aus Ortsangaben
     function cleanLocation(loc) {
       if (!loc) return '';
       return loc
@@ -231,41 +233,66 @@
         .trim();
     }
 
-    function formatDate(dateStr) {
+    // Sichere Datumsformatierung (Verhindert 2001/2010 Fehler)
+    function parseAndFormatDate(dateStr) {
+      const defaultYear = new Date().getFullYear(); // Nimmt automatisch das aktuelle Jahr
+      
       if (!dateStr || dateStr.toLowerCase().includes("tba")) {
         return { formatted: "Termin offen", monthKey: "Weitere Termine", sortDate: new Date(2099, 0) };
       }
 
-      let parsedDate = null;
+      let year = defaultYear;
+      let month = 0; // 0-indexed (Januar = 0)
+      let day = 1;
 
-      // 1. ISO Format YYYY-MM-DD
-      const isoParts = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (isoParts) {
-        parsedDate = new Date(parseInt(isoParts[1]), parseInt(isoParts[2]) - 1, parseInt(isoParts[3]));
+      // 1. ISO-Format YYYY-MM-DD
+      const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoMatch) {
+        year = parseInt(isoMatch[1], 10);
+        month = parseInt(isoMatch[2], 10) - 1;
+        day = parseInt(isoMatch[3], 10);
       } else {
-        // 2. Erfasse Tag & Monat aus Strings wie "20. Sep" oder "20.09."
-        const dotParts = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.?(\d{2,4})?$/);
-        if (dotParts) {
-          const year = dotParts[3] ? (dotParts[3].length === 2 ? "20" + dotParts[3] : dotParts[3]) : "2026";
-          parsedDate = new Date(parseInt(year), parseInt(dotParts[2]) - 1, parseInt(dotParts[1]));
+        // 2. Format DD.MM.YYYY oder DD.MM.
+        const dotMatch = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.?(\d{2,4})?$/);
+        if (dotMatch) {
+          day = parseInt(dotMatch[1], 10);
+          month = parseInt(dotMatch[2], 10) - 1;
+          if (dotMatch[3]) {
+            let y = parseInt(dotMatch[3], 10);
+            year = y < 100 ? 2000 + y : y;
+          }
         } else {
-          // Fallback: Erzwinge Jahr 2026
-          const d = new Date(dateStr + " 2026");
-          if (!isNaN(d.getTime())) parsedDate = d;
+          // 3. Textbasiertes Datum (z.B. "20. September")
+          const monthsMap = {
+            "jan": 0, "feb": 1, "mär": 2, "mar": 2, "apr": 3, "mai": 4, "jun": 5,
+            "jul": 6, "aug": 7, "sep": 8, "okt": 9, "nov": 10, "dez": 11
+          };
+          const textMatch = dateStr.match(/(\d{1,2})\.?\s*([a-zA-zäöüÄÖÜ]+)/);
+          if (textMatch) {
+            day = parseInt(textMatch[1], 10);
+            const mStr = textMatch[2].toLowerCase().substring(0, 3);
+            if (monthsMap[mStr] !== undefined) {
+              month = monthsMap[mStr];
+            }
+          }
         }
       }
 
-      if (parsedDate && !isNaN(parsedDate.getTime())) {
-        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-        const formatted = parsedDate.toLocaleDateString('de-CH', options);
-        
-        const monthName = parsedDate.toLocaleDateString('de-CH', { month: 'long' });
-        const monthKey = `${monthName} 2026`;
-        
-        return { formatted, monthKey, sortDate: parsedDate };
+      // Korrektur: Falls das geparste Jahr absurd ist (< 2024), erwinge das aktuelle/nächste Jahr
+      if (year < 2024) {
+        year = defaultYear;
       }
 
-      return { formatted: dateStr, monthKey: "September 2026", sortDate: new Date(2026, 8, 20) };
+      const dateObj = new Date(year, month, day);
+      
+      const formatted = dateObj.toLocaleDateString('de-CH', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      });
+
+      const monthName = dateObj.toLocaleDateString('de-CH', { month: 'long' });
+      const monthKey = `${monthName} ${year}`;
+
+      return { formatted, monthKey, sortDate: dateObj };
     }
 
     async function fetchEvents() {
@@ -277,7 +304,7 @@
         allEvents = await res.json();
         renderEvents(allEvents);
       } catch (err) {
-        container.innerHTML = '<div class="empty-state">Noch keine Events verfügbar oder Fehler beim Laden.</div>';
+        container.innerHTML = '<div class="empty-state">Fehler beim Laden der Events.</div>';
       }
     }
 
@@ -290,7 +317,7 @@
       }
 
       const processedEvents = events.map((e, index) => {
-        const dateObj = formatDate(e.date);
+        const dateObj = parseAndFormatDate(e.date);
         const eventId = e.id || index;
 
         return {
@@ -308,7 +335,7 @@
       // Nach Datum sortieren
       processedEvents.sort((a, b) => a.sortDate - b.sortDate);
 
-      // Gruppieren nach Monaten
+      // Nach Monaten gruppieren
       const grouped = {};
       processedEvents.forEach(e => {
         if (!grouped[e.monthKey]) grouped[e.monthKey] = [];
@@ -360,6 +387,7 @@
       })[m]);
     }
 
+    // Such-Filter
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       const filtered = allEvents.filter(event => 
