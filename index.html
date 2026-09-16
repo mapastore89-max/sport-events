@@ -4,221 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SWIM BIKE RUN — Triathlonkalender Schweiz</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts (Passend zur Detailseite) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    :root {
-      --bg: #fafafa;
-      --card-bg: #ffffff;
-      --text-main: #111111;
-      --text-muted: #666666;
-      --border: #eaeaea;
-      --border-hover: #111111;
-      --radius: 8px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
-      color: var(--text-main);
-      line-height: 1.5;
-      padding: 3rem 1.5rem;
-      -webkit-font-smoothing: antialiased;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
-
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    /* Header */
-    header {
-      margin-bottom: 2.5rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      text-transform: uppercase;
-    }
-
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      font-weight: 400;
-      margin-top: 0.25rem;
-    }
-
-    /* Suche & Steuerung */
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .search-input {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card-bg);
-      font-family: inherit;
-      font-size: 0.9rem;
-      color: var(--text-main);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .search-input:focus {
-      border-color: var(--text-main);
-    }
-
-    /* Monatsunterteilung */
-    .month-group {
-      margin-bottom: 2.5rem;
-    }
-
-    .month-header {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-      padding-bottom: 0.4rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .month-header .count {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    /* Event Karten */
-    .event-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .event-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.1rem 1.4rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: border-color 0.2s, transform 0.1s;
-    }
-
-    .event-card:hover {
-      border-color: var(--border-hover);
-    }
-
-    .event-info h3 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      margin-bottom: 0.35rem;
-    }
-
-    .event-info h3 a {
-      text-decoration: none;
-      color: inherit;
-      transition: color 0.15s;
-    }
-
-    .event-info h3 a:hover {
-      color: #5FA88C;
-    }
-
-    .event-meta {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .source-badge {
-      font-size: 0.7rem;
-      text-transform: uppercase;
+    .font-display {
+      font-family: 'Bebas Neue', sans-serif;
       letter-spacing: 0.05em;
-      padding: 0.15rem 0.4rem;
-      background: #f0f0f0;
-      border-radius: 4px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .event-action a {
-      color: var(--text-main);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      border: 1px solid var(--text-main);
-      padding: 0.45rem 0.9rem;
-      border-radius: var(--radius);
-      transition: all 0.2s;
-      white-space: nowrap;
-      display: inline-block;
-    }
-
-    .event-action a:hover {
-      background: var(--text-main);
-      color: var(--card-bg);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 0;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    /* Mobile Anpassungen */
-    @media (max-width: 580px) {
-      body { padding: 1.5rem 1rem; }
-      .event-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.9rem;
-      }
-      .event-action { width: 100%; }
-      .event-action a { display: block; text-align: center; }
     }
   </style>
 </head>
-<body>
+<body class="bg-[#0E1518] text-[#E6E1D6] min-h-screen antialiased p-4 sm:p-8">
 
-  <div class="container">
-    <header>
-      <h1>SWIM BIKE RUN</h1>
-      <p class="subtitle">Triathlonkalender Schweiz</p>
+  <div class="max-w-3xl mx-auto space-y-8">
+    
+    <!-- HEADER -->
+    <header class="space-y-3 border-b border-[#26363D] pb-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <h1 class="font-display text-4xl sm:text-6xl text-[#F2EFE7] leading-none tracking-wider">
+            SWIM BIKE RUN
+          </h1>
+          <p class="text-xs sm:text-sm text-[#A7B0B4] font-medium tracking-wide uppercase mt-1">
+            Triathlonkalender Schweiz
+          </p>
+        </div>
+      </div>
+      
+      <!-- Dreifarbige Akzent-Linie -->
+      <div class="flex h-1 w-28 overflow-hidden rounded-full">
+        <span class="flex-1 bg-[#5FA88C]"></span>
+        <span class="flex-1 bg-[#F2A83E]"></span>
+        <span class="flex-1 bg-[#E2694A]"></span>
+      </div>
     </header>
 
-    <div class="controls">
-      <input type="text" id="searchInput" class="search-input" placeholder="Event oder Ort suchen...">
+    <!-- SUCHE & FILTER -->
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#7C8A90]">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+        </svg>
+      </div>
+      <input 
+        type="text" 
+        id="searchInput" 
+        class="w-full bg-[#172126] border border-[#26363D] focus:border-[#F2A83E] text-[#E6E1D6] placeholder-[#7C8A90] text-sm rounded-xl pl-10 pr-4 py-3 outline-none transition-colors"
+        placeholder="Event oder Ort suchen..."
+      >
     </div>
 
-    <main id="eventContainer">
-      <div class="empty-state">Events werden geladen...</div>
+    <!-- MAIN EVENT CONTAINER -->
+    <main id="eventContainer" class="space-y-8">
+      <div class="text-center py-12 text-[#7C8A90] text-sm">
+        Events werden geladen...
+      </div>
     </main>
+
   </div>
 
   <script>
@@ -233,16 +84,16 @@
         .trim();
     }
 
-    // Sichere Datumsformatierung (Verhindert 2001/2010 Fehler)
+    // Sichere Datumsformatierung
     function parseAndFormatDate(dateStr) {
-      const defaultYear = new Date().getFullYear(); // Nimmt automatisch das aktuelle Jahr
+      const defaultYear = 2026;
       
       if (!dateStr || dateStr.toLowerCase().includes("tba")) {
         return { formatted: "Termin offen", monthKey: "Weitere Termine", sortDate: new Date(2099, 0) };
       }
 
       let year = defaultYear;
-      let month = 0; // 0-indexed (Januar = 0)
+      let month = 0;
       let day = 1;
 
       // 1. ISO-Format YYYY-MM-DD
@@ -267,7 +118,7 @@
             "jan": 0, "feb": 1, "mär": 2, "mar": 2, "apr": 3, "mai": 4, "jun": 5,
             "jul": 6, "aug": 7, "sep": 8, "okt": 9, "nov": 10, "dez": 11
           };
-          const textMatch = dateStr.match(/(\d{1,2})\.?\s*([a-zA-zäöüÄÖÜ]+)/);
+          const textMatch = dateStr.match(/(\d{1,2})\.?\s*([a-zA-zA-ZäöüÄÖÜ]+)/);
           if (textMatch) {
             day = parseInt(textMatch[1], 10);
             const mStr = textMatch[2].toLowerCase().substring(0, 3);
@@ -278,7 +129,6 @@
         }
       }
 
-      // Korrektur: Falls das geparste Jahr absurd ist (< 2024), erwinge das aktuelle/nächste Jahr
       if (year < 2024) {
         year = defaultYear;
       }
@@ -304,7 +154,7 @@
         allEvents = await res.json();
         renderEvents(allEvents);
       } catch (err) {
-        container.innerHTML = '<div class="empty-state">Fehler beim Laden der Events.</div>';
+        container.innerHTML = '<div class="text-center py-12 text-[#7C8A90] text-sm">Fehler beim Laden der Events.</div>';
       }
     }
 
@@ -312,7 +162,7 @@
       const container = document.getElementById('eventContainer');
 
       if (events.length === 0) {
-        container.innerHTML = '<div class="empty-state">Keine passenden Events gefunden.</div>';
+        container.innerHTML = '<div class="text-center py-12 text-[#7C8A90] text-sm">Keine passenden Events gefunden.</div>';
         return;
       }
 
@@ -345,29 +195,48 @@
       let html = '';
       for (const [month, monthEvents] of Object.entries(grouped)) {
         html += `
-          <section class="month-group">
-            <div class="month-header">
-              <span>${month}</span>
-              <span class="count">${monthEvents.length} Event${monthEvents.length > 1 ? 's' : ''}</span>
+          <section class="space-y-3">
+            <div class="flex items-center justify-between border-b border-[#26363D] pb-2">
+              <h2 class="text-sm font-bold uppercase tracking-wider text-[#F2A83E]">${month}</h2>
+              <span class="text-xs text-[#7C8A90] font-medium">${monthEvents.length} Event${monthEvents.length > 1 ? 's' : ''}</span>
             </div>
-            <div class="event-list">
+            
+            <div class="space-y-2.5">
               ${monthEvents.map(e => `
-                <article class="event-card">
-                  <div class="event-info">
-                    <h3>
-                      <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}">
+                <article class="bg-[#172126] border border-[#26363D] hover:border-[#5FA88C] rounded-xl p-4 sm:p-5 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
+                  <div class="space-y-1.5">
+                    <h3 class="font-bold text-base sm:text-lg text-[#F2EFE7] group-hover:text-[#5FA88C] transition-colors">
+                      <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}" class="hover:underline">
                         ${escapeHtml(e.title)}
                       </a>
                     </h3>
-                    <div class="event-meta">
-                      <span>📅 ${escapeHtml(e.dateFormatted)}</span>
-                      ${e.cleanLoc ? `<span>📍 ${escapeHtml(e.cleanLoc)}</span>` : ''}
-                      ${e.source ? `<span class="source-badge">${escapeHtml(e.source)}</span>` : ''}
+                    
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#A7B0B4]">
+                      <span class="flex items-center gap-1">
+                        <span class="text-[#F2A83E]">📅</span>
+                        <span>${escapeHtml(e.dateFormatted)}</span>
+                      </span>
+                      ${e.cleanLoc ? `
+                        <span class="flex items-center gap-1">
+                          <span class="text-[#A7B0B4]">📍</span>
+                          <span>${escapeHtml(e.cleanLoc)}</span>
+                        </span>
+                      ` : ''}
+                      ${e.source ? `
+                        <span class="bg-[#26363D] text-[#9FCFC0] text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded">
+                          ${escapeHtml(e.source)}
+                        </span>
+                      ` : ''}
                     </div>
                   </div>
-                  <div class="event-action">
-                    <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}">
-                      Details ↗
+
+                  <div class="shrink-0">
+                    <a href="event-details.html?id=${encodeURIComponent(e.id)}&title=${encodeURIComponent(e.title)}" 
+                       class="inline-flex items-center gap-1.5 bg-[#26363D] hover:bg-[#F2A83E] text-[#E6E1D6] hover:text-[#0E1518] font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors w-full sm:w-auto justify-center">
+                      <span>Details</span>
+                      <svg class="w-3.5 h-3.5 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H18m0 0v4.5m0-4.5L8.25 17.25"/>
+                      </svg>
                     </a>
                   </div>
                 </article>
