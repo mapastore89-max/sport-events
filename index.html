@@ -223,7 +223,6 @@
   <script>
     let allEvents = [];
 
-    // Sauberes Bereinigen des Ortsnamens
     function cleanLocation(loc) {
       if (!loc) return '';
       return loc
@@ -232,29 +231,41 @@
         .trim();
     }
 
-    // Sauberes Formatieren des Datums
     function formatDate(dateStr) {
       if (!dateStr || dateStr.toLowerCase().includes("tba")) {
         return { formatted: "Termin offen", monthKey: "Weitere Termine", sortDate: new Date(2099, 0) };
       }
 
       let parsedDate = null;
-      const partsDot = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
-      if (partsDot) {
-        parsedDate = new Date(partsDot[3], partsDot[2] - 1, partsDot[1]);
+
+      // 1. ISO Format YYYY-MM-DD
+      const isoParts = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoParts) {
+        parsedDate = new Date(parseInt(isoParts[1]), parseInt(isoParts[2]) - 1, parseInt(isoParts[3]));
       } else {
-        const d = new Date(dateStr);
-        if (!isNaN(d.getTime())) parsedDate = d;
+        // 2. Erfasse Tag & Monat aus Strings wie "20. Sep" oder "20.09."
+        const dotParts = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.?(\d{2,4})?$/);
+        if (dotParts) {
+          const year = dotParts[3] ? (dotParts[3].length === 2 ? "20" + dotParts[3] : dotParts[3]) : "2026";
+          parsedDate = new Date(parseInt(year), parseInt(dotParts[2]) - 1, parseInt(dotParts[1]));
+        } else {
+          // Fallback: Erzwinge Jahr 2026
+          const d = new Date(dateStr + " 2026");
+          if (!isNaN(d.getTime())) parsedDate = d;
+        }
       }
 
-      if (parsedDate) {
+      if (parsedDate && !isNaN(parsedDate.getTime())) {
         const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
         const formatted = parsedDate.toLocaleDateString('de-CH', options);
-        const monthKey = parsedDate.toLocaleDateString('de-CH', { month: 'long', year: 'numeric' });
+        
+        const monthName = parsedDate.toLocaleDateString('de-CH', { month: 'long' });
+        const monthKey = `${monthName} 2026`;
+        
         return { formatted, monthKey, sortDate: parsedDate };
       }
 
-      return { formatted: dateStr, monthKey: "Termine 2026", sortDate: new Date(2026, 0) };
+      return { formatted: dateStr, monthKey: "September 2026", sortDate: new Date(2026, 8, 20) };
     }
 
     async function fetchEvents() {
@@ -349,7 +360,6 @@
       })[m]);
     }
 
-    // Suchfilter
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       const filtered = allEvents.filter(event => 
