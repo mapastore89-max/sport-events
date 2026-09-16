@@ -1,151 +1,22 @@
 [
   {
-    "id": "wallisellen-triathlon-2027",
-    "title": "Wallisellen Triathlon",
-    "date": "2027-04-18",
-    "location": "Wallisellen, Switzerland",
-    "category": "Sprintdistanz",
-    "registerUrl": "https://www.wallisellentriathlon.ch/",
-    "resultsUrl": "https://www.wallisellentriathlon.ch/",
-    "description": "Einsteigerfreundlicher Saisonauftakt bei Zürich mit guter Infrastruktur, Team- und Staffeloptionen.",
-    "active": true
+    "title": "10. Tempo-Sport Aarau Triathlon",
+    "date": "20 Sep. 10",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/10-tempo-sport-aarau-triathlon/",
+    "distances": [
+      "Triathlon"
+    ]
   },
   {
-    "id": "ironman-70-3-switzerland-2027",
-    "title": "Ironman 70.3 Switzerland",
-    "date": "2027-06-06",
-    "location": "Rapperswil-Jona, Switzerland",
-    "category": "Mitteldistanz",
-    "distances": {
-      "swim": "1.9km",
-      "bike": "90km",
-      "run": "21.1km"
-    },
-    "registerUrl": "https://www.ironman.com/im703-switzerland",
-    "resultsUrl": "https://www.ironman.com/im703-switzerland",
-    "description": "Seit 2007 lockt der Ironman 70.3 Switzerland tausende Athletinnen und Athleten an den Obersee bei Rapperswil-Jona – Schwimmen im See, hügelige Radstrecke Richtung Rickengebiet und ein Zieleinlauf mitten in der Rosenstadt.",
-    "active": true,
-    "registrationFee": "CHF 275.– – 355.– (+8% Active Fee)",
-    "startTime": "08:30 Uhr"
-  },
-  {
-    "id": "zurich-city-triathlon-2027",
-    "title": "Zurich City Triathlon",
-    "date": "2027-06-27",
-    "location": "Zürich, Switzerland",
-    "category": "Sprint / Olympisch",
-    "distances": {
-      "swim": "0.75–1.5km",
-      "bike": "20–40km",
-      "run": "5–10km"
-    },
-    "registerUrl": "https://zurichcitytriathlon.ch/",
-    "resultsUrl": "https://zurichcitytriathlon.ch/",
-    "description": "Der grösste Triathlon der Schweiz mitten in der Limmatstadt: Sprint- und Olympische Distanz für Einzelstarter und Teams, plus kostenloser Kidstriathlon am Vortag.",
-    "active": true,
-    "registrationFee": "ab CHF 79.– (Sprint) / CHF 129.– (Olympisch)"
-  },
-  {
-    "id": "geneve-triathlon-2027",
-    "title": "Genève Triathlon",
-    "date": "2027-07-03",
-    "location": "Genève, Switzerland",
-    "category": "Half / Standard / Short",
-    "distances": {
-      "swim": "1.5km",
-      "bike": "40km",
-      "run": "10km"
-    },
-    "registerUrl": "https://www.genevetriathlon.ch/individuel",
-    "resultsUrl": "https://www.genevetriathlon.ch/",
-    "description": "Einzigartige Strecke mitten in der Genfer Bucht: Schwimmen im Genfersee, Radfahren mit Blick auf den Jet d'Eau und Zieleinlauf durch den Englischen Garten.",
-    "active": true
-  },
-  {
-    "id": "ironman-switzerland-thun-2027",
-    "title": "Ironman Switzerland",
-    "date": "2027-07-04",
-    "location": "Thun, Switzerland",
-    "category": "Langdistanz",
-    "distances": {
-      "swim": "3.8km",
-      "bike": "180km",
-      "run": "42.2km"
-    },
-    "registerUrl": "https://www.ironman.com/im-switzerland",
-    "resultsUrl": "https://www.ironman.com/im-switzerland",
-    "description": "Die volle Ironman-Distanz am Fusse der Berner Alpen: Schwimmstart im glasklaren Thunersee, eine Radstrecke mit zahllosen Kehren und alpiner Kulisse, und ein abschliessender Marathon entlang des Sees und mitten durch Thun. Start und Ziel an der Lachenwiese.",
-    "active": true
-  },
-  {
-    "id": "inferno-triathlon-2027-aug",
-    "title": "Inferno Triathlon",
-    "date": "2027-08-14",
-    "location": "Thun - Schilthorn, Switzerland",
-    "category": "Langdistanz",
-    "distances": {
-      "swim": "3.1km",
-      "bike": "97km Rennrad + 30km MTB",
-      "run": "25km"
-    },
-    "registerUrl": "https://inferno.ch/triathlon",
-    "resultsUrl": "https://inferno.ch/start-ranglisten",
-    "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
-    "active": true,
-    "registrationFee": "CHF 390.–",
-    "registrationDeadline": "2027-05-31",
-    "startTime": "06:30 Uhr",
-    "maxParticipants": "800"
-  },
-  {
-    "id": "triathlon-basel-2027",
-    "title": "Triathlon Basel",
-    "date": "2027-08-28",
-    "location": "Basel, Switzerland",
-    "category": "Olympisch",
-    "distances": {
-      "swim": "500m",
-      "bike": "20km",
-      "run": "5km"
-    },
-    "registerUrl": "https://triathlonbasel.ch/anmeldung",
-    "resultsUrl": "https://triathlonbasel.ch/start-ranglisten",
-    "description": "Multisportanlass für alle im und um den Rhein. Bietet Sprint-, Staffellauf- und Duathlon-Kategorien entlang des Rheinufers in Basel.",
-    "active": true,
-    "registrationFee": "CHF 120.–",
-    "registrationDeadline": "2027-08-01",
-    "startTime": "08:00 Uhr",
-    "maxParticipants": "1'500"
-  },
-  {
-    "id": "uster-triathlon-2027",
-    "title": "Uster Triathlon",
-    "date": "2027-08-28",
-    "location": "Uster, Switzerland",
-    "category": "Mitteldistanz / Sprint / Olympisch",
-    "registerUrl": "https://www.ustertriathlon.ch/",
-    "resultsUrl": "https://www.ustertriathlon.ch/",
-    "description": "Das Multisport-Wochenende am Greifensee für die ganze Familie – von Kindertriathlon über Sprint- und Olympische Distanz bis zur Mitteldistanz, inklusive Seeüberquerung und SUP-Race.",
-    "active": true
-  },
-  {
-    "id": "inferno-triathlon-2027-sep",
-    "title": "Inferno Triathlon",
-    "date": "2027-09-14",
-    "location": "Thun - Schilthorn, Switzerland",
-    "category": "Langdistanz",
-    "distances": {
-      "swim": "3.1km",
-      "bike": "97km Rennrad + 30km MTB",
-      "run": "25km"
-    },
-    "registerUrl": "https://inferno.ch/triathlon",
-    "resultsUrl": "https://inferno.ch/start-ranglisten",
-    "description": "Einer der härtesten und spektakulärsten Ausdauerwettkämpfe der Welt mit rund 5'500 Höhenmetern von Thun hinauf auf das Schilthorn.",
-    "active": true,
-    "registrationFee": "CHF 390.–",
-    "registrationDeadline": "2027-06-30",
-    "startTime": "06:30 Uhr",
-    "maxParticipants": "800"
+    "title": "S3-T Triathlon Oberwallis",
+    "date": "26 Sep",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/s3-t-triathlon-oberwallis-3/",
+    "distances": [
+      "Triathlon"
+    ]
   }
 ]
