@@ -1,14 +1,16 @@
 [
   {
+    "id": "10temposportaarautriathlon",
     "title": "10. Tempo-Sport Aarau Triathlon",
-    "date": "20 Sep. 10",
+    "date": "2026-09-20",
     "location": "Schweiz",
     "source": "Swiss Triathlon",
     "link": "https://swisstriathlon.ch/events/10-tempo-sport-aarau-triathlon/"
   },
   {
+    "id": "s3ttriathlonoberwallis",
     "title": "S3-T Triathlon Oberwallis",
-    "date": "26 Sep",
+    "date": "2026-09-26",
     "location": "Schweiz",
     "source": "Swiss Triathlon",
     "link": "https://swisstriathlon.ch/events/s3-t-triathlon-oberwallis-3/"
