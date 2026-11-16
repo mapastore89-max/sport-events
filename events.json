@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "bremgarterreusslauf",
+    "title": "Bremgarter Reuss Lauf",
+    "date": "2026-02-27",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/bremgarter-reuss-lauf-2026/"
+  },
+  {
+    "id": "triathlonwallisellen",
+    "title": "Triathlon Wallisellen",
+    "date": "2026-04-18",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/triathlon-wallisellen-2026/"
+  },
+  {
+    "id": "temposporterlentriathlon",
+    "title": "Tempo-Sport Erlen Triathlon",
+    "date": "2026-04-18",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/erlen-triathlon-308/"
+  },
+  {
+    "id": "temposporthallwilerseetriathlon",
+    "title": "Tempo-Sport Hallwilersee Triathlon",
+    "date": "2026-05-02",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/tempo-sport-hallwilersee-2/"
+  },
+  {
+    "id": "bernertriathlon",
+    "title": "Berner Triathlon",
+    "date": "2026-05-23",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/berner-triathlon-2027d/"
+  },
+  {
+    "id": "temposporteinsiedelntriathlon",
+    "title": "Tempo-Sport Einsiedeln Triathlon",
+    "date": "2026-05-23",
+    "location": "Schweiz",
+    "source": "Swiss Triathlon",
+    "link": "https://swisstriathlon.ch/events/tempo-sport-einsiedeln-triathlon/"
+  }
+]
